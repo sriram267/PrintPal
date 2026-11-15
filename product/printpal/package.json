@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@clerk/backend": "^3.29.0",
-    "@clerk/clerk-react": "^5.61.12",
+    "@clerk/react": "^6.18.8",
     "@clerk/themes": "^2.4.57",
     "@electric-sql/pglite": "^0.5.13",
     "@fastify/cors": "^11.3.1",

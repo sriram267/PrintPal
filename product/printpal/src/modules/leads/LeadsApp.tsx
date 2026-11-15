@@ -21,7 +21,7 @@ import {
   Calendar,
   LogOut,
 } from "lucide-react"
-import { useUser, useClerk } from "@clerk/clerk-react"
+import { useUser, useClerk } from "@clerk/react"
 import { Button } from "@/components/ui/button"
 import { PalNotch, palNotch } from "@ui/pal-notch"
 import { BadgeGroup } from "@/components/ui/badge-group"

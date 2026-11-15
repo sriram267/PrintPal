@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { SignIn, SignUp, Waitlist } from "@clerk/clerk-react";
+import { SignIn, SignUp, Waitlist } from "@clerk/react";
 
 /**
  * PrintPal's single door: Clerk's own Waitlist, SignIn and SignUp components.

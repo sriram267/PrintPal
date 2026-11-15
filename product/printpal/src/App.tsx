@@ -1,11 +1,10 @@
 import React, { useEffect } from "react";
 import {
   ClerkProvider,
-  SignedIn,
-  SignedOut,
+  Show,
   AuthenticateWithRedirectCallback,
   useAuth,
-} from "@clerk/clerk-react";
+} from "@clerk/react";
 import { LeadsApp } from "./modules/leads/LeadsApp";
 import { LoginPage } from "./modules/auth/LoginPage";
 import { installAuthFetchInterceptor, registerAuthTokenGetter } from "./core/apiClient";
@@ -44,12 +43,13 @@ export function App() {
       publishableKey={CLERK_PUBLISHABLE_KEY}
       appearance={{
         variables: {
+          // Clerk 6 (Core 3) names: colorForeground / colorMutedForeground / colorInput / colorInputForeground
           colorPrimary: "#2E333D",
-          colorText: "#111827",
-          colorTextSecondary: "#6B7280",
+          colorForeground: "#111827",
+          colorMutedForeground: "#6B7280",
           colorBackground: "#FFFFFF",
-          colorInputBackground: "#FFFFFF",
-          colorInputText: "#111827",
+          colorInput: "#FFFFFF",
+          colorInputForeground: "#111827",
           borderRadius: "10px",
           fontFamily:
             "-apple-system, BlinkMacSystemFont, 'Inter', -apple-system-subheading, sans-serif",
@@ -65,12 +65,13 @@ export function App() {
         </div>
       ) : (
         <AuthTokenBridge>
-          <SignedIn>
+          {/* Clerk 6 (Core 3): <Show when="signed-in"> replaces <SignedIn>, "signed-out" replaces <SignedOut> */}
+          <Show when="signed-in">
             <LeadsApp />
-          </SignedIn>
-          <SignedOut>
+          </Show>
+          <Show when="signed-out">
             <LoginPage />
-          </SignedOut>
+          </Show>
         </AuthTokenBridge>
       )}
     </ClerkProvider>
