@@ -3,139 +3,21 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Palora — Workshop OS & Ambient Companion</title>
+    <title>PrintPal — Workshop ERP</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap" rel="stylesheet">
     <style>
       :root {
-        --ambient-glow: radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, rgba(168, 85, 247, 0.05) 45%, transparent 70%);
-        --dock-bg: rgba(255, 255, 255, 0.88);
-        --dock-border: rgba(226, 232, 240, 0.95);
-        --dock-shadow: 0 20px 48px -8px rgba(15, 23, 42, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.04);
-        --dock-btn-bg: rgba(248, 250, 252, 0.92);
-        --dock-btn-border: rgba(226, 232, 240, 0.95);
-        --dock-btn-color: #334155;
-        --dock-btn-hover-bg: #ffffff;
-        --dock-btn-hover-border: #cbd5e1;
-        --dock-btn-hover-color: #0f172a;
-        --dock-btn-primary-bg: #4f46e5;
-        --dock-btn-primary-border: #4338ca;
-        --dock-btn-primary-color: #ffffff;
-        --dock-btn-primary-hover-bg: #4338ca;
-        --dock-separator: rgba(226, 232, 240, 0.95);
-      }
-
-      [data-theme="dark"] {
-        --ambient-glow: radial-gradient(circle, rgba(99, 102, 241, 0.22) 0%, rgba(168, 85, 247, 0.08) 45%, transparent 70%);
-        --dock-bg: rgba(14, 16, 21, 0.82);
-        --dock-border: rgba(255, 255, 255, 0.12);
-        --dock-shadow: 0 20px 48px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(0, 0, 0, 0.5);
-        --dock-btn-bg: rgba(255, 255, 255, 0.05);
-        --dock-btn-border: rgba(255, 255, 255, 0.08);
-        --dock-btn-color: #f1f2f4;
-        --dock-btn-hover-bg: rgba(255, 255, 255, 0.12);
-        --dock-btn-hover-border: rgba(255, 255, 255, 0.2);
-        --dock-btn-hover-color: #ffffff;
-        --dock-btn-primary-bg: rgba(99, 102, 241, 0.25);
-        --dock-btn-primary-border: rgba(99, 102, 241, 0.5);
-        --dock-btn-primary-color: #ffffff;
-        --dock-btn-primary-hover-bg: rgba(99, 102, 241, 0.4);
-        --dock-separator: rgba(255, 255, 255, 0.1);
+        --ambient-glow: radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, rgba(168, 85, 247, 0.03) 45%, transparent 70%);
       }
 
       .ambient-glow {
-        position: fixed;
-        top: -120px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 600px;
-        height: 260px;
-        background: var(--ambient-glow);
-        filter: blur(50px);
-        pointer-events: none;
-        z-index: 0;
-        transition: background 0.3s ease;
+        display: none !important;
       }
 
-      .notch-guide {
-        position: fixed;
-        top: 2px;
-        left: 50%;
-        transform: translateX(-50%);
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 10px;
-        color: var(--wake-strip-guide, rgba(0, 0, 0, 0.35));
-        letter-spacing: 0.05em;
-        pointer-events: none;
-        z-index: 10001;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-      }
-
-      /* Interactive Simulator Dock */
-      .dock-container {
-        position: fixed;
-        bottom: 24px;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 10002;
-        background: var(--dock-bg);
-        border: 1px solid var(--dock-border);
-        box-shadow: var(--dock-shadow);
-        border-radius: 20px;
-        padding: 8px 12px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        backdrop-filter: blur(24px) saturate(180%);
-        transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-      }
-
-      .dock-btn {
-        background: var(--dock-btn-bg);
-        border: 1px solid var(--dock-btn-border);
-        border-radius: 12px;
-        color: var(--dock-btn-color);
-        font-family: 'Inter', sans-serif;
-        font-size: 12px;
-        font-weight: 500;
-        padding: 7px 12px;
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        transition: all 0.15s ease;
-      }
-
-      .dock-btn:hover {
-        background: var(--dock-btn-hover-bg);
-        border-color: var(--dock-btn-hover-border);
-        color: var(--dock-btn-hover-color);
-        transform: translateY(-1px);
-      }
-
-      .dock-btn:active {
-        transform: translateY(0);
-      }
-
-      .dock-btn.primary {
-        background: var(--dock-btn-primary-bg);
-        border-color: var(--dock-btn-primary-border);
-        color: var(--dock-btn-primary-color);
-      }
-
-      .dock-btn.primary:hover {
-        background: var(--dock-btn-primary-hover-bg);
-      }
-
-      .dock-separator {
-        width: 1px;
-        height: 20px;
-        background: var(--dock-separator);
-        margin: 0 2px;
-        transition: background 0.3s ease;
+      #printpal-dock {
+        display: none !important;
       }
     </style>
   </head>
@@ -143,72 +25,102 @@
     <!-- Ambient Top Glow -->
     <div class="ambient-glow"></div>
 
-    <!-- Floating Interactive Simulator Controls -->
-    <div class="dock-container">
-      <button class="dock-btn primary" onclick="window.Coucou?.toggle()" title="Toggle between compact notch and expanded card">
-        ⚡ Toggle Island
-      </button>
-      <button class="dock-btn" onclick="window.Coucou?.launchGreeting()" title="Replay Mochi's launch wave and theme">
-        👋 Greet
-      </button>
-      <div class="dock-separator"></div>
-      <button class="dock-btn" onclick="window.Coucou?.simulateApproval()" title="Trigger a permission approval in the notch">
-        🛡️ Approval
-      </button>
-      <button class="dock-btn" onclick="window.Coucou?.simulateQuestion()" title="Trigger an interactive question in the notch">
-        ❓ Question
-      </button>
-      <button class="dock-btn" onclick="window.Coucou?.simulateTask('working')" title="Simulate an active agent task">
-        ⚙️ Working
-      </button>
-      <button class="dock-btn" onclick="window.Coucou?.simulateTask('finished')" title="Simulate a finished celebration">
-        🎉 Done
-      </button>
-      <div class="dock-separator"></div>
-      <button class="dock-btn" onclick="window.Coucou?.toggleWardrobe()" title="Open Mochi's wardrobe">
-        👔 Wardrobe
-      </button>
-      <button class="dock-btn" onclick="window.Coucou?.expand('settings')" title="Open settings">
-        ⚙️ Settings
-      </button>
-      <div class="dock-separator"></div>
-      <button id="theme-btn" class="dock-btn" onclick="window.toggleTheme()" title="Toggle White / Dark Theme">
-        <span id="theme-btn-icon">🌙</span> <span id="theme-btn-text">Dark Mode</span>
-      </button>
-    </div>
+    <!-- PrintPal Leads Front-Office Module -->
+    <div id="printpal-leads-root"></div>
 
     <!-- Coucou Dynamic Island Mount Point -->
-    <div id="root"></div>
+    <div id="root" style="display: none;"></div>
+
+    <!-- PrintPal Workshop Companion Interactive Dock (Hidden in ERP Mode) -->
+    <nav id="printpal-dock" aria-label="Workshop Simulator Dock" style="display: none;
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      background: rgba(14, 15, 18, 0.82);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 9999px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.05);
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      color: #f5f6f8;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    ">
+      <div style="display: flex; align-items: center; gap: 6px; padding-right: 8px; border-right: 1px solid rgba(255, 255, 255, 0.1);">
+        <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 8px #22c55e;"></span>
+        <strong style="font-weight: 600; letter-spacing: -0.01em; color: #fff;">PrintPal Island</strong>
+      </div>
+
+      <button id="btn-open-workshop" onclick="window.Coucou?.openWorkshop()" style="
+        background: rgba(34, 211, 238, 0.15); border: 1px solid rgba(34, 211, 238, 0.35);
+        border-radius: 9999px; padding: 6px 12px; color: #22d3ee; font-size: 11px; font-weight: 600;
+        cursor: pointer; display: flex; align-items: center; gap: 5px; transition: all 0.15s ease;
+      " onmouseover="this.style.background='rgba(34,211,238,0.25)'" onmouseout="this.style.background='rgba(34,211,238,0.15)'">
+        <span>🛠️</span> Workshop Truth Hub
+      </button>
+
+      <button id="btn-elec-derate" onclick="window.Coucou?.simulateElectricalCheck()" style="
+        background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 9999px; padding: 6px 12px; color: #f5f6f8; font-size: 11px; font-weight: 500;
+        cursor: pointer; display: flex; align-items: center; gap: 5px; transition: all 0.15s ease;
+      " onmouseover="this.style.background='rgba(245,165,36,0.2)';this.style.borderColor='rgba(245,165,36,0.4)'" onmouseout="this.style.background='rgba(255,255,255,0.06)';this.style.borderColor='rgba(255,255,255,0.08)'">
+        <span>⚡</span> SMPS 1.25x Derating
+      </button>
+
+      <button id="btn-sheet-seam" onclick="window.Coucou?.simulateSheetSeamCheck()" style="
+        background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 9999px; padding: 6px 12px; color: #f5f6f8; font-size: 11px; font-weight: 500;
+        cursor: pointer; display: flex; align-items: center; gap: 5px; transition: all 0.15s ease;
+      " onmouseover="this.style.background='rgba(99,102,241,0.2)';this.style.borderColor='rgba(99,102,241,0.4)'" onmouseout="this.style.background='rgba(255,255,255,0.06)';this.style.borderColor='rgba(255,255,255,0.08)'">
+        <span>📐</span> 8x4ft ACP Seam Split
+      </button>
+
+      <button id="btn-dispatch-gate" onclick="window.Coucou?.simulateDispatchGateCheck()" style="
+        background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 9999px; padding: 6px 12px; color: #f5f6f8; font-size: 11px; font-weight: 500;
+        cursor: pointer; display: flex; align-items: center; gap: 5px; transition: all 0.15s ease;
+      " onmouseover="this.style.background='rgba(244,80,94,0.2)';this.style.borderColor='rgba(244,80,94,0.4)'" onmouseout="this.style.background='rgba(255,255,255,0.06)';this.style.borderColor='rgba(255,255,255,0.08)'">
+        <span>🔒</span> 50/40/10 Dispatch Gate
+      </button>
+
+      <button id="btn-workshop-job" onclick="window.Coucou?.simulateWorkshopJob()" style="
+        background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 9999px; padding: 6px 12px; color: #f5f6f8; font-size: 11px; font-weight: 500;
+        cursor: pointer; display: flex; align-items: center; gap: 5px; transition: all 0.15s ease;
+      " onmouseover="this.style.background='rgba(34,197,94,0.2)';this.style.borderColor='rgba(34,197,94,0.4)'" onmouseout="this.style.background='rgba(255,255,255,0.06)';this.style.borderColor='rgba(255,255,255,0.08)'">
+        <span>🖨️</span> Ruida CNC Cut
+      </button>
+
+      <button id="btn-safety-alert" onclick="window.Coucou?.simulateSafetyAlert()" style="
+        background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 9999px; padding: 6px 12px; color: #f5f6f8; font-size: 11px; font-weight: 500;
+        cursor: pointer; display: flex; align-items: center; gap: 5px; transition: all 0.15s ease;
+      " onmouseover="this.style.background='rgba(232,121,249,0.2)';this.style.borderColor='rgba(232,121,249,0.4)'" onmouseout="this.style.background='rgba(255,255,255,0.06)';this.style.borderColor='rgba(255,255,255,0.08)'">
+        <span>⚠️</span> Pelmet/Thermal Alert
+      </button>
+
+      <button id="btn-job-finish" onclick="window.Coucou?.simulateFinish()" style="
+        background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 9999px; padding: 6px 12px; color: #f5f6f8; font-size: 11px; font-weight: 500;
+        cursor: pointer; display: flex; align-items: center; gap: 5px; transition: all 0.15s ease;
+      " onmouseover="this.style.background='rgba(34,211,238,0.2)';this.style.borderColor='rgba(34,211,238,0.4)'" onmouseout="this.style.background='rgba(255,255,255,0.06)';this.style.borderColor='rgba(255,255,255,0.08)'">
+        <span>🎉</span> Zero-Scrap Finish
+      </button>
+
+    </nav>
 
     <script>
       (function() {
-        const saved = localStorage.getItem('palgen_theme') || 'light';
-        document.documentElement.setAttribute('data-theme', saved);
-
-        function updateBtn() {
-          const current = document.documentElement.getAttribute('data-theme') || 'light';
-          const icon = document.getElementById('theme-btn-icon');
-          const text = document.getElementById('theme-btn-text');
-          if (icon && text) {
-            if (current === 'light') {
-              icon.textContent = '🌙';
-              text.textContent = 'Dark Mode';
-            } else {
-              icon.textContent = '☀️';
-              text.textContent = 'White Theme';
-            }
-          }
-        }
-
-        window.toggleTheme = function() {
-          const current = document.documentElement.getAttribute('data-theme') || 'light';
-          const next = current === 'light' ? 'dark' : 'light';
-          document.documentElement.setAttribute('data-theme', next);
-          localStorage.setItem('palgen_theme', next);
-          updateBtn();
-        };
-
-        window.addEventListener('DOMContentLoaded', updateBtn);
+        // Strictly light theme per workshop requirement
+        document.documentElement.setAttribute('data-theme', 'light');
+        localStorage.setItem('printpal_theme', 'light');
       })();
     </script>
     <script type="module" src="/src/main.ts"></script>

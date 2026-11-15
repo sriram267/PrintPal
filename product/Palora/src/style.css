@@ -2,26 +2,13 @@
    Every colour below is copied from the Swift views. */
 
 :root {
-  color-scheme: light dark;
-
-  /* Page Theme Variables — White Theme by default */
-  --page-bg: #f8fafc;
-  --page-bg-image: 
-    radial-gradient(ellipse at 50% 0%, rgba(99, 102, 241, 0.08) 0%, transparent 60%),
-    radial-gradient(circle at 85% 15%, rgba(16, 185, 129, 0.04) 0%, transparent 40%),
-    radial-gradient(circle at 15% 85%, rgba(244, 63, 94, 0.03) 0%, transparent 40%),
-    radial-gradient(rgba(148, 163, 184, 0.12) 1px, transparent 1px);
-  --page-text: #0f172a;
-  --island-shadow: 0 22px 54px rgba(0, 0, 0, 0.28), 0 4px 14px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.12);
-  --wake-strip-guide: rgba(0, 0, 0, 0.35);
+  color-scheme: light;
 
   /* After the Latin fonts: the scripts of the other interface languages —
      Devanagari and Bengali (Nirmala UI), Simplified Chinese (Microsoft YaHei)
      on Windows, the Noto families on Linux. Arabic and Cyrillic are in Segoe UI. */
-  --font: system-ui, "Segoe UI Variable Text", "Segoe UI", "Segoe UI Emoji", "Nirmala UI",
-    "Microsoft YaHei UI", "Microsoft YaHei", "Noto Sans", "Noto Sans Devanagari", "Noto Sans Bengali",
-    "Noto Sans Arabic", "Noto Sans CJK SC", "Noto Sans SC", "Droid Sans Fallback", sans-serif;
-  --mono: "Cascadia Mono", "Consolas", ui-monospace, monospace;
+  --font: 'Inter', sans-serif;
+  --mono: 'Inter', monospace;
 
   --ink: #f5f6f8;        /* primary text */
   --ink-2: #f1f2f4;
@@ -44,18 +31,6 @@
   --pink: #f472b6;
 }
 
-[data-theme="dark"] {
-  --page-bg: #090a0f;
-  --page-bg-image: 
-    radial-gradient(ellipse at 50% 0%, rgba(99, 102, 241, 0.12) 0%, transparent 60%),
-    radial-gradient(circle at 85% 15%, rgba(34, 197, 94, 0.05) 0%, transparent 40%),
-    radial-gradient(circle at 15% 85%, rgba(244, 80, 94, 0.04) 0%, transparent 40%),
-    radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-  --page-text: #f5f6f8;
-  --island-shadow: 0 18px 48px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(255, 255, 255, 0.09);
-  --wake-strip-guide: rgba(255, 255, 255, 0.25);
-}
-
 * {
   box-sizing: border-box;
   margin: 0;
@@ -66,37 +41,38 @@ html,
 body {
   width: 100%;
   height: 100%;
-  background-color: var(--page-bg);
-  background-image: var(--page-bg-image);
-  background-size: 100% 100%, 100% 100%, 100% 100%, 28px 28px;
+  max-height: 100%;
+  background: #F3F5F7;
   overflow: hidden;
   font-family: var(--font);
-  color: var(--page-text);
+  color: #202428;
   -webkit-font-smoothing: antialiased;
-  user-select: none;
   cursor: default;
-  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
 }
 
 #root {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: 9999;
+  z-index: 100;
 }
 
-/* Strip that wakes the island when it is hidden or compact. */
+/* Invisible strip that wakes the island when it is hidden. */
 #wake-strip {
   position: fixed;
   top: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 280px;
-  height: 16px;
+  width: 240px;
+  height: 6px;
   background: transparent;
-  pointer-events: auto;
-  cursor: pointer;
-  z-index: 10000;
 }
 
 /* ── Island ─────────────────────────────────────────────────────────────── */
@@ -110,8 +86,6 @@ body {
   overflow: visible;
   will-change: width, height, transform;
   pointer-events: auto;
-  box-shadow: var(--island-shadow);
-  transition: box-shadow 0.3s ease;
 }
 
 #island-clip {
@@ -731,7 +705,7 @@ body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  padding: 0 6px;
+  padding: 0 8px 0 34px;
   pointer-events: none;
 }
 
@@ -2661,4 +2635,284 @@ html[data-dir="rtl"] #views :is(.np-title, .np-sub) {
 html[data-dir="rtl"] #views :is(.bubble, .reply .md-p, .reply .md-h, .reply .md-item, .reply .md-quote, .chat-input) {
   unicode-bidi: plaintext;
   text-align: start;
+}
+
+/* ── Workshop View & Machine Live Activity (Truth Anchors) ───────────────── */
+
+.workshop-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.workshop-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 8px 14px 10px 108px;
+  overflow-y: auto;
+}
+
+.workshop-tabs-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+  flex-shrink: 0;
+}
+
+.btn.small {
+  padding: 3px 8px;
+  font-size: 11px;
+}
+
+.btn.secondary.on {
+  background: rgba(34, 211, 238, 0.22);
+  color: #22d3ee;
+  border: 1px solid rgba(34, 211, 238, 0.4);
+}
+
+.btn.secondary.red {
+  background: rgba(244, 80, 94, 0.15);
+  color: var(--red-text);
+}
+
+.workshop-body {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.workshop-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.panel-title {
+  font: 600 11.5px var(--font);
+  color: #22d3ee;
+  letter-spacing: 0.2px;
+}
+
+.workshop-slider {
+  width: 100%;
+  height: 4px;
+  accent-color: #22d3ee;
+  cursor: pointer;
+  margin: 2px 0 4px;
+}
+
+.workshop-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  padding: 6px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.stat-card.highlight {
+  border-color: rgba(34, 211, 238, 0.35);
+  background: rgba(34, 211, 238, 0.06);
+}
+
+.stat-card.clickable {
+  cursor: pointer;
+  transition: transform 0.1s ease, border-color 0.1s ease;
+}
+
+.stat-card.clickable:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+.stat-card .label {
+  font: 500 10px var(--font);
+  color: var(--dim-2);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.stat-card .val {
+  font: 600 12px var(--font);
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.workshop-subcontrols {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 3px 0 4px;
+}
+
+.workshop-subcontrols .label {
+  font: 500 11px var(--font);
+  color: var(--dim-2);
+}
+
+.stat-card .val.green {
+  color: #34d399;
+}
+
+.stat-card .val.red {
+  color: #ff8d97;
+}
+
+.workshop-warnings {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 2px;
+}
+
+.warn-pill {
+  font: 500 10.5px var(--font);
+  color: #f5a524;
+  background: rgba(245, 165, 36, 0.1);
+  border: 1px solid rgba(245, 165, 36, 0.25);
+  border-radius: 6px;
+  padding: 3px 6px;
+}
+
+.safe-pill {
+  font: 500 10.5px var(--font);
+  color: #34d399;
+  background: rgba(52, 211, 153, 0.1);
+  border: 1px solid rgba(52, 211, 153, 0.25);
+  border-radius: 6px;
+  padding: 3px 6px;
+}
+
+.panel-footer {
+  margin-top: 4px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* ── Machine Live Activity ───────────────────────────────────────────────── */
+
+.machine-live-card {
+  padding: 10px 14px 10px 108px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  height: 100%;
+}
+
+.machine-title-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ink);
+}
+
+.machine-title {
+  font: 600 12.5px var(--font);
+}
+
+.machine-badge {
+  font: 700 9.5px var(--font);
+  padding: 2px 6px;
+  border-radius: 999px;
+  margin-left: auto;
+}
+
+.machine-badge.live {
+  background: rgba(34, 211, 238, 0.15);
+  color: #22d3ee;
+  border: 1px solid rgba(34, 211, 238, 0.35);
+  animation: pulse-live 1.8s infinite ease-in-out;
+}
+
+@keyframes pulse-live {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(0.98); }
+}
+
+.machine-card-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.machine-left-col {
+  flex: 0 0 56px;
+}
+
+.ring-container {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  display: grid;
+  place-items: center;
+}
+
+.progress-ring-svg {
+  position: absolute;
+  inset: 0;
+}
+
+.ring-label {
+  font: 700 12px var(--mono);
+  color: #22d3ee;
+  position: relative;
+  z-index: 2;
+}
+
+.machine-right-col {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.machine-time {
+  font: 500 11px var(--mono);
+  color: var(--dim);
+}
+
+.telemetry-chips {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.t-chip {
+  font: 500 10px var(--font);
+  padding: 2px 6px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 4px;
+  color: var(--ink-2);
+}
+
+.t-chip.green {
+  background: rgba(52, 211, 153, 0.15);
+  color: #34d399;
+}
+
+.machine-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
 }

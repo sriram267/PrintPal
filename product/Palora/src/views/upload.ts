@@ -30,11 +30,11 @@ function dashedFrame(): SVGSVGElement {
 
 export function buildUpload(): ViewHost {
   const frame = dashedFrame();
-  const title = h("div", { class: "drop-title", text: tl("Drop your files here") });
+  const title = h("div", { class: "drop-title", text: tl("Drop Shopfloor Assets Here") });
   const tags = h(
     "div",
     { class: "drop-tags" },
-    ...[N_("PDF"), N_("Images"), N_("Code"), N_("Docs")].map((chip) => h("span", { text: tl(chip) })),
+    ...[N_("DXF / PLT"), N_("Corel / AI"), N_("PDF Drawing"), N_("G-Code")].map((chip) => h("span", { text: tl(chip) })),
   );
   const card = h(
     "div",
@@ -71,8 +71,8 @@ export function buildUploading(): ViewHost {
       const done = State.uploadProgress >= 0.999;
       const pct = Math.round(State.uploadProgress * 100);
       label.textContent = done
-        ? `✓  ${State.droppedFile?.name ?? t("File")}`
-        : t("Uploading {name}", { name: State.droppedFile?.name ?? t("file") });
+        ? `✓  ${State.droppedFile?.name ?? t("Vector Asset")}`
+        : t("Parsing {name}", { name: State.droppedFile?.name ?? t("asset") });
       label.classList.toggle("done", done);
       percent.textContent = done ? "" : `${pct} %`;
       const w = State.uploadProgress * 526;
@@ -86,21 +86,16 @@ export function buildUploading(): ViewHost {
 
 export function buildChoose(actions: ViewActions): ViewHost {
   const title = h("div", { class: "title" });
-  const sub = h("div", { class: "sub", text: tl("What do you want to do with it?") });
-  const row = h(
-    "div",
-    { class: "actions" },
-    h("button", {
-      class: "btn primary",
-      text: tl("Ask a question"),
-      onclick: () => actions.setView("prompt"),
-    }),
-    h("button", {
-      class: "btn secondary",
-      text: tl("Cancel"),
-      onclick: () => actions.cancelDrop(),
-    }),
-  );
+  const sub = h("div", { class: "sub" });
+  const row = h("div", { class: "actions" });
+
+  const VALID_EXTS = [".dxf", ".plt", ".ai", ".eps", ".cdr", ".svg", ".pdf", ".gcode", ".nc"];
+
+  function isVectorFile(name: string): boolean {
+    const lower = name.toLowerCase();
+    return VALID_EXTS.some((ext) => lower.endsWith(ext));
+  }
+
   const el = h(
     "div",
     { class: "view" },
@@ -115,10 +110,63 @@ export function buildChoose(actions: ViewActions): ViewHost {
     el,
     sync() {
       clear(title);
-      title.append(
-        h("b", { text: State.droppedFile?.name ?? t("file") }),
-        document.createTextNode(t(" is ready.")),
-      );
+      clear(sub);
+      clear(row);
+
+      const fileName = State.droppedFile?.name ?? "sign_drawing.dxf";
+      const valid = isVectorFile(fileName);
+
+      if (valid) {
+        title.append(
+          h("b", { text: fileName }),
+          document.createTextNode(t(" staged for workshop routing.")),
+        );
+        sub.textContent = t("Select shopfloor fabrication pipeline:");
+        row.append(
+          h("button", {
+            class: "btn primary",
+            text: tl("Approved QR Job Card & Nest"),
+            onclick: () => {
+              const task = State.focusTask;
+              if (task) {
+                task.name = `Job Card #${Math.floor(Math.random() * 899 + 100)}`;
+                task.state = "finished";
+                task.steps = [
+                  `Vector verified: ${fileName} (CRC32 validated)`,
+                  "8x4 ft nesting calculated: 93.4% sheet utilization",
+                  "Approved QR Job Card locked against version drift",
+                  "HSN 9405 invoice & E-Way Bill ready",
+                ];
+                task.stepIndex = 3;
+                State.notify();
+              }
+              actions.setView("overview");
+            },
+          }),
+          h("button", {
+            class: "btn secondary",
+            text: tl("Check Sheet Seam Split"),
+            onclick: () => actions.setView("workshop"),
+          }),
+          h("button", {
+            class: "btn secondary",
+            text: tl("Cancel"),
+            onclick: () => actions.cancelDrop(),
+          }),
+        );
+      } else {
+        title.append(
+          h("b", { text: `⚠️ Unsupported Format: ${fileName}`, style: "color:#f4505e" }),
+        );
+        sub.textContent = t("Accepted formats: .dxf, .plt, .ai, .eps, .cdr, .svg, .pdf. Parsing non-vector binaries creates toolpath crash risks.");
+        row.append(
+          h("button", {
+            class: "btn secondary",
+            text: tl("Cancel"),
+            onclick: () => actions.cancelDrop(),
+          }),
+        );
+      }
     },
   };
 }

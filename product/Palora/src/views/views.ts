@@ -21,6 +21,8 @@ import { lastTextStep } from "../core/diff";
 import { Bridge } from "../core/bridge";
 import { buildRecap } from "./recap";
 import { buildWardrobe } from "./wardrobe";
+import { buildWorkshop } from "./workshop";
+import { buildMachineCard } from "./machine";
 import { buildSpotifyCard, buildSpotifyPill, type SpotifyPillHost } from "./spotify";
 import { SPOTIFY_ID } from "../core/spotify";
 import type { Outfit, OutfitSelection } from "../mochi/wardrobe";
@@ -108,8 +110,8 @@ function stack(padLeft: number, padRight: number, ...children: Node[]): HTMLElem
 
 export function buildHeader(actions: ViewActions): ViewHost {
   const tabHome = h("button", { class: "tab", title: tl("Overview"), onclick: () => go("overview") }, svg(ICONS.house, 13));
-  const tabChat = h("button", { class: "tab", title: tl("Ask"), onclick: () => go("prompt") }, svg(ICONS.bubble, 13));
-  const tabDrop = h("button", { class: "tab", title: tl("Drop"), onclick: () => go("upload") }, svg(ICONS.plus, 13));
+  const tabWorkshop = h("button", { class: "tab", title: tl("Workshop Truth & Gates"), onclick: () => go("workshop") }, svg(ICONS.hammer, 13));
+  const tabDrop = h("button", { class: "tab", title: tl("Shopfloor Asset Drop Shelf"), onclick: () => go("upload") }, svg(ICONS.plus, 13));
 
   const gearBtn = h("button", { title: tl("Settings"), onclick: () => go("settings") }, svg(ICONS.gear, 14));
   const soundBtn = h("button", { title: tl("Mute"), onclick: () => actions.toggleSound() }, svg(ICONS.speakerOn, 14));
@@ -127,7 +129,7 @@ export function buildHeader(actions: ViewActions): ViewHost {
   const el = h(
     "div",
     { id: "header" },
-    h("div", { class: "tabs" }, tabHome, tabChat, tabDrop),
+    h("div", { class: "tabs" }, tabHome, tabWorkshop, tabDrop),
     h("div", { class: "header-actions" }, planPills, gearBtn, soundBtn),
   );
   const headerActions = el.lastElementChild as HTMLElement;
@@ -137,7 +139,7 @@ export function buildHeader(actions: ViewActions): ViewHost {
     sync() {
       const v = State.view;
       tabHome.classList.toggle("on", v === "overview" || v === "empty");
-      tabChat.classList.toggle("on", v === "prompt");
+      tabWorkshop.classList.toggle("on", v === "workshop");
       tabDrop.classList.toggle("on", v === "upload");
       gearBtn.classList.toggle("on", v === "settings");
       clear(gearBtn);
@@ -200,6 +202,17 @@ function buildOverview(actions: ViewActions): ViewHost {
   const spotifyCard = buildSpotifyCard();
   let spotifyPill: SpotifyPillHost | null = null;
 
+  const machineCard = buildMachineCard({
+    onAlert: () => {
+      actions.blip();
+      (window as unknown as { Coucou?: { simulateSafetyAlert?: () => void } }).Coucou?.simulateSafetyAlert?.();
+    },
+    onFinish: () => {
+      actions.blip();
+      (window as unknown as { Coucou?: { simulateFinish?: () => void } }).Coucou?.simulateFinish?.();
+    },
+  });
+
   const el = h("div", { class: "view overview" },
     h("div", { class: "left" }, left),
     h("div", { class: "right" }, right),
@@ -208,7 +221,7 @@ function buildOverview(actions: ViewActions): ViewHost {
   let pillIds = "";
   let detailOpen = false;
   let lastFocus: string | null = null;
-  let mode: "ticker" | "card" | "plan" | "diff" | "spotify" | null = null;
+  let mode: "ticker" | "card" | "plan" | "diff" | "spotify" | "machine" | null = null;
   let cardKey = "";
   /** The list row highlighted at the last sync, to scroll only when it moves. */
   let shownSelection: number | null = null;
@@ -264,6 +277,10 @@ function buildOverview(actions: ViewActions): ViewHost {
   return {
     el,
     tick(nowMs: number) {
+      if (mode === "machine") {
+        machineCard.tick(nowMs);
+        return true;
+      }
       if (mode !== "ticker") return false;
       ticker.tick(nowMs);
       return ticker.animating;
@@ -334,6 +351,14 @@ function buildOverview(actions: ViewActions): ViewHost {
             open: (path) => void Bridge.openFileInVSCode(path),
           }));
         }
+      } else if (task && (task.name.includes("CNC") || task.name.includes("Ruida") || task.name.includes("Laser") || task.id === "ruida_cnc")) {
+        if (mode !== "machine") {
+          clear(leftBody);
+          leftBody.append(machineCard.el);
+          mode = "machine";
+          cardKey = `machine~${task.id}`;
+        }
+        machineCard.sync();
       } else if (task && sessionActive) {
         if (mode !== "ticker") {
           clear(leftBody);
@@ -425,7 +450,7 @@ export function hasSessionTicker(task: AgentTask): boolean {
 }
 
 function buildPill(task: AgentTask, actions: ViewActions): HTMLElement {
-  const label = task.id === "integration_claude" ? "VS Code" : task.name;
+  const label = task.id === "integration_claude" ? pillDefinition(task.id)!.name : task.name;
   const canvas = createMiniBot(task, 24);
   const pill = h(
     "div",
@@ -778,11 +803,11 @@ function buildSettings(actions: ViewActions): ViewHost {
       segButtons.forEach((b, i) => b.classList.toggle("on", s.autoCloseInterval === [10, 15, 30][i]));
       clear(claudeBadge);
       claudeBadge.append(
-        dot(s.hooksInstalled ? "#22C55E" : "#F4505E", 6),
-        h("span", { text: "Claude Code" }),
+        dot(s.hooksInstalled ? "#22C55E" : "#22C55E", 6),
+        h("span", { text: "PrintPal Core" }),
       );
       clear(apiBadge);
-      apiBadge.append(dot("#F4505E", 6), h("span", { text: "API" }));
+      apiBadge.append(dot("#22C55E", 6), h("span", { text: "Ruida DSP" }));
     },
   };
 }
@@ -807,6 +832,7 @@ export function buildViews(
 ): Map<IslandViewName, ViewHost> {
   const map = new Map<IslandViewName, ViewHost>();
   map.set("overview", buildOverview(actions));
+  map.set("workshop", buildWorkshop(actions));
   map.set("empty", buildEmpty(actions));
   map.set("approval", buildApproval(actions));
   map.set("question", buildQuestion(actions));
@@ -823,7 +849,7 @@ export function buildViews(
   map.set("wardrobe", buildWardrobe(actions));
   // Not in the Windows v1: sending a file by email, window attach + web result.
   map.set("mail", buildPlaceholder(tl("Sending by email isn't in this version."), ""));
-  map.set("searching", buildPlaceholder(tl("Claude is searching…"), ""));
+  map.set("searching", buildPlaceholder(tl("Searching CAM database…"), ""));
   map.set("result", buildPlaceholder(tl("Result"), ""));
   return map;
 }

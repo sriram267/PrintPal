@@ -12,6 +12,11 @@ import { applySpotify, registerSpotifyHandlers } from "./island/spotify";
 import { SPOTIFY_ID } from "./core/spotify";
 import { Recap } from "./recap/recap";
 import { onLanguageChange, resolveLanguage, setLanguage, systemLanguages } from "./i18n/i18n";
+import { WorkshopEngine } from "./island/workshop";
+
+import * as React from "react";
+import { createRoot } from "react-dom/client";
+import { App } from "./App";
 
 /** Shows the language Settings asks for ("" = the system's, when Coucou has it). */
 function applyLanguage() {
@@ -19,6 +24,13 @@ function applyLanguage() {
 }
 
 async function main() {
+  const leadsRoot = document.getElementById("printpal-leads-root");
+  if (leadsRoot) {
+    const root = createRoot(leadsRoot);
+    root.render(React.createElement(App));
+    return;
+  }
+
   const root = document.getElementById("root");
   if (!root) return;
 
@@ -138,10 +150,74 @@ async function main() {
           requestId: `req_${Date.now()}`,
           sessionId: "session_browser_1",
           pillId: State.mainPillId,
-          tool: "Bash",
-          command: "pnpm run deploy:production --force",
+          tool: "run_command",
+          command: "npx printpal-cli nest-sheets --auto-seam --hsn 9405 --material ACP_3mm",
         });
         island.expand("approval");
+      },
+      simulateAntigravityDiff: () => {
+        Sound.play("approval");
+        State.beginApproval({
+          requestId: `req_${Date.now()}`,
+          sessionId: "session_antigravity",
+          pillId: State.mainPillId,
+          tool: "replace_file_content",
+          command: "src/estimator/power_chain.ts: Derate SMPS to MeanWell LPV-350-12 (270W load)",
+        });
+        island.expand("approval");
+      },
+      simulateWorkshopJob: () => {
+        const task = State.focusTask;
+        if (task) {
+          task.name = "Ruida CNC Cut #108";
+          task.state = "working";
+          task.steps = [
+            "Vector parsing: letter_signboard.dxf",
+            "8x4 ft sheet nesting: 91.2% material efficiency",
+            "Spindle: 18,000 RPM · Feed: 4.2 m/min",
+            "Seam detection: 2 panels split at 8 ft seam line",
+            "CNC cutting in progress...",
+          ];
+          task.stepIndex = 4;
+          State.notify();
+        }
+        island.triggerEmote("happy");
+        island.expand("overview");
+        Sound.play("work");
+      },
+      simulateSafetyAlert: () => {
+        const task = State.focusTask;
+        if (task) {
+          task.name = "Thermal & Pelmet Alert";
+          task.state = "error";
+          task.steps = [
+            "Site survey alert: 6-inch rolling shutter pelmet drop",
+            "SMPS continuous load >80% without parallel feed",
+            "Action required: Derate power supply or adjust tray depth",
+          ];
+          task.stepIndex = 2;
+          State.notify();
+        }
+        island.triggerEmote("annoyed");
+        island.expand("overview");
+        Sound.play("error");
+      },
+      simulateFinish: () => {
+        const task = State.focusTask;
+        if (task) {
+          task.name = "Job #108 Complete";
+          task.state = "finished";
+          task.steps = [
+            "Acrylic letters fabricated · Zero acrylic wastage",
+            "Approved QR Job Card locked against drift",
+            "E-Way bill generated for HSN 9405 consignment",
+          ];
+          task.stepIndex = 2;
+          State.notify();
+        }
+        island.triggerEmote("proud");
+        island.expand("overview");
+        Sound.play("finish");
       },
       simulateQuestion: () => {
         Sound.play("question");
@@ -150,13 +226,13 @@ async function main() {
           sessionId: "session_browser_2",
           pillId: State.mainPillId,
           tool: "AskUserQuestion",
-          command: "Select primary database replica",
+          command: "Select SMPS Power Supply derating tier (216W connected load)",
           questions: [
             {
-              question: "Which database cluster should serve production traffic?",
+              question: "Which MeanWell SMPS tier should be selected for this 180x 1.2W LED load?",
               options: [
-                { label: "ap-south-1 (Mumbai Primary)", description: "Low-latency regional cluster with automatic failover" },
-                { label: "eu-central-1 (Frankfurt Backup)", description: "Disaster recovery replica with active sync" },
+                { label: "MeanWell LPV-350-12 (350W Recommended)", description: "Provides 1.25x continuous headroom (61.7% load factor, preventing thermal burnout)" },
+                { label: "MeanWell LPV-250-12 (250W Risk)", description: "Runs at 86.4% continuous load; violates 80% electrical rule" },
               ],
               multiSelect: false,
             },
@@ -169,7 +245,7 @@ async function main() {
         if (task) {
           task.state = stateName;
           task.steps = [
-            "Syncing Palgen ERP tenant schema...",
+            "Syncing PrintPal ERP tenant schema...",
             "Validating PostgreSQL migrations...",
             "Listening to Kafka event stream...",
             "Operational health: 100% OK",
@@ -180,10 +256,75 @@ async function main() {
         island.expand("overview");
         Sound.play(stateName === "finished" ? "finish" : stateName === "error" ? "error" : "work");
       },
+      Workshop: WorkshopEngine,
+      simulateElectricalCheck: () => {
+        Sound.play("question");
+        const res = WorkshopEngine.checkElectricalLoad(180, 1.2);
+        State.beginApproval({
+          requestId: `req_elec_${Date.now()}`,
+          sessionId: "session_workshop",
+          pillId: State.mainPillId,
+          tool: "ElectricalDeratingGate",
+          command: `Connected: ${res.connectedWatts}W -> 1.25x Headroom Required: ${res.designWattsRequired}W. Selected: ${res.recommendedSmpsModel} (${res.loadFactorPercent}% load factor)`,
+          questions: [
+            {
+              question: `Select SMPS Power Supply for 180x 1.2W LED load (${res.connectedWatts}W connected):`,
+              options: [
+                { label: `${res.recommendedSmpsModel} (${res.recommendedSmpsWatts}W)`, description: `Safe 61.7% load factor. Complies with 1.25x electrical headroom law. Zero burnout risk.` },
+                { label: "MeanWell LPV-250-12 (250W Under-rated)", description: `Operates at 86.4% continuous load. Violates 80% rule. Silent thermal failure within 90 days.` },
+              ],
+              multiSelect: false,
+            },
+          ],
+        });
+        island.expand("question");
+      },
+      simulateSheetSeamCheck: () => {
+        Sound.play("approval");
+        const geo = WorkshopEngine.checkSheetGeometry(12, 4, 2.5, 0.75, 11);
+        State.beginApproval({
+          requestId: `req_sheet_${Date.now()}`,
+          sessionId: "session_workshop",
+          pillId: State.mainPillId,
+          tool: "SheetSeamSplitGate",
+          command: `12x4 ft tray flat cut (${geo.flatWidthFeet}x${geo.flatHeightFeet} ft) exceeds 8x4 ft sheet stock. Split at 8.0 ft line. Letter stroke 11mm < 15mm LED width.`,
+        });
+        island.expand("approval");
+      },
+      simulateDispatchGateCheck: () => {
+        Sound.play("error");
+        const gate = WorkshopEngine.validateDispatchGate(45000, 26550, 0);
+        const task = State.focusTask;
+        if (task) {
+          task.name = "50/40/10 Dispatch Gate Locked";
+          task.state = "error";
+          task.steps = [
+            `Total Order: ₹${gate.orderTotal} (incl. 18% GST HSN ${gate.hsnCode})`,
+            `50% Token Advance: ₹${gate.tokenAdvanceRequired} (Received: ₹26,550 ✓)`,
+            `40% Dispatch Gate: ₹${gate.dispatchTokenRequired} (UNVERIFIED - Zero token logged)`,
+            "Dispatch Gate LOCKED: Factory floor exit barred. Delivery trucks do not depart for unverified cheques.",
+          ];
+          task.stepIndex = 3;
+          State.notify();
+        }
+        island.expand("overview");
+      },
       toggleWardrobe: () => island.toggleWardrobe(),
+      openWorkshop: () => island.expand("workshop"),
+      triggerEmote: (emote: any) => island.triggerEmote(emote),
       playSound: (name: string) => Sound.play(name as any),
       toggleTheme: () => (window as unknown as { toggleTheme?: () => void }).toggleTheme?.(),
     };
+
+    window.addEventListener("keydown", (e: KeyboardEvent) => {
+      const active = document.activeElement as HTMLElement | null;
+      if (active && (active.tagName === "INPUT" || active.tagName === "TEXTAREA" || active.isContentEditable)) {
+        return;
+      }
+      if (e.key === "Escape") {
+        island.collapse();
+      }
+    });
   }
 }
 

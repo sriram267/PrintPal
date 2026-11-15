@@ -134,6 +134,16 @@ export class Island {
     });
   }
 
+  get botEngine(): BotEngine {
+    return this.engine;
+  }
+
+  triggerEmote(emote: BotEmoteName, duration = 1.8) {
+    this.engine.triggerEmote(emote, duration);
+    this.dirty = true;
+    this.ensureRunning();
+  }
+
   /** The request has its answer: the card goes and the session carries on. */
   private closeApproval() {
     State.endApproval();
@@ -681,7 +691,8 @@ export class Island {
     this.greetingCanvas.style.left = `${(w - EXPANDED_W) / 2}px`;
     this.uploadCanvas.el.style.left = `${(w - EXPANDED_W) / 2}px`;
 
-    const rect = { x: (PANEL_W - w) / 2, y: 0, w, h: hh };
+    const viewportW = window.innerWidth > 0 ? window.innerWidth : PANEL_W;
+    const rect = { x: (viewportW - w) / 2, y: 0, w, h: hh };
     const p = this.pushedRect;
     if (Math.abs(p.x - rect.x) > 0.5 || Math.abs(p.w - rect.w) > 0.5 || Math.abs(p.h - rect.h) > 0.5) {
       this.pushedRect = rect;
@@ -693,7 +704,8 @@ export class Island {
   private islandRect(): { x: number; y: number; w: number; h: number } {
     const w = this.width.value;
     const hh = this.height.value;
-    return { x: (PANEL_W - w) / 2, y: 0, w, h: hh };
+    const viewportW = window.innerWidth > 0 ? window.innerWidth : PANEL_W;
+    return { x: (viewportW - w) / 2, y: 0, w, h: hh };
   }
 
   // ── Window collapse (hidden → tiny wake strip, zero polling) ────────────────

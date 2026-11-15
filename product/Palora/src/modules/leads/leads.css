@@ -1,0 +1,2560 @@
+/* PrintPal Leads & Customers Module — Exact Spec from Desktop - 1, 2, 3 */
+/* Brand Colors:
+   - Charcoal Ink: #202428
+   - Slate Grey:   #737B84
+   - Border Light: #DCE1E5
+   - Brand Orange: #D7440E
+   - Active Blue:  #2878D0
+   - Surface Light:#F3F5F7
+*/
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 20% 96%;
+    --foreground: 210 11% 14%;
+    --card: 0 0% 100%;
+    --card-foreground: 210 11% 14%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 210 11% 14%;
+    --primary: 16 88% 45%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 211 68% 49%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 210 20% 96%;
+    --muted-foreground: 212 7% 48%;
+    --accent: 211 68% 49%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 207 15% 88%;
+    --input: 207 15% 88%;
+    --ring: 211 68% 49%;
+    --radius: 0.5rem;
+  }
+}
+
+:root {
+  --printpal-ink: #202428;
+  --printpal-muted: #737B84;
+  --printpal-border: #DCE1E5;
+  --printpal-orange: #D7440E;
+  --printpal-orange-hover: #BF3B0B;
+  --printpal-blue: #2878D0;
+  --printpal-blue-hover: #1E66B4;
+  --printpal-surface: #F3F5F7;
+  --printpal-bg: #F3F5F7;
+  --printpal-canvas: #F3F5F7;
+  --printpal-white: #FFFFFF;
+}
+
+/* Base Container */
+.printpal-leads-container,
+.printpal-leads-container button,
+.printpal-leads-container input,
+.printpal-leads-container select,
+.printpal-leads-container textarea,
+.printpal-leads-container table,
+.printpal-leads-container th,
+.printpal-leads-container td,
+.printpal-modal-overlay,
+.printpal-modal-overlay button,
+.printpal-modal-overlay input,
+.printpal-modal-overlay select,
+.printpal-modal-overlay textarea {
+  font-family: 'Inter', sans-serif;
+}
+
+#printpal-leads-root {
+  height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.printpal-leads-container {
+  width: 100%;
+  height: 100vh;
+  max-height: 100vh;
+  flex: 1;
+  background-color: var(--printpal-surface);
+  color: var(--printpal-ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── Top Navigation Bar (Desktop - 1, 2, 3) ── */
+.printpal-top-nav {
+  height: 56px;
+  background: var(--printpal-surface);
+  border-bottom: none;
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  box-sizing: border-box;
+}
+
+.printpal-nav-left {
+  display: flex;
+  align-items: center;
+}
+
+.printpal-brand-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--printpal-ink);
+  letter-spacing: -0.024em;
+  margin-right: 36px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.printpal-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.printpal-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 450;
+  color: var(--printpal-ink);
+  text-decoration: none;
+  cursor: pointer;
+  position: relative;
+  padding: 17px 2px;
+  transition: color 0.15s ease;
+  user-select: none;
+  border: none;
+  background: transparent;
+}
+
+.printpal-nav-link svg {
+  width: 18px;
+  height: 18px;
+  stroke-width: 1.8;
+  transition: stroke 0.15s ease;
+}
+
+.printpal-nav-link:hover {
+  color: var(--printpal-orange);
+}
+
+.printpal-nav-link.active {
+  color: var(--printpal-orange);
+  font-weight: 500;
+}
+
+.printpal-nav-link.active svg {
+  stroke: var(--printpal-orange);
+}
+
+.printpal-nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: 9px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: var(--printpal-orange);
+  border-radius: 2px;
+}
+
+/* ── Top Center COUCOU × SILEO PAL NOTCH ── */
+/* Base dock container positioned at the top center bezel */
+.printpal-notch-dock {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+}
+
+.printpal-notch-shell {
+  background: var(--printpal-ink);
+  color: #FFFFFF;
+  border-radius: 0 0 18px 18px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1), height 0.25s cubic-bezier(0.16, 1, 0.3, 1), padding 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+  overflow: hidden;
+  user-select: none;
+}
+
+.printpal-notch-shell.collapsed {
+  height: 38px;
+  width: 240px;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.printpal-notch-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.printpal-notch-pulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 8px #22c55e;
+}
+
+.printpal-notch-title {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #ffffff;
+}
+
+.printpal-notch-status {
+  font-size: 11px;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.printpal-notch-lens {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #111418;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.printpal-notch-shell.expanded {
+  width: 440px;
+  padding: 16px 20px 20px 20px;
+  cursor: default;
+}
+
+.printpal-notch-exp-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.printpal-notch-exp-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.printpal-notch-exp-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.printpal-notch-exp-close {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.printpal-notch-exp-close:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.printpal-notch-exp-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.printpal-notch-metric-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+.printpal-notch-metric-label {
+  font-size: 10px;
+  color: #94a3b8;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.printpal-notch-metric-val {
+  font-size: 11px;
+  font-weight: 600;
+  color: #f1f5f9;
+}
+
+.printpal-notch-actions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.printpal-notch-action-btn {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 11px;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.12s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.printpal-notch-action-btn:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.printpal-notch-prompt-box {
+  display: flex;
+  gap: 6px;
+}
+
+.printpal-notch-prompt-input {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  padding: 6px 10px;
+  color: #ffffff;
+  font-size: 12px;
+  outline: none;
+}
+
+.printpal-notch-prompt-btn {
+  background: var(--printpal-orange);
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* User Pill in Top Nav */
+.printpal-nav-right {
+  display: flex;
+  align-items: center;
+}
+
+.printpal-user-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 14px 4px 6px;
+  border: 1px solid var(--printpal-border);
+  border-radius: 100px;
+  background: var(--printpal-white);
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.12s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+
+.printpal-user-pill:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.printpal-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #E5A000;
+  color: #FFFFFF;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: -0.02em;
+}
+
+.printpal-user-name {
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--printpal-ink);
+}
+
+.printpal-user-chevron {
+  width: 14px;
+  height: 14px;
+  stroke: var(--printpal-ink);
+  stroke-width: 2;
+  transition: transform 0.15s ease;
+}
+
+/* ── Main Content Body (Desktop - 1 & 2) ── */
+.printpal-content-body {
+  width: 100%;
+  box-sizing: border-box;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ── Leads Header & Action Bar ── */
+.printpal-leads-header {
+  padding: 8px 32px 18px 32px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+.printpal-leads-title-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.printpal-leads-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--printpal-ink);
+  margin: 0;
+  letter-spacing: -0.024em;
+}
+
+.printpal-leads-subtitle {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--printpal-muted);
+  line-height: 1.45;
+}
+
+.printpal-leads-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Segmented Toggle [ Customer | Enquiry ] */
+.printpal-segmented-toggle {
+  display: flex;
+  background: var(--printpal-white);
+  border: 1px solid var(--printpal-border);
+  border-radius: 6px;
+  overflow: hidden;
+  height: 36px;
+  box-sizing: border-box;
+}
+
+.printpal-segment-btn {
+  border: none;
+  background: transparent;
+  padding: 0 16px;
+  font-size: 13px;
+  font-weight: 450;
+  color: var(--printpal-ink);
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.printpal-segment-btn:active {
+  transform: scale(0.975);
+}
+
+.printpal-segment-btn.active {
+  background: var(--printpal-blue);
+  color: #FFFFFF;
+  font-weight: 500;
+}
+
+/* Primary Action Button: "Add new Customer" / "Add new Enquiry" / "Add new Supplier" (Orange #D7440E) */
+.printpal-btn-primary {
+  height: 36px;
+  background: var(--printpal-orange);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 6px;
+  padding: 0 20px;
+  width: 164px;
+  min-width: 164px;
+  font-size: 13px;
+  font-weight: 500 !important;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+  box-shadow: 0 1px 2px rgba(215, 68, 14, 0.2);
+}
+
+.printpal-btn-primary:hover {
+  background: var(--printpal-orange-hover);
+  box-shadow: 0 2px 6px rgba(215, 68, 14, 0.3);
+}
+
+.printpal-btn-primary:active {
+  transform: scale(0.975);
+}
+
+/* ── Customer Table Area (Desktop - 1, 2) ── */
+.printpal-table-card {
+  contain: content;
+  margin: 0 32px 32px 32px;
+  background: var(--printpal-white);
+  border: 1px solid var(--printpal-border);
+  border-radius: 12px;
+  padding: 8px;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  box-shadow: none;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* Table Header Row */
+.printpal-table-header {
+  background: var(--printpal-surface);
+  border-radius: 8px;
+  height: 36px;
+  padding: 0 16px;
+  display: grid;
+  grid-template-columns: 350px 1.6fr 2fr 3fr minmax(100px, 1.2fr);
+  align-items: center;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--printpal-muted);
+  box-sizing: border-box;
+}
+
+.printpal-table-header > div:last-child {
+  text-align: right;
+}
+
+/* First Column of Table: Exactly 350px for Leads/Supplier Header and Data Rows */
+.printpal-table-header:not(.printpal-product-grid) > div:first-child,
+.printpal-table-row:not(.printpal-product-grid) > div:first-child,
+.printpal-table-row:not(.printpal-product-grid) > .printpal-cell-name:first-child {
+  width: 350px;
+  min-width: 350px;
+  max-width: 350px;
+  box-sizing: border-box;
+}
+
+.printpal-table-header.printpal-product-grid,
+.printpal-table-row.printpal-product-grid,
+.printpal-product-header,
+.printpal-product-row,
+.printpal-product-grid {
+  display: grid !important;
+  grid-template-columns: minmax(140px, 1.6fr) minmax(160px, 2.2fr) 110px 110px 70px !important;
+  align-items: center;
+}
+
+/* Reset for product grid so product table cells never inherit 350px or conflicting widths */
+.printpal-table-header.printpal-product-grid > div,
+.printpal-table-row.printpal-product-grid > div,
+.printpal-product-grid > div {
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
+}
+
+.printpal-table-header.printpal-product-grid > div:first-child,
+.printpal-table-row.printpal-product-grid > div:first-child,
+.printpal-table-row.printpal-product-grid > .printpal-cell-name:first-child,
+.printpal-product-grid > div:first-child {
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
+}
+
+.printpal-product-row {
+  min-height: 52px;
+  max-height: 64px;
+}
+
+.printpal-simple-header,
+.printpal-simple-row {
+  grid-template-columns: minmax(0, 1fr) 100px;
+  align-items: center;
+}
+
+.printpal-simple-row {
+  min-height: 48px;
+  max-height: 56px;
+}
+
+/* Table Body Row */
+.printpal-table-row {
+  padding: 8px 16px;
+  min-height: 52px;
+  display: grid;
+  grid-template-columns: 350px 1.6fr 2fr 3fr minmax(100px, 1.2fr);
+  align-items: center;
+  border-bottom: 1px solid var(--printpal-border);
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--printpal-ink);
+  transition: background 0.1s ease;
+  box-sizing: border-box;
+}
+
+.printpal-table-row:hover {
+  background: #fbfcfd;
+}
+
+/* Supplier Specific Header & Row: Exactly matches 350px first column and respective data columns */
+.printpal-table-header.printpal-supplier-grid,
+.printpal-table-row.printpal-supplier-grid,
+.printpal-supplier-grid {
+  display: grid !important;
+  grid-template-columns: 350px minmax(160px, 1.8fr) minmax(180px, 2fr) minmax(180px, 2.4fr) 90px !important;
+  align-items: center;
+}
+
+/* Billing Reports Grid: Same card, 36px floating pill header, and 52px row rhythm as Leads */
+.printpal-table-header.printpal-billing-reports-grid,
+.printpal-table-row.printpal-billing-reports-grid {
+  display: grid !important;
+  grid-template-columns: minmax(130px, 1.2fr) minmax(180px, 1.8fr) minmax(160px, 1.5fr) 100px 140px 120px 120px !important;
+  align-items: center;
+}
+
+.printpal-table-header.printpal-billing-reports-grid > div:first-child,
+.printpal-table-row.printpal-billing-reports-grid > div:first-child {
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
+}
+
+.printpal-cell-name {
+  font-size: 14px;
+  color: var(--printpal-ink);
+}
+
+.printpal-cell-number {
+  font-size: 14px;
+  color: var(--printpal-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.printpal-cell-email {
+  font-size: 14px;
+  color: var(--printpal-ink);
+}
+
+.printpal-cell-address {
+  font-size: 14px;
+  color: var(--printpal-ink);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.printpal-multi-sites-wrapper {
+  font-size: 14px;
+  color: var(--printpal-ink);
+}
+
+.printpal-multi-sites-link {
+  font-size: 14px;
+  color: var(--printpal-blue);
+  font-weight: 400;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.printpal-multi-sites-link:hover {
+  text-decoration: underline;
+}
+
+.printpal-cell-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.printpal-btn-edit-icon {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--printpal-border);
+  background: #F9FAFB;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--printpal-blue);
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.12s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.printpal-btn-edit-icon:hover {
+  background: #f0f7ff;
+  border-color: #93c5fd;
+  color: #1d4ed8;
+}
+
+.printpal-btn-edit-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.printpal-btn-delete-icon {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--printpal-border);
+  background: #F9FAFB;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #E03131;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.12s cubic-bezier(0.16, 1, 0.3, 1);
+  margin-left: 6px;
+}
+
+.printpal-btn-delete-icon:hover {
+  background: #FFF5F5;
+  border-color: #FFA8A8;
+  color: #C92A2A;
+}
+
+.printpal-btn-delete-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Compact Delete Confirmation Modal */
+.printpal-confirm-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: printpalFadeIn 0.18s ease-out;
+}
+
+.printpal-confirm-card {
+  width: 100%;
+  max-width: 420px;
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 14px;
+  box-shadow: 0 20px 40px -8px rgba(15, 23, 42, 0.18), 0 0 0 1px rgba(0, 0, 0, 0.04);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  animation: printpalScaleUp 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
+  transform: translate3d(0, 0, 0);
+}
+
+@keyframes printpalScaleUp {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.printpal-confirm-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.printpal-confirm-icon-box {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: #FEE2E2;
+  border: 1px solid #FECACA;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #DC2626;
+}
+
+.printpal-confirm-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #0F172A;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.printpal-confirm-desc {
+  font-size: 13px;
+  color: #64748B;
+  margin-top: 5px;
+  line-height: 1.5;
+}
+
+.printpal-confirm-name-badge {
+  display: inline-block;
+  background: #F1F5F9;
+  border: 1px solid #E2E8F0;
+  color: #1E293B;
+  font-weight: 600;
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-top: 6px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.printpal-confirm-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.printpal-btn-confirm-delete {
+  background: #DC2626 !important;
+  color: #FFFFFF !important;
+  border: 1px solid #B91C1C !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  height: 36px !important;
+  padding: 0 16px !important;
+  border-radius: 7px !important;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.12s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+
+.printpal-btn-confirm-delete:hover {
+  background: #B91C1C !important;
+  border-color: #991B1B !important;
+}
+
+/* Empty State inside Table (Desktop - 1) */
+.printpal-table-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  min-height: 320px;
+  color: var(--printpal-muted);
+  font-size: 16px;
+  text-align: center;
+  user-select: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ── 5. NEW CUSTOMER MODAL (Compact Sleek Apple Design) ──
+   ═══════════════════════════════════════════════════════════════════ */
+.printpal-modal-overlay {
+  position: fixed;
+  inset: 0;
+  top: 70px; /* Exactly 20px spacing below the user credential component (bottom at 50px) */
+  background: transparent;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  visibility: hidden;
+  pointer-events: none;
+  transition: visibility 0.38s ease;
+}
+
+.printpal-modal-overlay.open {
+  visibility: visible;
+  pointer-events: auto;
+  transition: none;
+}
+
+.printpal-modal-sheet {
+  width: 100%;
+  height: 100%;
+  background: var(--printpal-surface);
+  display: flex;
+  flex-direction: column;
+  border-radius: 14px 14px 0 0;
+  border-top: 1px solid var(--printpal-border);
+  transform: translate3d(0, 100%, 0);
+  will-change: transform;
+  backface-visibility: hidden;
+  transition: transform 0.38s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+  box-shadow: 0 -8px 24px -4px rgba(0, 0, 0, 0.08), 0 -2px 6px -1px rgba(0, 0, 0, 0.04);
+}
+
+.printpal-modal-overlay.open .printpal-modal-sheet {
+  transform: translate3d(0, 0, 0);
+}
+
+/* Modal Top Header Bar */
+.printpal-modal-header-bar {
+  height: 56px; /* Sleek Apple modal header */
+  background: var(--printpal-white);
+  border-bottom: 1px solid var(--printpal-border);
+  border-radius: 14px 14px 0 0;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.printpal-modal-title-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--printpal-ink);
+  margin: 0;
+  letter-spacing: -0.015em;
+}
+
+.printpal-modal-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.printpal-btn-cancel {
+  height: 36px;
+  background: var(--printpal-white);
+  border: 1px solid var(--printpal-border);
+  border-radius: 6px;
+  padding: 0 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--printpal-ink);
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.printpal-btn-cancel:hover {
+  background: var(--printpal-surface);
+  border-color: #cbd5e1;
+}
+
+.printpal-btn-cancel:active {
+  transform: scale(0.975);
+}
+
+.printpal-btn-save {
+  height: 36px;
+  background: var(--printpal-orange);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 6px;
+  padding: 0 20px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+  box-shadow: 0 1px 2px rgba(215, 68, 14, 0.2);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.printpal-btn-save:hover {
+  background: var(--printpal-orange-hover);
+}
+
+.printpal-btn-save:active {
+  transform: scale(0.975);
+}
+
+/* Modal Body: Fixed Frame with Independent Scrolling Containers */
+.printpal-modal-scroll-content {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 24px 20px 24px;
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+.printpal-modal-scroll-content::-webkit-scrollbar {
+  width: 6px;
+}
+.printpal-modal-scroll-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+.printpal-modal-scroll-content::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 6px;
+}
+.printpal-modal-scroll-content::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Customer & Enquiry Form Grid Wrapper: Preserves 100% height flex chain */
+.printpal-new-cust-grid-wrapper {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Two Column Layout: Center-aligned to drawer with snug scrollbar */
+.printpal-new-cust-grid {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  align-items: stretch;
+  max-width: 1096px;
+  margin: 0 auto;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  box-sizing: border-box;
+}
+
+/* Left Card: Basic Details (Fixated in place) */
+.printpal-card-basic-details {
+  width: 300px;
+  flex: 0 0 300px;
+  background: var(--printpal-white);
+  border: 1px solid var(--printpal-border);
+  border-radius: 12px;
+  padding: 18px 20px;
+  box-shadow: none;
+  box-sizing: border-box;
+  max-height: 100%;
+  overflow-y: auto;
+}
+
+.printpal-card-basic-details,
+.printpal-tabs-card,
+.printpal-site-card,
+.printpal-billing-card,
+.printpal-service-block-card,
+.printpal-table-card,
+.printpal-form-input,
+.printpal-site-search-input,
+.printpal-form-select,
+.printpal-form-textarea {
+  box-shadow: none !important;
+}
+
+.printpal-card-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--printpal-ink);
+  margin-bottom: 16px;
+  letter-spacing: -0.01em;
+}
+
+.printpal-form-group {
+  margin-bottom: 16px;
+}
+
+.printpal-form-group:last-child {
+  margin-bottom: 0;
+}
+
+.printpal-form-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--printpal-muted);
+  margin-bottom: 6px;
+  letter-spacing: -0.006em;
+}
+
+.printpal-form-input {
+  width: 100%;
+  height: 36px;
+  border: 1px solid var(--printpal-border) !important;
+  border-radius: 6px;
+  padding: 0 12px;
+  font-size: 13px;
+  color: var(--printpal-ink);
+  background: var(--printpal-white);
+  box-sizing: border-box;
+  outline: none !important;
+  box-shadow: none !important;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.12s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.printpal-form-input:hover,
+.printpal-site-search-input:hover,
+.printpal-form-textarea:hover,
+.printpal-datepicker-btn:hover {
+  border-color: #b5bfc7 !important;
+}
+
+.printpal-form-input:active,
+.printpal-site-search-input:active,
+.printpal-form-textarea:active,
+.printpal-datepicker-btn:active {
+  border-color: var(--printpal-blue) !important;
+}
+
+.printpal-datepicker-btn {
+  width: 100% !important;
+  height: 36px !important;
+  border: 1px solid var(--printpal-border) !important;
+  border-radius: 6px !important;
+  padding: 0 12px !important;
+  font-size: 13px !important;
+  color: var(--printpal-ink) !important;
+  background: var(--printpal-white) !important;
+  box-sizing: border-box !important;
+  outline: none !important;
+  box-shadow: none !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  cursor: pointer !important;
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.12s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  text-align: left !important;
+}
+
+.printpal-form-input:focus,
+.printpal-form-input:focus-visible,
+.printpal-site-search-input:focus,
+.printpal-site-search-input:focus-visible,
+.printpal-form-textarea:focus,
+.printpal-form-textarea:focus-visible,
+.printpal-datepicker-btn:focus,
+.printpal-datepicker-btn:focus-visible,
+.printpal-datepicker-btn[data-state="open"] {
+  border-color: var(--printpal-blue) !important;
+  outline: 2px solid rgba(40, 120, 208, 0.2) !important;
+  outline-offset: 1px !important;
+  box-shadow: none !important;
+}
+
+.printpal-checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  font-size: 13px;
+  color: var(--printpal-ink);
+  cursor: pointer;
+  user-select: none;
+  line-height: 1.4;
+  margin-top: 12px;
+  margin-bottom: 0;
+}
+
+.printpal-checkbox-label label,
+.printpal-checkbox-label span {
+  cursor: pointer;
+  user-select: none;
+  color: var(--printpal-ink);
+  font-size: 12.5px;
+  font-weight: 400;
+  line-height: 1.35;
+}
+
+/* Radix Checkbox component & Native input support */
+.printpal-checkbox-label button[role="checkbox"],
+button[role="checkbox"] {
+  width: 18px !important;
+  height: 18px !important;
+  min-width: 18px !important;
+  min-height: 18px !important;
+  border-radius: 4px !important;
+  border: 1.25px solid var(--printpal-border) !important;
+  background-color: #FFFFFF !important;
+  color: #FFFFFF !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  margin: 1.5px 0 0 0 !important;
+  cursor: pointer !important;
+  box-sizing: border-box !important;
+  outline: none !important;
+  box-shadow: none !important;
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.12s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.printpal-checkbox-label button[role="checkbox"]:hover,
+button[role="checkbox"]:hover {
+  border-color: var(--printpal-blue) !important;
+}
+
+.printpal-checkbox-label button[role="checkbox"][data-state="checked"],
+button[role="checkbox"][data-state="checked"] {
+  background-color: var(--printpal-blue) !important;
+  border-color: var(--printpal-blue) !important;
+  color: #FFFFFF !important;
+}
+
+.printpal-checkbox-label button[role="checkbox"] svg,
+button[role="checkbox"] svg {
+  width: 12px !important;
+  height: 12px !important;
+  stroke: #FFFFFF !important;
+  stroke-width: 2.25px !important;
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+  display: block !important;
+}
+
+.printpal-checkbox-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  margin-top: 1.5px;
+  cursor: pointer;
+  accent-color: var(--printpal-blue);
+  border-radius: 4px;
+}
+
+/* Smooth Entrance for Conditional WhatsApp Field */
+@keyframes printpalFieldSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.printpal-whatsapp-field-enter {
+  animation: printpalFieldSlideDown 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Right Column: Multi-Card Container (Exact 780px so scrollbar is snug to form cards) */
+.printpal-right-column {
+  width: 780px;
+  max-width: 780px;
+  flex: 0 0 780px;
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* 1. Standalone Tabs Card Component (Scrolls alongside site cards) */
+.printpal-tabs-card {
+  background: var(--printpal-white);
+  border: 1px solid var(--printpal-border);
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  max-width: 780px;       /* Identical width to site card */
+  width: 100%;
+}
+
+/* 2. Internally Scrollable Container for Site Cards */
+.printpal-sites-scroll-area {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-right: 6px;
+  padding-bottom: 24px;
+  box-sizing: border-box;
+}
+
+/* Sleek subtle scrollbars */
+.printpal-sites-scroll-area::-webkit-scrollbar,
+.printpal-card-basic-details::-webkit-scrollbar {
+  width: 6px;
+}
+
+.printpal-sites-scroll-area::-webkit-scrollbar-track,
+.printpal-card-basic-details::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.printpal-sites-scroll-area::-webkit-scrollbar-thumb,
+.printpal-card-basic-details::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 6px;
+}
+
+.printpal-sites-scroll-area::-webkit-scrollbar-thumb:hover,
+.printpal-card-basic-details::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Tabs Header Nav inside Tabs Card */
+.printpal-site-tabs-nav {
+  display: flex;
+  gap: 24px;
+  padding: 0;
+  border-bottom: 1px solid var(--printpal-border);
+  width: 100%;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.printpal-site-tab-btn {
+  background: transparent;
+  border: none;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--printpal-muted);
+  cursor: pointer;
+  padding: 0 0 10px 0;
+  position: relative;
+  transition: color 0.15s ease;
+  line-height: 1.2;
+}
+
+.printpal-site-tab-btn.active {
+  color: var(--printpal-ink);
+  font-weight: 600;
+}
+
+.printpal-site-tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: var(--printpal-orange);
+  border-radius: 2px;
+}
+
+/* 2. Standalone Sites Cards Wrapper & Cards */
+.printpal-sites-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Standalone Site Card */
+.printpal-site-card {
+  background: var(--printpal-white);
+  border: 1px solid var(--printpal-border);
+  border-radius: 12px;
+  padding: 8px;
+  box-sizing: border-box;
+  max-width: 780px;       /* Constrain card so internal elements don't stretch ugly */
+  width: 100%;
+}
+
+/* Site Header Bar: Inset grey card component inside white card (Desktop - 4) */
+.printpal-site-card-header {
+  background: var(--printpal-surface);
+  border-radius: 8px;
+  height: 40px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: none;
+  margin-bottom: 0;
+  cursor: pointer;
+  user-select: none;
+  box-sizing: border-box;
+  transition: background-color 0.15s ease;
+}
+
+.printpal-site-card-header:hover {
+  background: #edf0f3;
+}
+
+.printpal-site-card-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--printpal-ink);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.printpal-site-card-tools {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--printpal-muted);
+}
+
+.printpal-icon-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--printpal-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px;
+  border-radius: 4px;
+  visibility: visible !important;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.12s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.printpal-icon-btn:hover {
+  color: var(--printpal-ink);
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.printpal-icon-btn.delete:hover {
+  color: #dc2626;
+  background: #fee2e2;
+}
+
+.printpal-site-card-body {
+  padding: 0;
+}
+
+.printpal-site-card-divider {
+  border-top: 1px solid var(--printpal-border);
+  margin: 18px 0 14px 0;
+}
+
+/* 3. Standalone Billing Card */
+.printpal-billing-card {
+  background: var(--printpal-white);
+  border: 1px solid var(--printpal-border);
+  border-radius: 12px;
+  padding: 20px;
+  box-sizing: border-box;
+  max-width: 780px;       /* Identical width to site card */
+  width: 100%;
+}
+
+/* Google Maps Search Row with Live View Button */
+.printpal-search-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  margin-bottom: 6px;
+}
+
+.printpal-search-row .printpal-site-search-wrapper {
+  margin-bottom: 0 !important;
+  flex: 1;
+  position: relative;
+}
+
+/* 36px Live View Button Component (UI Library Outline Secondary variant) */
+.printpal-btn-live-view {
+  height: 36px !important;
+  flex-shrink: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.12s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.printpal-btn-live-view:hover {
+  transform: translateY(-0.5px);
+}
+
+.printpal-btn-live-view:active {
+  transform: scale(0.97);
+}
+
+/* Google Maps Autocomplete Dropdown */
+.printpal-maps-autocomplete-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: #FFFFFF;
+  border: 1px solid var(--printpal-border);
+  border-radius: 8px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.08);
+  z-index: 1000;
+  overflow: hidden;
+  max-height: 280px;
+  display: flex;
+  flex-direction: column;
+}
+
+.printpal-maps-dropdown-header {
+  padding: 7px 12px;
+  background: var(--printpal-surface);
+  border-bottom: 1px solid var(--printpal-border);
+}
+
+.printpal-maps-dropdown-list {
+  overflow-y: auto;
+  max-height: 240px;
+}
+
+.printpal-maps-dropdown-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 9px 12px;
+  border-bottom: 1px solid #f1f5f9;
+  cursor: pointer;
+  transition: background-color 0.12s ease;
+}
+
+.printpal-maps-dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.printpal-maps-dropdown-item:hover {
+  background-color: #f8fafc;
+}
+
+.printpal-maps-item-icon {
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.printpal-maps-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.printpal-maps-item-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--printpal-ink);
+  line-height: 1.25;
+}
+
+.printpal-maps-item-address {
+  font-size: 11.5px;
+  color: var(--printpal-muted);
+  line-height: 1.35;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Site Location Search Bar */
+.printpal-site-search-wrapper {
+  position: relative;
+  margin-bottom: 6px;
+}
+
+.printpal-search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 14px;
+  stroke: var(--printpal-muted);
+  pointer-events: none;
+}
+
+.printpal-site-search-input {
+  width: 100%;
+  height: 36px;
+  border: 1px solid var(--printpal-border);
+  border-radius: 6px;
+  padding: 0 12px 0 34px;
+  font-size: 13px;
+  color: var(--printpal-ink);
+  background: var(--printpal-white);
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.printpal-site-search-input:focus {
+  border-color: var(--printpal-blue);
+  box-shadow: none;
+  outline: none;
+}
+
+.printpal-manual-address-link {
+  color: var(--printpal-blue);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-bottom: 16px;
+  display: inline-block;
+  user-select: none;
+}
+
+.printpal-manual-address-link:hover {
+  text-decoration: underline;
+}
+
+/* Grid Layouts for Address Inputs */
+.printpal-form-row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.printpal-form-row-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.printpal-form-row-half {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+/* Extra padding on left & right for site inputs */
+.printpal-site-info-fields {
+  padding: 16px 16px 0 16px;  /* Unified 16px L/R — matches services section */
+  box-sizing: border-box;
+}
+
+.printpal-form-divider {
+  border-top: 1px solid var(--printpal-border);
+  margin: 20px 0;
+}
+
+/* Services on this site Section: Unified 16px padding to match site info fields */
+.printpal-services-section {
+  display: flex;
+  flex-direction: column;
+  padding: 0 16px 16px 16px;  /* Reduced from 32px — proportional to 780px card width */
+  box-sizing: border-box;
+}
+
+.printpal-services-section-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--printpal-ink);
+  margin-bottom: 14px;
+  letter-spacing: -0.01em;
+}
+
+.printpal-services-list-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.printpal-service-block-card {
+  background: var(--printpal-surface);
+  border: 1px solid var(--printpal-border);
+  border-radius: 10px;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.printpal-anchor-target {
+  scroll-margin-top: 16px;
+  scroll-margin-bottom: 16px;
+}
+
+.printpal-anchor-highlight {
+  outline: 2px solid #2878D0;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(40, 120, 208, 0.14);
+  transition: outline-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.printpal-service-block-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.printpal-service-block-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--printpal-ink);
+}
+
+.printpal-service-del-btn {
+  background: transparent;
+  border: none;
+  color: var(--printpal-muted);
+  cursor: pointer;
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.printpal-service-del-btn:hover {
+  color: #dc2626;
+  background: #fee2e2;
+}
+
+/* Custom Select Wrapper */
+.printpal-select-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.printpal-form-select {
+  width: 100%;
+  height: 36px;
+  border: 1px solid var(--printpal-border);
+  border-radius: 6px;
+  padding: 0 32px 0 12px;
+  font-size: 13px;
+  color: var(--printpal-ink);
+  background: var(--printpal-white) !important;
+  appearance: none;
+  -webkit-appearance: none;
+  outline: none;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease;
+}
+
+.printpal-form-select:focus {
+  border-color: var(--printpal-blue);
+  box-shadow: none;
+  outline: none;
+}
+
+.printpal-select-chevron {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 14px;
+  pointer-events: none;
+  stroke: var(--printpal-ink);
+}
+
+/* Application: 3 Pill Buttons */
+.printpal-pill-buttons-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.printpal-pill-btn {
+  height: 32px;
+  padding: 0 20px;
+  border-radius: 100px;
+  background: var(--printpal-white);
+  border: 1px solid var(--printpal-border);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--printpal-ink);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.12s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+
+.printpal-pill-btn:hover {
+  border-color: #b5bfc7;
+  background: var(--printpal-surface);
+}
+
+.printpal-pill-btn:active {
+  transform: scale(0.97);
+}
+
+.printpal-pill-btn.active {
+  background: #eff6ff;
+  border-color: var(--printpal-blue);
+  color: var(--printpal-blue);
+  font-weight: 600;
+  box-shadow: 0 0 0 1px rgba(40, 120, 208, 0.25);
+}
+
+.printpal-pill-btn:focus-visible {
+  outline: 2px solid var(--printpal-blue);
+  outline-offset: 1px;
+}
+
+/* Dimensions & Quantity Row */
+.printpal-dim-qty-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.printpal-dim-input-wrapper {
+  width: 110px;  /* Proportional to narrower 780px card — was 130px */
+}
+
+.printpal-dim-input-wrapper input {
+  width: 100%;
+  height: 36px;
+  text-align: center;
+  background: var(--printpal-white) !important;
+  border: 1px solid var(--printpal-border);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--printpal-ink);
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease;
+}
+
+.printpal-dim-input-wrapper input:focus {
+  border-color: var(--printpal-blue);
+  box-shadow: none;
+}
+
+.printpal-dim-separator {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--printpal-muted);
+}
+
+.printpal-unit-select-wrapper {
+  position: relative;
+  width: 80px;
+}
+
+.printpal-unit-select-wrapper select {
+  width: 100%;
+  height: 36px;
+  padding: 0 24px 0 12px;
+  background: var(--printpal-white) !important;
+  border: 1px solid var(--printpal-border);
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.printpal-qty-box {
+  display: flex;
+  align-items: center;
+  height: 36px;
+  background: var(--printpal-white);
+  border: 1px solid var(--printpal-border);
+  border-radius: 6px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.printpal-qty-input {
+  width: 54px;
+  height: 100%;
+  border: none !important;
+  padding: 0;
+  font-size: 13px;
+  color: var(--printpal-ink);
+  outline: none;
+  text-align: center;
+  background: var(--printpal-white) !important;
+}
+
+.printpal-qty-label {
+  padding: 0 12px;
+  font-size: 12px;
+  color: var(--printpal-muted);
+  border-left: 1px solid var(--printpal-border);
+  background: var(--printpal-surface);
+  line-height: 36px;
+  height: 100%;
+  user-select: none;
+}
+
+/* Reference Files Upload Dropzone */
+.printpal-upload-dropzone {
+  min-height: 84px;
+  border: 1px dashed var(--printpal-border);
+  border-radius: 8px;
+  background: var(--printpal-white);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 20px;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.12s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.printpal-upload-dropzone:hover,
+.printpal-upload-dropzone.drag-over {
+  border-color: var(--printpal-blue);
+  border-style: solid;
+  background: #f8fafc;
+}
+
+.printpal-upload-dropzone:active {
+  background: #eff6ff;
+}
+
+.printpal-dropzone-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.printpal-cloud-icon {
+  width: 22px;
+  height: 22px;
+  stroke: var(--printpal-muted);
+}
+
+.printpal-dropzone-text {
+  font-size: 12px;
+  color: var(--printpal-muted);
+}
+
+.printpal-browse-link {
+  color: var(--printpal-blue);
+  font-weight: 500;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.printpal-uploaded-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.printpal-file-chip {
+  background: var(--printpal-surface);
+  border: 1px solid var(--printpal-border);
+  border-radius: 4px;
+  padding: 3px 8px;
+  font-size: 11px;
+  color: var(--printpal-ink);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.chip-del-btn {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  font-size: 11px;
+}
+
+.chip-del-btn:hover {
+  color: #ef4444;
+}
+
+/* Notes Textarea */
+.printpal-form-textarea {
+  width: 100%;
+  height: 64px;
+  border: 1px solid var(--printpal-border);
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 13px;
+  color: var(--printpal-ink);
+  background: var(--printpal-white) !important;
+  box-sizing: border-box;
+  outline: none;
+  resize: vertical;
+  font-family: inherit;
+  transition: border-color 0.15s ease;
+}
+
+.printpal-form-textarea:focus {
+  border-color: var(--printpal-blue);
+  box-shadow: none;
+  outline: none;
+}
+
+/* + Add another services link */
+.printpal-btn-add-another-service {
+  color: var(--printpal-blue);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  padding: 0;
+  align-self: flex-start;
+  margin-top: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: opacity 0.15s ease;
+}
+
+.printpal-btn-add-another-service:hover {
+  text-decoration: underline;
+  opacity: 0.85;
+}
+
+/* + Add Another Site Button */
+.printpal-btn-add-another-site {
+  height: 38px;
+  box-sizing: border-box;
+  background: transparent;
+  border: 1px dashed var(--printpal-blue);
+  border-radius: 6px;
+  padding: 0 18px;
+  color: var(--printpal-blue);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 14px;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.12s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+
+.printpal-btn-add-another-site:hover {
+  background: #f0f7ff;
+  border-style: solid;
+}
+
+.printpal-btn-add-another-site:active {
+  transform: scale(0.975);
+}
+
+/* ── Interactive Multi-Site Modal (Desktop - 2) ── */
+.printpal-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.printpal-modal-card {
+  background: #FFFFFF;
+  border-radius: 16px;
+  width: 680px;
+  max-width: 95vw;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--printpal-border);
+  overflow: hidden;
+  animation: printpal-modal-in 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes printpal-modal-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.printpal-modal-head {
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--printpal-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.printpal-modal-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--printpal-ink);
+  margin: 0;
+}
+
+.printpal-modal-close-btn {
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  color: var(--printpal-muted);
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.printpal-modal-close-btn:hover {
+  background: var(--printpal-surface);
+  color: var(--printpal-ink);
+}
+
+.printpal-modal-body {
+  padding: 24px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.printpal-site-list-item {
+  border: 1px solid var(--printpal-border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  background: var(--printpal-surface);
+}
+
+.printpal-site-list-item-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--printpal-ink);
+  margin-bottom: 4px;
+}
+
+.printpal-site-list-item-address {
+  font-size: 13px;
+  color: var(--printpal-muted);
+  margin-bottom: 8px;
+}
+
+.printpal-site-list-item-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.printpal-tag {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: #e2e8f0;
+  color: var(--printpal-ink);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ── WCAG 2.2 LEVEL AA & APPLE HIG MOTION SAFEGUARDS ──
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Focus Visible: 2px High Contrast Ring */
+.printpal-btn-primary:focus-visible,
+.printpal-btn-save:focus-visible,
+.printpal-btn-cancel:focus-visible,
+.printpal-segment-btn:focus-visible,
+.printpal-form-input:focus-visible,
+.printpal-form-textarea:focus-visible,
+.printpal-app-pill:focus-visible,
+.printpal-nav-link:focus-visible,
+.printpal-user-pill:focus-visible {
+  outline: 2px solid var(--printpal-blue);
+  outline-offset: 2px;
+}
+
+/* Reduced Motion Override (WCAG Criterion 2.3.3) */
+@media (prefers-reduced-motion: reduce) {
+  .printpal-modal-sheet {
+    transform: none !important;
+    transition: opacity 0.2s ease !important;
+  }
+
+  .printpal-modal-overlay {
+    transition: opacity 0.2s ease, visibility 0.2s ease !important;
+  }
+}
+
+/* ── Remove Numeric Steppers / Spin Buttons ── */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button,
+.no-spin-arrows::-webkit-outer-spin-button,
+.no-spin-arrows::-webkit-inner-spin-button {
+  -webkit-appearance: none !important;
+  margin: 0 !important;
+}
+
+input[type="number"],
+.no-spin-arrows {
+  -moz-appearance: textfield !important;
+  appearance: textfield !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ── APPLE DESIGN EMPTY STATE & VALIDATION REAL ESTATE ──
+   ═══════════════════════════════════════════════════════════════════ */
+
+.printpal-empty-state-canvas {
+  width: 100%;
+  padding: 48px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 360px;
+}
+
+.printpal-empty-state-card {
+  max-width: 440px;
+  width: 100%;
+  padding: 32px 32px 28px 32px;
+  background: rgba(255, 255, 255, 0.9);
+  /* Optimized: Solid elevated surface eliminates blur shader lag */
+  background: #FFFFFF;
+  border: 1px solid #DCE1E5;
+  border-radius: 14px;
+  box-shadow: 0 4px 20px -2px rgba(32, 36, 40, 0.04), 0 1px 3px rgba(32, 36, 40, 0.02);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+}
+
+.printpal-empty-state-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 32px -4px rgba(32, 36, 40, 0.08);
+}
+
+.printpal-empty-illustration-wrap {
+  width: 160px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.printpal-empty-vector {
+  display: block;
+  width: 160px;
+  height: 120px;
+  overflow: visible;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.03));
+}
+
+.printpal-empty-icon-capsule {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #F3F5F7;
+  border: 1px solid #E2E8F0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.9);
+}
+
+.printpal-empty-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1E2227;
+  margin: 0 0 6px 0;
+  letter-spacing: -0.01em;
+}
+
+.printpal-empty-description {
+  font-size: 13px;
+  line-height: 1.5;
+  color: #64748B;
+  margin: 0;
+  max-width: 380px;
+}
+
+.printpal-empty-action-btn {
+  height: 38px;
+  padding: 0 20px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(215, 68, 14, 0.22);
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.12s cubic-bezier(0.16, 1, 0.3, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.printpal-empty-action-btn:active {
+  transform: scale(0.97);
+}
+
+/* Validation Highlights */
+.printpal-input-error {
+  border-color: #EF4444 !important;
+  box-shadow: 0 0 0 1px #EF4444 !important;
+}
+
+.printpal-error-text {
+  font-size: 11px;
+  font-weight: 500;
+  color: #EF4444;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Supplier Category Badges & Drawer Styling */
+.printpal-tag-category {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  background: #F1F5F9;
+  border: 1px solid #E2E8F0;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #1E293B;
+  max-width: 280px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.printpal-supplier-drawer-wrap {
+  width: 100%;
+  max-width: 1096px;
+  margin: 0 auto;
+  height: 100%;
+  max-height: 100%;
+  overflow-y: auto;
+  box-sizing: border-box;
+  padding-bottom: 32px;
+}
+
+/* Radix UI Select Placeholder & Alignment Consistency */
+[data-radix-select-trigger][data-placeholder],
+[data-radix-select-trigger] [data-placeholder],
+button[data-placeholder],
+span[data-placeholder] {
+  color: #737B84 !important;
+}
+
+[data-radix-select-trigger] {
+  text-align: left !important;
+}
+
+[data-radix-select-trigger] > span {
+  text-align: left !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ── QUICK POP-UP MODAL (Add Material & Add Finish Dialog) ──
+   ═══════════════════════════════════════════════════════════════════ */
+.printpal-quick-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: printpalFadeIn 0.18s ease-out;
+}
+
+.printpal-quick-modal-card {
+  width: 100%;
+  max-width: 440px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--printpal-border);
+  padding: 24px;
+  animation: printpalScaleUp 0.18s ease-out;
+  box-sizing: border-box;
+}
+
+.printpal-quick-modal-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #0F172A;
+  margin-bottom: 6px;
+}
+
+.printpal-quick-modal-desc {
+  font-size: 13px;
+  color: #64748B;
+  margin-bottom: 18px;
+  line-height: 1.4;
+}
+
+.printpal-quick-modal-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ── CHIPS & MULTI-SELECT DROPDOWN SYSTEM ──
+   ═══════════════════════════════════════════════════════════════════ */
+.printpal-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #EFF6FF;
+  color: #1D4ED8;
+  border: 1px solid #BFDBFE;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.printpal-chip-finish {
+  background: #FAF5FF;
+  color: #7E22CE;
+  border-color: #E9D5FF;
+}
+
+.printpal-chip-remove {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  color: inherit;
+  opacity: 0.7;
+  transition: opacity 0.1s, background 0.1s;
+  background: transparent;
+  border: none;
+  padding: 0;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.printpal-chip-remove:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.08);
+}
+
+/* Radix Popover Dropdown Border Radius & Clean Corner Clipping */
+[data-radix-popper-content-wrapper] [role="dialog"],
+[data-radix-popper-content-wrapper] > div {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Materials and Finishes Viewport Lock (No Page-Level Scroll) */
+.printpal-leads-container.materials-finishes-locked {
+  height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
+}
+
+.printpal-content-body.materials-finishes-locked {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Compact Table Internal Scrollbar */
+.printpal-compact-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.printpal-compact-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.printpal-compact-scroll::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 6px;
+}
+.printpal-compact-scroll::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Ensure Zero Entrance Animation or Flashing for Settings Page */
+.printpal-settings-page,
+.printpal-settings-page *,
+.printpal-settings-page section,
+.printpal-settings-page div,
+.printpal-settings-page h1,
+.printpal-settings-page h3,
+.printpal-settings-page p {
+  animation: none !important;
+}
+
+.printpal-settings-page .line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Settings Page Clean White Surface Styling */
+.printpal-settings-page .printpal-leads-header {
+  background: #FFFFFF !important;
+  border-top: none !important;
+  border-bottom: 1px solid #DCE1E5 !important;
+  padding-top: 14px;
+  padding-bottom: 14px;
+}
+
+.printpal-settings-sidebar {
+  background: #FFFFFF !important;
+  border-right: 1px solid #DCE1E5 !important;
+}
+
+.printpal-settings-workspace {
+  background: #F3F5F7 !important;
+}
+
+
+
+
