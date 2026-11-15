@@ -31,7 +31,9 @@ export function App() {
   const isSSOCallback =
     typeof window !== "undefined" &&
     (window.location.pathname.startsWith("/sso-callback") ||
-      window.location.hash.includes("sso-callback"));
+      window.location.hash.includes("sso-callback") ||
+      window.location.search.includes("__clerk_status") ||
+      window.location.search.includes("__clerk_created_session"));
 
   return (
     <ClerkProvider
