@@ -1,0 +1,186 @@
+/* Pal notch. Sizes, curves, colours and shadows match the product
+   (product/Palora/src/components/ui/pal-notch.tsx). */
+
+.pal-dock {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  transform: translate(-50%, 0);
+  transition: transform 0.5s var(--spring), opacity 0.3s ease;
+  pointer-events: none;
+}
+.pal-dock.is-hidden {
+  transform: translate(-50%, -48px);
+  opacity: 0;
+}
+
+.pal-island {
+  position: relative;
+  display: block;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  pointer-events: auto;
+  cursor: pointer;
+  transform-origin: top center;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.pal-island:focus-visible {
+  outline: none;
+}
+.pal-island:focus-visible .pal-surface {
+  box-shadow: 0 0 0 2px var(--pp-blue), 0 8px 24px rgba(0, 0, 0, 0.38);
+}
+
+.pal-island.is-idle {
+  width: 216px;
+  height: 34px;
+  transition: width 0.35s var(--spring), height 0.35s var(--spring);
+}
+.pal-island.is-greeting {
+  width: min(440px, calc(100vw - 28px));
+  height: 104px;
+  transition: width 0.38s var(--spring), height 0.38s var(--spring);
+}
+
+/* Concave ears: make the pill look like it hangs from the top edge */
+.pal-ear {
+  position: absolute;
+  top: 0;
+  width: 14px;
+  height: 14px;
+  pointer-events: none;
+  z-index: 3;
+}
+.pal-ear-l {
+  left: -14px;
+  background: radial-gradient(circle at 0 14px, transparent 13.5px, #000 14px);
+}
+.pal-ear-r {
+  right: -14px;
+  background: radial-gradient(circle at 14px 14px, transparent 13.5px, #000 14px);
+}
+
+.pal-surface {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #000;
+  color: #f5f6f8;
+  transition: border-radius 0.35s ease, box-shadow 0.3s ease, background 0.25s ease;
+}
+.pal-surface.is-idle {
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14px;
+  border-radius: 0 0 16px 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.38), 0 2px 6px rgba(0, 0, 0, 0.22),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.12);
+}
+.pal-surface.is-greeting {
+  border-radius: 0 0 22px 22px;
+  background: radial-gradient(120% 90% at 50% 120%, rgba(52, 211, 153, 0.4), transparent 70%), #000;
+  box-shadow: 0 16px 40px -6px rgba(0, 0, 0, 0.65), 0 4px 16px rgba(0, 0, 0, 0.35),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* Idle content */
+.pal-idle-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  animation: palContentIn 0.34s var(--spring) 0.06s both;
+}
+.pal-dot {
+  position: relative;
+  display: flex;
+  width: 8px;
+  height: 8px;
+  flex-shrink: 0;
+}
+.pal-dot-ping {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: #34d399;
+  opacity: 0.75;
+  animation: ping 1.6s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+.pal-dot-core {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 8px #22c55e;
+}
+.pal-name {
+  flex-shrink: 0;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #fff;
+}
+.pal-label {
+  overflow: hidden;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: #94a3b8;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.pal-lens {
+  width: 10px;
+  height: 10px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #111418;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Greeting content */
+.pal-greeting {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 104px;
+  overflow: hidden;
+}
+.pal-greeting-canvas {
+  width: 100%;
+  max-width: 440px;
+  height: 104px;
+}
+
+@keyframes palContentIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pal-dock,
+  .pal-island,
+  .pal-surface,
+  .pal-idle-left,
+  .pal-dot-ping {
+    animation: none;
+    transition: none;
+  }
+}

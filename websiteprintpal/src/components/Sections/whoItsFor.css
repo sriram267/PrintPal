@@ -1,0 +1,173 @@
+/* Off-white with a dotted pattern and the edge hairlines, for a change of texture in the light stretch */
+.wf {
+  padding: clamp(72px, 9vw, 128px) 0 clamp(64px, 8vw, 104px);
+}
+.sx.wf {
+  background-color: #fafafa;
+  background-image: linear-gradient(#e8eaed, #e8eaed), linear-gradient(#e8eaed, #e8eaed), radial-gradient(#dde0e4 1px, transparent 1.3px);
+  background-repeat: no-repeat, no-repeat, repeat;
+  background-size: 1px 100%, 1px 100%, 16px 16px;
+  background-position: 20px 0, calc(100% - 20px) 0, 0 0;
+}
+@media (max-width: 900px) {
+  .sx.wf {
+    background-image: radial-gradient(#dde0e4 1px, transparent 1.3px);
+    background-size: 16px 16px;
+    background-repeat: repeat;
+    background-position: 0 0;
+  }
+}
+
+/* one bordered block split by a hairline, like Attio's cell grids */
+.wf-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  margin-top: clamp(36px, 5vw, 60px);
+  background: #fff;
+  box-shadow: 0 0 0 1px #e1e4e8, 0 24px 48px -36px rgba(16, 18, 20, 0.2);
+}
+
+.wf-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #fff;
+}
+.wf-card + .wf-card {
+  border-left: 1px solid #e1e4e8;
+}
+.wf-art {
+  border-bottom: 1px solid #e1e4e8;
+}
+
+/* Art area: the same striped wash as the hero band, in each trade's colour */
+.wf-art {
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: 340px;
+  padding: 20px 24px 8px;
+  overflow: hidden;
+}
+.is-orange .wf-art {
+  background:
+    repeating-linear-gradient(90deg, rgba(215, 68, 14, 0.07) 0 1px, transparent 1px 7px),
+    linear-gradient(180deg, #fff8f3 0%, #ffe3d4 100%);
+}
+.is-blue .wf-art {
+  background:
+    repeating-linear-gradient(90deg, rgba(40, 120, 208, 0.07) 0 1px, transparent 1px 7px),
+    linear-gradient(180deg, #f6faff 0%, #dcebfb 100%);
+}
+.wf-art .machine {
+  width: min(100%, 330px);
+}
+.wf-art .machine svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.wf-body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 26px 28px 30px;
+}
+.wf-body h3 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  color: #1c1d1f;
+}
+.wf-lead {
+  margin: -4px 0 4px;
+  color: #6b7178;
+  font-size: 16px;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+}
+.wf-points {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.wf-points li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: #2b2f36;
+  font-size: 15px;
+  font-weight: 450;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+}
+.wf-points svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.is-orange .wf-points svg { color: #d7440e; }
+.is-blue .wf-points svg { color: #2878d0; }
+
+.wf-products {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+  padding-top: 18px;
+  border-top: 1px solid #eef0f2;
+}
+.wf-products span {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #f4f5f7;
+  color: #4b5258;
+  font-size: 12.5px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.wf-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 28px 0 0;
+  color: #737b84;
+  font-size: 14.5px;
+  letter-spacing: -0.01em;
+}
+.wf-note svg {
+  flex-shrink: 0;
+}
+
+@media (max-width: 900px) {
+  .wf-grid {
+    grid-template-columns: 1fr;
+  }
+  .wf-card + .wf-card {
+    border-left: 0;
+    border-top: 1px solid #e1e4e8;
+  }
+}
+@media (max-width: 640px) {
+  .wf-art {
+    height: 300px;
+  }
+  .wf-body {
+    padding: 22px 20px 24px;
+  }
+  .wf-body h3 {
+    font-size: 21px;
+  }
+  .wf-note {
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+}

@@ -632,8 +632,8 @@ const EnquiryRow = React.memo(function EnquiryRow({
   const stageLabel = isFollowUp
     ? "Needs Follow Up"
     : enq.stage === "NEW"
-    ? "New"
-    : enq.stage
+      ? "New"
+      : enq.stage
 
   return (
     <div className="printpal-table-row">
@@ -656,11 +656,11 @@ const EnquiryRow = React.memo(function EnquiryRow({
             marginRight: "8px",
             ...(isFollowUp
               ? {
-                  backgroundColor: "#FEF3C7",
-                  color: "#B45309",
-                  borderColor: "#FDE68A",
-                  fontWeight: 600,
-                }
+                backgroundColor: "#FEF3C7",
+                color: "#B45309",
+                borderColor: "#FDE68A",
+                fontWeight: 600,
+              }
               : {}),
           }}
         >
@@ -2011,27 +2011,27 @@ export function LeadsApp() {
           isExpanded: true,
           items: (s.serviceDetails && s.serviceDetails.length > 0)
             ? s.serviceDetails.map((srv: any, iIdx: number) => ({
-                id: srv.id || `item-${sIdx + 1}-${iIdx + 1}`,
-                productTitle: srv.signStyle || srv.productTitle || "Signage Service",
-                materialName: srv.material || "",
-                finishName: srv.finishing || "",
-                methodCode: (srv.unit === "m" ? "sq_m" : "sq_ft") as any,
-                methodName: srv.unit === "m" ? "Metre square" : "Square Feet",
-                method: srv.unit === "m" ? "Metre square" : "Square Feet",
-                rateLabel: srv.unit === "m" ? "per sq m" : "per sq ft",
-                size: `${srv.width || 8} × ${srv.height || 2}`,
-                width: srv.width || 8,
-                height: srv.height || 2,
-                qty: srv.quantity || 1,
-                quantity: srv.quantity || 1,
-                price: null,
-                rate: null,
-                discount: 0,
-                discountPct: 0,
-                billableQty: null,
-                total: null,
-                status: "incomplete" as const,
-              }))
+              id: srv.id || `item-${sIdx + 1}-${iIdx + 1}`,
+              productTitle: srv.signStyle || srv.productTitle || "Signage Service",
+              materialName: srv.material || "",
+              finishName: srv.finishing || "",
+              methodCode: (srv.unit === "m" ? "sq_m" : "sq_ft") as any,
+              methodName: srv.unit === "m" ? "Metre square" : "Square Feet",
+              method: srv.unit === "m" ? "Metre square" : "Square Feet",
+              rateLabel: srv.unit === "m" ? "per sq m" : "per sq ft",
+              size: `${srv.width || 8} × ${srv.height || 2}`,
+              width: srv.width || 8,
+              height: srv.height || 2,
+              qty: srv.quantity || 1,
+              quantity: srv.quantity || 1,
+              price: null,
+              rate: null,
+              discount: 0,
+              discountPct: 0,
+              billableQty: null,
+              total: null,
+              status: "incomplete" as const,
+            }))
             : [],
         }));
       }
@@ -2057,7 +2057,7 @@ export function LeadsApp() {
         badge: "QUOTATION REVISION",
         variant: "info",
         title: `Quotation Revision (${versionInfo.versionLabel}) Auto-Populated`,
-        description: `For ${q.customerName}, quotation revision (${versionInfo.versionLabel}) is auto-populated in the quotation screen. A newer version of this quotation is being created for renegotiation.`,
+        description: `For ${q.customerName}, quotation revision (${versionInfo.versionLabel}) is auto-populated in the billing screen. A newer version of this quotation is being created for renegotiation.`,
         customerCard: {
           name: q.customerName,
           contactPerson: q.contactPerson,
@@ -2172,7 +2172,7 @@ export function LeadsApp() {
                   ...matchedProd,
                   materialIds: [...(matchedProd.materialIds || []), newMat.id],
                 }
-                leadsService.saveProduct(updatedProd).catch(() => {})
+                leadsService.saveProduct(updatedProd).catch(() => { })
                 setProducts((prev) => prev.map((p) => (p.id === updatedProd.id ? updatedProd : p)))
               }
             }
@@ -2249,7 +2249,7 @@ export function LeadsApp() {
                   ...matchedProd,
                   finishIds: [...(matchedProd.finishIds || []), newFin.id],
                 }
-                leadsService.saveProduct(updatedProd).catch(() => {})
+                leadsService.saveProduct(updatedProd).catch(() => { })
                 setProducts((prev) => prev.map((p) => (p.id === updatedProd.id ? updatedProd : p)))
               }
             }
@@ -3451,7 +3451,7 @@ export function LeadsApp() {
             type="button"
             className="relative w-9 h-9 flex items-center justify-center rounded-full text-[#737B84] hover:text-[#202428] hover:bg-[#F3F5F7] transition-colors cursor-pointer border-none bg-transparent mr-1"
             title="Notifications"
-            onClick={() => {}}
+            onClick={() => { }}
           >
             <Bell className="h-[18px] w-[18px]" strokeWidth={1.8} />
           </button>
@@ -5841,11 +5841,10 @@ export function LeadsApp() {
                   {/* ── Left Column Card: Basic Details (20px padding) ── */}
                   <div
                     id="drawer-basic-details-card"
-                    className={`printpal-card-basic-details printpal-anchor-target ${
-                      highlightedAnchorKey === "drawer-basic-details-card"
-                        ? "printpal-anchor-highlight"
-                        : ""
-                    }`}
+                    className={`printpal-card-basic-details printpal-anchor-target ${highlightedAnchorKey === "drawer-basic-details-card"
+                      ? "printpal-anchor-highlight"
+                      : ""
+                      }`}
                   >
                     <div className="printpal-card-title">Basic Details</div>
 
@@ -6102,11 +6101,10 @@ export function LeadsApp() {
                                 <div
                                   key={site.id}
                                   id={`drawer-site-${siteIdx}`}
-                                  className={`printpal-site-card printpal-anchor-target ${
-                                    highlightedAnchorKey === `drawer-site-${siteIdx}`
-                                      ? "printpal-anchor-highlight"
-                                      : ""
-                                  }`}
+                                  className={`printpal-site-card printpal-anchor-target ${highlightedAnchorKey === `drawer-site-${siteIdx}`
+                                    ? "printpal-anchor-highlight"
+                                    : ""
+                                    }`}
                                 >
                                   {/* Site Header Pill Bar (#F3F5F7, height 36px) */}
                                   <div
@@ -6541,12 +6539,11 @@ export function LeadsApp() {
                                               <div
                                                 key={srv.id}
                                                 id={`drawer-site-${siteIdx}-service-${srvIdx}`}
-                                                className={`printpal-service-block-card printpal-anchor-target ${
-                                                  highlightedAnchorKey ===
+                                                className={`printpal-service-block-card printpal-anchor-target ${highlightedAnchorKey ===
                                                   `drawer-site-${siteIdx}-service-${srvIdx}`
-                                                    ? "printpal-anchor-highlight"
-                                                    : ""
-                                                }`}
+                                                  ? "printpal-anchor-highlight"
+                                                  : ""
+                                                  }`}
                                               >
                                                 {/* Card Header: [#1] Service 1 + Trash button */}
                                                 <div className="printpal-service-block-header">
@@ -7032,12 +7029,11 @@ export function LeadsApp() {
                                         <button
                                           type="button"
                                           id={`drawer-site-${siteIdx}-add-service`}
-                                          className={`printpal-btn-add-another-service printpal-anchor-target rounded px-1.5 py-0.5 ${
-                                            highlightedAnchorKey ===
+                                          className={`printpal-btn-add-another-service printpal-anchor-target rounded px-1.5 py-0.5 ${highlightedAnchorKey ===
                                             `drawer-site-${siteIdx}-add-service`
-                                              ? "printpal-anchor-highlight"
-                                              : ""
-                                          }`}
+                                            ? "printpal-anchor-highlight"
+                                            : ""
+                                            }`}
                                           onClick={() => handleAddService(siteIdx)}
                                         >
                                           <Plus className="h-3.5 w-3.5" />
@@ -7058,11 +7054,10 @@ export function LeadsApp() {
                               id="drawer-add-site-btn"
                               variant="outlineSecondary"
                               size="default"
-                              className={`h-9 px-4 text-[13px] font-medium rounded-md shadow-sm cursor-pointer printpal-btn-add-site-outline printpal-anchor-target ${
-                                highlightedAnchorKey === "drawer-add-site-btn"
-                                  ? "printpal-anchor-highlight"
-                                  : ""
-                              }`}
+                              className={`h-9 px-4 text-[13px] font-medium rounded-md shadow-sm cursor-pointer printpal-btn-add-site-outline printpal-anchor-target ${highlightedAnchorKey === "drawer-add-site-btn"
+                                ? "printpal-anchor-highlight"
+                                : ""
+                                }`}
                               onClick={handleAddAnotherSite}
                             >
                               Add Another Site

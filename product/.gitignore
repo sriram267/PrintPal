@@ -1,0 +1,32 @@
+# Dependencies
+node_modules/
+*/node_modules/
+.pnpm-store/
+
+# Production build outputs
+dist/
+*/dist/
+build/
+*/build/
+
+# Local database storage (PGlite local WAL and database data)
+printpal/data/
+Palora/data/
+data/
+
+# Environment configurations and secrets
+.env
+.env.*
+!.env.example
+*.local
+
+# External heavy reference projects & specs
+req/
+
+# Logs & temp
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+.DS_Store
+Thumbs.db

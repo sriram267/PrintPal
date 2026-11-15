@@ -1,0 +1,120 @@
+.fq {
+  padding: clamp(72px, 9vw, 120px) 0;
+  background: #fff;
+  border-top: 1px solid #ebedf0;
+}
+.fq-grid {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.8fr) 1.6fr;
+  gap: clamp(32px, 6vw, 96px);
+  align-items: start;
+}
+
+.fq-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid #e6e8eb;
+}
+.fq-item {
+  border-bottom: 1px solid #e6e8eb;
+}
+.fq-item h3 {
+  margin: 0;
+}
+.fq-item button {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 22px 2px;
+  border: 0;
+  background: transparent;
+  color: #1c1d1f;
+  font-size: clamp(17px, 1.5vw, 20px);
+  font-weight: 550;
+  line-height: 1.3;
+  letter-spacing: -0.022em;
+  text-align: left;
+  cursor: pointer;
+}
+.fq-item button:hover span {
+  color: #000;
+}
+
+/* plus that turns into a minus */
+.fq-item i {
+  position: relative;
+  flex: 0 0 22px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #f1f3f5;
+  transition: background-color 0.2s ease;
+}
+.fq-item button:hover i {
+  background: #e7eaed;
+}
+.fq-item i::before,
+.fq-item i::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 10px;
+  height: 1.6px;
+  border-radius: 2px;
+  background: #3c4148;
+  transform: translate(-50%, -50%);
+  transition: transform 0.3s var(--ease-out);
+}
+.fq-item i::after {
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+.fq-item.is-open i::after {
+  transform: translate(-50%, -50%) rotate(0deg);
+}
+
+/* height animates between 0fr and 1fr */
+.fq-answer {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.35s var(--ease-out);
+}
+.fq-item.is-open .fq-answer {
+  grid-template-rows: 1fr;
+}
+.fq-answer > div {
+  overflow: hidden;
+}
+.fq-answer p {
+  max-width: 620px;
+  margin: 0;
+  padding: 0 40px 24px 2px;
+  color: #6b7178;
+  font-size: 16.5px;
+  line-height: 1.6;
+  letter-spacing: -0.01em;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.fq-item.is-open .fq-answer p {
+  opacity: 1;
+  transition-delay: 0.08s;
+}
+
+@media (max-width: 860px) {
+  .fq-grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fq-answer,
+  .fq-answer p,
+  .fq-item i::before,
+  .fq-item i::after {
+    transition: none;
+  }
+}

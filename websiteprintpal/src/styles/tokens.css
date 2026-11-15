@@ -1,0 +1,55 @@
+/* PrintPal design tokens, taken from the product (src/modules/leads/leads.css + tailwind.config.js).
+   Never hard-code a brand hex outside this file. */
+
+:root {
+  /* Brand (from the product) */
+  --pp-ink: #202428;
+  --pp-muted: #737b84;
+  --pp-border: #dce1e5;
+  --pp-surface: #f3f5f7;
+  --pp-orange: #d7440e;
+  --pp-orange-hover: #bf3b0b;
+  --pp-blue: #2878d0;
+  --pp-blue-hover: #1e66b4;
+  --pp-white: #ffffff;
+
+  /* Website neutrals (Attio-style hairlines, lighter than the app's border) */
+  --ink-2: #3c4148;
+  --ink-3: #5b6168;
+  --line: #eceef1;
+  --line-2: #e3e6ea;
+  --page: #ffffff;
+  --tint-orange: #fff4ee;
+  --tint-blue: #eef5fd;
+
+  /* Type */
+  --font: "Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* Radius */
+  --r-sm: 8px;
+  --r-md: 10px;
+  --r-lg: 14px;
+  --r-xl: 18px;
+
+  /* Shadows */
+  --shadow-btn: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 1px 2px rgba(16, 18, 20, 0.18),
+    0 0 0 1px rgba(16, 18, 20, 0.06);
+  --shadow-window: 0 0 0 1px rgba(16, 18, 20, 0.06), 0 2px 4px rgba(16, 18, 20, 0.04),
+    0 12px 32px -8px rgba(16, 18, 20, 0.1), 0 40px 80px -24px rgba(16, 18, 20, 0.14);
+
+  /* Layout */
+  --container: 1200px;
+  --gutter: 24px;
+  --nav-h: 68px;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --spring: cubic-bezier(0.32, 1.22, 0.42, 1);
+}
+
+@media (max-width: 640px) {
+  :root {
+    --gutter: 16px;
+    --nav-h: 60px;
+  }
+}

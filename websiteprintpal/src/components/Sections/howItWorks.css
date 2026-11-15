@@ -1,0 +1,243 @@
+/* Light section: numbered timeline with product cards on dotted panels */
+
+.tl {
+  padding: clamp(72px, 9vw, 128px) 0 clamp(72px, 9vw, 128px);
+  background: #fafafa;
+}
+
+.tl-list {
+  --p: 0;
+  position: relative;
+  margin: clamp(40px, 5vw, 72px) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* centre line: grey track, dark fill that follows the scroll */
+.tl-line {
+  position: absolute;
+  top: 24px;
+  bottom: 24px;
+  left: 50%;
+  width: 2px;
+  margin-left: -1px;
+  border-radius: 2px;
+  background: #e3e5e8;
+}
+.tl-line i {
+  position: absolute;
+  inset: 0 0 auto;
+  height: calc(var(--p) * 100%);
+  border-radius: 2px;
+  background: #1c1d1f;
+}
+
+.tl-step {
+  display: grid;
+  grid-template-columns: 1fr 64px 1fr;
+  align-items: center;
+  min-height: 340px;
+  padding: 28px 0;
+}
+.tl-text {
+  order: 1;
+  justify-self: start;
+  max-width: 440px;
+  padding-right: 24px;
+}
+.tl-card {
+  order: 3;
+  justify-self: end;
+  width: 100%;
+  max-width: 520px;
+}
+.tl-step.is-flip .tl-text {
+  order: 3;
+  justify-self: end;
+  padding: 0 0 0 24px;
+}
+.tl-step.is-flip .tl-card {
+  order: 1;
+  justify-self: start;
+}
+.tl-dot {
+  order: 2;
+  justify-self: center;
+  position: relative;
+  z-index: 1;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #fafafa;
+  box-shadow: inset 0 0 0 2px #cfd3d8;
+  transition: background-color 0.35s ease, box-shadow 0.35s ease, transform 0.35s var(--ease-out);
+}
+.tl-step.is-on .tl-dot {
+  background: #1c1d1f;
+  box-shadow: inset 0 0 0 2px #1c1d1f, 0 0 0 5px rgba(28, 29, 31, 0.08);
+  transform: scale(1.15);
+}
+
+.tl-text h3 {
+  margin: 0;
+  font-size: clamp(20px, 1.8vw, 24px);
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.026em;
+  color: #1c1d1f;
+}
+.tl-text h3 span {
+  color: #9aa1a8;
+  font-variant-numeric: tabular-nums;
+}
+.tl-text p {
+  margin: 12px 0 0;
+  color: #6b7178;
+  font-size: 16px;
+  line-height: 1.6;
+  letter-spacing: -0.01em;
+}
+.tl-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 18px;
+}
+.tl-tags span {
+  padding: 4px 10px;
+  border-radius: 7px;
+  background: #eceef0;
+  color: #5b6168;
+  font-size: 12.5px;
+  font-weight: 500;
+}
+
+/* the card: a soft dotted panel with the product UI floating in it */
+.tl-card {
+  display: grid;
+  place-items: center;
+  min-height: 280px;
+  padding: 36px 32px;
+  border-radius: 20px;
+  background-color: #fcfcfc;
+  background-image: radial-gradient(#d6dade 1px, transparent 1.3px);
+  background-size: 14px 14px;
+  box-shadow: 0 0 0 1px #e8eaed, 0 1px 2px rgba(16, 18, 20, 0.04), 0 24px 48px -32px rgba(16, 18, 20, 0.18);
+}
+.tl-card .mini {
+  max-width: 340px;
+}
+
+/* mini parts specific to the step visuals */
+.hiw-suggest {
+  margin-top: 6px;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 0 0 1px #e6e9ec, 0 6px 14px -8px rgba(16, 18, 20, 0.18);
+}
+.hiw-suggest > div {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 9px;
+  color: #3c4148;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.hiw-suggest > div + div {
+  border-top: 1px solid #f0f2f4;
+}
+.hiw-suggest svg {
+  flex-shrink: 0;
+  color: #737b84;
+}
+.hiw-suggest span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.hiw-chips {
+  display: flex;
+  gap: 6px;
+  margin-top: 9px;
+}
+.hiw-sum {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 0;
+  color: #737b84;
+}
+.hiw-sum b {
+  color: #202428;
+  font-variant-numeric: tabular-nums;
+}
+.hiw-grand {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-top: 6px;
+  padding-top: 9px;
+  border-top: 1px dashed #dce1e5;
+  font-weight: 700;
+}
+.hiw-grand b {
+  font-size: 15px;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.hiw-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+}
+.hiw-done {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #047857;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* tablet and phone: one column, the line on the left */
+@media (max-width: 900px) {
+  .tl-line {
+    left: 8px;
+    margin-left: 0;
+  }
+  .tl-step,
+  .tl-step.is-flip {
+    grid-template-columns: 16px 1fr;
+    column-gap: 20px;
+    align-items: start;
+    min-height: 0;
+    padding: 24px 0 32px;
+  }
+  .tl-dot {
+    grid-column: 1;
+    grid-row: 1;
+    order: 0;
+    margin-top: 6px;
+  }
+  .tl-text,
+  .tl-step.is-flip .tl-text {
+    grid-column: 2;
+    grid-row: 1;
+    order: 0;
+    justify-self: stretch;
+    max-width: none;
+    padding: 0;
+  }
+  .tl-card,
+  .tl-step.is-flip .tl-card {
+    grid-column: 2;
+    grid-row: 2;
+    order: 0;
+    justify-self: stretch;
+    max-width: none;
+    margin-top: 22px;
+    min-height: 0;
+    padding: 26px 18px;
+  }
+}

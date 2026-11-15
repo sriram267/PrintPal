@@ -1,0 +1,211 @@
+/* Shared styles for the sections under the hero (Attio-style: hairlines, quiet greys, one blue chip). */
+
+.sx {
+  position: relative;
+}
+
+/* Attio-style page frame: hairlines run down both edges of the light sections.
+   The tones differ slightly from section to section (off-white, white), so the long light stretch isn't flat. */
+.sx.tl,
+.sx.pr,
+.sx.fq {
+  background-image: linear-gradient(#e8eaed, #e8eaed), linear-gradient(#e8eaed, #e8eaed);
+  background-repeat: no-repeat;
+  background-size: 1px 100%, 1px 100%;
+  background-position: 20px 0, calc(100% - 20px) 0;
+}
+.sx.tl {
+  background-color: #fafafa;
+}
+.sx.pr,
+.sx.fq {
+  background-color: #fff;
+}
+@media (max-width: 900px) {
+  .sx.tl,
+  .sx.pr,
+  .sx.fq {
+    background-image: none;
+  }
+}
+.sx-inner {
+  width: 100%;
+  max-width: 1364px;
+  margin: 0 auto;
+  padding: 0 28px;
+}
+
+.sx-chip {
+  display: inline-flex;
+  align-items: center;
+  height: 26px;
+  padding: 0 9px;
+  border-radius: 7px;
+  background: #eaf3fc;
+  color: #2878d0;
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+.sx-h2 {
+  max-width: 800px;
+  margin: 18px 0 0;
+  font-size: clamp(30px, 3.3vw, 46px);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.038em;
+  color: #1c1d1f;
+}
+.sx-h2 span {
+  color: #7b8189;
+}
+
+/* mini product UI building blocks, used by the visuals in both sections */
+.mini {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 0 0 1px rgba(16, 18, 20, 0.07), 0 1px 2px rgba(16, 18, 20, 0.04), 0 10px 24px -12px rgba(16, 18, 20, 0.14);
+  font-size: 11.5px;
+  line-height: 1.35;
+  color: #202428;
+  letter-spacing: -0.003em;
+}
+.mini b {
+  font-weight: 600;
+}
+.mini small {
+  display: block;
+  color: #737b84;
+  font-size: 10.5px;
+}
+.mini-label {
+  margin-bottom: 7px;
+  color: #737b84;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.mini-field {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  height: 30px;
+  padding: 0 9px;
+  border: 1px solid #dce1e5;
+  border-radius: 6px;
+  background: #fff;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.mini-field svg {
+  flex-shrink: 0;
+  color: #737b84;
+}
+.mini-field.is-focus {
+  border-color: #2878d0;
+  box-shadow: 0 0 0 3px rgba(40, 120, 208, 0.1);
+}
+.mini-field .grow {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.mini-two {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 8px;
+}
+.mini-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.mini-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 4px;
+}
+.mini-row + .mini-row {
+  border-top: 1px solid #f0f2f4;
+}
+.mini-row > div {
+  min-width: 0;
+  flex: 1;
+}
+.mini-avatar {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #eef0f2;
+  color: #4b5258;
+  font-size: 10px;
+  font-weight: 600;
+}
+.pill {
+  flex-shrink: 0;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.pill-green { background: #dcf9ee; color: #047857; }
+.pill-amber { background: #fff1d6; color: #a15c07; }
+.pill-blue { background: #eaf3fc; color: #2878d0; }
+.pill-orange { background: #ffeadf; color: #c2410c; }
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px #e1e4e8;
+  background: #fff;
+  font-size: 10.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.chip-blue { color: #2878d0; }
+.mini-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 12px;
+  border-radius: 7px;
+  background: #1d1f22;
+  color: #fff;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+/* scroll reveal (see useReveal) */
+[data-reveal="pending"] .reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  filter: blur(4px);
+}
+[data-reveal="in"] .reveal {
+  opacity: 1;
+  transform: none;
+  filter: none;
+  transition: opacity 0.8s var(--ease-out) var(--d, 0ms), transform 0.9s var(--ease-out) var(--d, 0ms),
+    filter 0.8s var(--ease-out) var(--d, 0ms);
+}
+
+@media (max-width: 640px) {
+  .sx-inner {
+    padding: 0 16px;
+  }
+}

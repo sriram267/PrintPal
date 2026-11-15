@@ -2,7 +2,7 @@
   "name": "printpal-root",
   "private": true,
   "scripts": {
-    "start": "npm --prefix product/Palora start",
-    "build": "npm --prefix product/Palora run build"
+    "start": "npm --prefix product/printpal start",
+    "build": "npm --prefix product/printpal run build"
   }
 }

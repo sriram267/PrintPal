@@ -1,0 +1,280 @@
+/* ───────────────────── Hero scene (pinned on desktop) ───────────────────── */
+
+.hs {
+  position: relative;
+}
+.hs.is-pinned {
+  /* the pinned stretch is short: --hs-dist is set from the viewport height in HeroScene */
+  height: calc(100vh - var(--nav-h) + var(--hs-dist, 480px));
+}
+.hs-sticky {
+  position: sticky;
+  top: var(--nav-h);
+  height: calc(100vh - var(--nav-h));
+  overflow: hidden;
+}
+
+/* Copy (fades away as the stage rises) */
+.hs-copy {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: clamp(56px, 10vh, 108px) var(--gutter) 0;
+  text-align: center;
+  will-change: opacity, transform, filter;
+}
+.hs-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 10px 0 13px;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: inset 0 0 0 1px #e3e5e8;
+  color: #2b2f36;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  transition: box-shadow 0.15s ease, background-color 0.15s ease;
+  animation: rise 0.8s var(--ease-out) 0.05s both;
+}
+.hs-pill:hover {
+  background: #fafafa;
+  box-shadow: inset 0 0 0 1px #d4d7db;
+}
+.hs-pill svg {
+  color: #8a9097;
+}
+.hs-title {
+  max-width: 980px;
+  margin: 30px 0 0;
+  font-size: clamp(40px, 5vw, 68px);
+  font-weight: 600;
+  line-height: 1.04;
+  letter-spacing: -0.042em;
+  color: #1c1d1f;
+  animation: rise 0.9s var(--ease-out) 0.12s both;
+}
+.hs-sub {
+  max-width: 540px;
+  margin: 22px 0 0;
+  color: #6b7178;
+  font-size: clamp(16px, 1.35vw, 18.5px);
+  font-weight: 450;
+  line-height: 1.45;
+  letter-spacing: -0.012em;
+  animation: rise 0.9s var(--ease-out) 0.2s both;
+}
+.hs-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 30px;
+  animation: rise 0.9s var(--ease-out) 0.28s both;
+}
+
+/* Warm band behind the stage (Attio's blue band, in PrintPal orange) */
+.hs-band {
+  /* visible from the first screen; HeroScene lifts `top` and the opacity as you scroll */
+  position: absolute;
+  top: 50%;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 0;
+  opacity: 0.9;
+  background:
+    repeating-linear-gradient(90deg, rgba(215, 68, 14, 0.07) 0 1px, transparent 1px 7px),
+    linear-gradient(180deg, #fff8f3 0%, #ffe9dd 55%, #ffdcca 100%);
+  /* fades in at the top and out at the bottom, so it melts into the white "How it works" section */
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 34%, #000 86%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 34%, #000 86%, transparent 100%);
+  pointer-events: none;
+}
+
+/* Stage: a fixed design canvas, scaled + moved by scroll */
+.hs-stage {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  z-index: 2;
+  transform-origin: 50% 0;
+  will-change: transform;
+}
+.hs-window {
+  position: absolute;
+  top: 0;
+  z-index: 1;
+}
+.hs-links {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  overflow: visible;
+  pointer-events: none;
+}
+.hs-machine {
+  position: absolute;
+  z-index: 3;
+  transform-origin: 0 0;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+.hs-machine .machine svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.hs-machine-label {
+  position: absolute;
+  left: 50%;
+  top: calc(100% - 4px);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px 6px 10px;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.86);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 0 0 1px rgba(16, 18, 20, 0.06), 0 4px 12px -4px rgba(16, 18, 20, 0.12);
+  color: #2b2f36;
+  font-size: 13px;
+  font-weight: 550;
+  white-space: nowrap;
+}
+.hs-machine-label i {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+}
+.hs-machine-label i.is-orange { background: var(--pp-orange); }
+.hs-machine-label i.is-blue { background: var(--pp-blue); }
+
+/* Connectors */
+.link-halo {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.9);
+  stroke-width: 6;
+  stroke-linecap: round;
+}
+.link-line {
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+.link.is-orange .link-line { stroke: var(--pp-orange); }
+.link.is-blue .link-line { stroke: var(--pp-blue); }
+.link-halo {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.is-linked .link-halo {
+  opacity: 1;
+}
+.link-end {
+  opacity: 0;
+}
+.link-port {
+  fill: #fff;
+  stroke-width: 2;
+}
+.link.is-orange .link-port { stroke: var(--pp-orange); }
+.link.is-blue .link-port { stroke: var(--pp-blue); }
+.link.is-orange .link-port-core { fill: var(--pp-orange); }
+.link.is-blue .link-port-core { fill: var(--pp-blue); }
+.link-dot {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.is-linked .link-dot {
+  opacity: 1;
+}
+.link.is-orange .link-dot-core { fill: var(--pp-orange); }
+.link.is-orange .link-dot-glow { fill: rgba(215, 68, 14, 0.45); }
+.link.is-blue .link-dot-core { fill: var(--pp-blue); }
+.link.is-blue .link-dot-glow { fill: rgba(40, 120, 208, 0.45); }
+
+/* Paint order: the halo sits under the line */
+.link > .link-halo { order: 0; }
+
+/* ───────────────────── Stacked (tablet / phone) ───────────────────── */
+
+.hs.is-stacked {
+  padding-bottom: 64px;
+}
+.hs-stacked-copy .hs-copy {
+  padding-bottom: 44px;
+}
+.hs-stacked-stage {
+  position: relative;
+  padding: 0 var(--gutter);
+}
+.hs-band.is-static {
+  inset: 18% 0 0;
+  opacity: 1;
+}
+.hs-stacked-window {
+  position: relative;
+  z-index: 1;
+  max-width: 980px;
+  margin: 0 auto;
+}
+.hs-window.is-static {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+}
+.hs-stacked-machines {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  max-width: 980px;
+  margin: 28px auto 0;
+}
+.hs-stacked-machines .hs-machine {
+  position: relative;
+  opacity: 1;
+  padding-bottom: 44px;
+}
+.hs-stacked-machines .hs-machine-label {
+  top: auto;
+  bottom: 0;
+}
+
+@media (max-width: 640px) {
+  .hs-stacked-machines {
+    grid-template-columns: 1fr;
+  }
+  .hs-title {
+    font-size: clamp(34px, 9.4vw, 44px);
+  }
+  .hs-pill {
+    font-size: 12.5px;
+  }
+  .hs-actions {
+    flex-direction: column;
+    width: 100%;
+    max-width: 320px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hs-pill,
+  .hs-title,
+  .hs-sub,
+  .hs-actions {
+    animation: none;
+  }
+  .link-dot {
+    display: none;
+  }
+}

@@ -1,0 +1,68 @@
+/* The one long dark block in the page (like Attio's "Universal Context" stretch):
+   a dark disk with a glowing gradient rim rising behind the first panels. */
+
+.dk {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background-color: #101113;
+  color: #f4f5f6;
+  /* the same hairline frame as the light sections, in white */
+  background-image: linear-gradient(rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.07)),
+    linear-gradient(rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.07));
+  background-repeat: no-repeat;
+  background-size: 1px 100%, 1px 100%;
+  background-position: 20px 0, calc(100% - 20px) 0;
+}
+
+/* fine vertical lines on the outside of the disk, fading out down the page */
+.dk::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.03) 0 1px, transparent 1px 8px);
+  -webkit-mask-image: linear-gradient(180deg, #000 0, #000 620px, transparent 1000px);
+  mask-image: linear-gradient(180deg, #000 0, #000 620px, transparent 1000px);
+}
+
+.dk-arc {
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  top: clamp(300px, 30vw, 436px);
+  width: 2200px;
+  height: 2200px;
+  margin-left: -1100px;
+  border-radius: 50%;
+  background: #08090a;
+  box-shadow: 0 -40px 140px -30px rgba(215, 68, 14, 0.28);
+  pointer-events: none;
+}
+/* the rim: orange on the left, through amber and teal, to blue on the right */
+.dk-arc::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  padding: 2px;
+  background: conic-gradient(from 305deg, transparent 0deg, #d7440e 12deg, #f5a524 40deg, #9ed9cc 60deg, #2878d0 88deg, transparent 112deg, transparent 360deg);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+/* a soft glow just inside the rim */
+.dk-arc::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, transparent calc(100% - 160px), rgba(215, 68, 14, 0.1) calc(100% - 40px), transparent 100%);
+}
+
+@media (max-width: 900px) {
+  .dk {
+    background-image: none;
+  }
+}

@@ -1,0 +1,105 @@
+/* Machine figures: Anatomy light theme (vendor/anatomy/kit/iso.css) tuned to sit on PrintPal's warm band,
+   plus the few brand-coloured parts (the cut, the bit, the print, the inks, the screens). */
+
+.pp-iso {
+  --anatomy-paper: #ffffff;
+  --anatomy-face: #ffffff;
+  --anatomy-top: #ffffff;
+  --anatomy-shade-0: #d9dcdf;
+  --anatomy-shade-1: #e3e6e9;
+  --anatomy-shade-2: #eceef0;
+  --anatomy-shade-3: #f4f5f6;
+  --anatomy-lit-top: #ffffff;
+  --anatomy-lit-shade: #eef0f2;
+  --anatomy-hi: #202428;
+  --anatomy-mid: #7d848c;
+  --anatomy-lo: #b2b8be;
+  --anatomy-faint: #d3d7db;
+  --anatomy-lit: #000000;
+  --anatomy-halo: #b5532a;
+  --anatomy-halo-opacity: 0.18;
+  --anatomy-dot: #2c3035;
+  --anatomy-weight: 0.75px;
+}
+
+.pp-machine .pp-cut {
+  fill: none;
+  stroke: var(--pp-orange);
+  stroke-width: 1.7px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+.pp-machine .pp-guide {
+  stroke: #e7c3b2;
+}
+.pp-machine .pp-bit .iso-top,
+.pp-machine .pp-bit .iso-shade,
+.pp-machine .pp-bit .iso-fill {
+  fill: var(--pp-orange);
+}
+.pp-machine .pp-bit .iso-edge {
+  stroke: #9b300a;
+}
+.pp-machine .pp-chips circle {
+  fill: var(--pp-orange);
+  opacity: 0;
+}
+.pp-machine .pp-chips.is-on circle {
+  animation: ppChip 0.7s ease-out infinite;
+}
+.pp-machine .pp-chips.is-on circle:nth-child(2) { animation-delay: 0.14s; }
+.pp-machine .pp-chips.is-on circle:nth-child(3) { animation-delay: 0.28s; }
+.pp-machine .pp-chips.is-on circle:nth-child(4) { animation-delay: 0.42s; }
+.pp-machine .pp-chips.is-on circle:nth-child(5) { animation-delay: 0.56s; }
+@keyframes ppChip {
+  0% { opacity: 0.9; }
+  100% { opacity: 0; }
+}
+
+.pp-machine .pp-plate {
+  fill: #ffffff;
+}
+.pp-machine .pp-screen {
+  fill: #1c1f23;
+  stroke: #1c1f23;
+  stroke-width: 0.6px;
+}
+.pp-machine .pp-screen-glow {
+  fill: var(--pp-orange);
+  opacity: 0.85;
+  animation: ppGlow 2.4s ease-in-out infinite;
+}
+.pp-machine .pp-screen-blue {
+  fill: var(--pp-blue);
+}
+@keyframes ppGlow {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 0.95; }
+}
+.pp-machine .pp-estop {
+  fill: #e5484d;
+}
+
+.pp-machine .pp-media {
+  fill: #ffffff;
+}
+.pp-machine .pp-p-bg { fill: #eaf2fc; }
+.pp-machine .pp-p-orange { fill: var(--pp-orange); }
+.pp-machine .pp-p-orange2 { fill: #ffd9c7; }
+.pp-machine .pp-p-blue { fill: var(--pp-blue); }
+.pp-machine .pp-p-blue2 { fill: var(--pp-blue); opacity: 0.45; }
+.pp-machine .pp-p-rule { fill: #e3e6e9; }
+
+.pp-machine .pp-inks circle { stroke: rgba(0, 0, 0, 0.18); stroke-width: 0.4px; }
+.pp-machine .pp-inks [data-ink="c"] { fill: #1fb2e3; }
+.pp-machine .pp-inks [data-ink="m"] { fill: #e0408a; }
+.pp-machine .pp-inks [data-ink="y"] { fill: #f3c300; }
+.pp-machine .pp-inks [data-ink="k"] { fill: #202428; }
+
+@media (prefers-reduced-motion: reduce) {
+  .pp-machine .pp-screen-glow,
+  .pp-machine .pp-chips.is-on circle {
+    animation: none;
+  }
+}
