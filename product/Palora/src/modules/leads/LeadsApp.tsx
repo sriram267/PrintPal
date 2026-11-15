@@ -51,7 +51,7 @@ import {
   ModalButton,
 } from "@ui/modal-system"
 import { QuotationView, type RenegotiatingQuoteData, type QuoteSite } from "./QuotationView"
-import { BillingReportsView, type QuotationListItem } from "./BillingReportsView"
+import { QuotationReportsView, type QuotationListItem } from "./QuotationReportsView"
 import {
   BusinessDetailsView,
   type BusinessDetailsRecord,
@@ -933,12 +933,12 @@ export function getNextQuoteVersion(currentQuoteNumber: string): {
 }
 
 export function LeadsApp() {
-  const [activeModule, setActiveModule] = React.useState<"leads" | "billing" | "billingReports" | "settings">(() => {
+  const [activeModule, setActiveModule] = React.useState<"leads" | "quotation" | "quotationReports" | "settings">(() => {
     if (typeof window !== "undefined") {
       const hash = window.location.hash.toLowerCase()
       if (hash.includes("setting") || hash.includes("product")) return "settings"
-      if (hash.includes("billing-reports") || hash.includes("billingreports")) return "billingReports"
-      if (hash.includes("billing") || hash.includes("quote") || hash.includes("quotation")) return "billing"
+      if (hash.includes("quotation-reports") || hash.includes("quotationreports") || hash.includes("billing-reports") || hash.includes("billingreports")) return "quotationReports"
+      if (hash.includes("quotation") || hash.includes("quote") || hash.includes("billing")) return "quotation"
     }
     return "leads"
   })
@@ -2057,7 +2057,7 @@ export function LeadsApp() {
         badge: "QUOTATION REVISION",
         variant: "info",
         title: `Quotation Revision (${versionInfo.versionLabel}) Auto-Populated`,
-        description: `For ${q.customerName}, quotation revision (${versionInfo.versionLabel}) is auto-populated in the billing screen. A newer version of this quotation is being created for renegotiation.`,
+        description: `For ${q.customerName}, quotation revision (${versionInfo.versionLabel}) is auto-populated in the quotation screen. A newer version of this quotation is being created for renegotiation.`,
         customerCard: {
           name: q.customerName,
           contactPerson: q.contactPerson,
@@ -2068,7 +2068,7 @@ export function LeadsApp() {
 
       setRenegotiatingQuote(renegData);
       setQuotationSelectedCustomer(customerToUse);
-      setActiveModule("billing");
+      setActiveModule("quotation");
     },
     [customers]
   )
@@ -3074,7 +3074,7 @@ export function LeadsApp() {
       showToast(`Customer "${customerRecord.name}" created successfully`, "success")
     }
 
-    if (activeModule === "billing") {
+    if (activeModule === "quotation") {
       setQuotationSelectedCustomer(customerRecord)
     }
 
@@ -3220,7 +3220,7 @@ export function LeadsApp() {
 
     setQuotationSelectedCustomer(customerRecord)
     setIsModalOpen(false)
-    setActiveModule("billing")
+    setActiveModule("quotation")
 
   }
 
@@ -3391,25 +3391,25 @@ export function LeadsApp() {
             </button>
             <button
               type="button"
-              className={`printpal-nav-link ${activeModule === "billing" ? "active" : ""}`}
+              className={`printpal-nav-link ${activeModule === "quotation" ? "active" : ""}`}
               onClick={() => {
                 closeNewCustomerModal()
-                setActiveModule("billing")
+                setActiveModule("quotation")
               }}
             >
               <FileText />
-              <span>Billing</span>
+              <span>Quotation</span>
             </button>
             <button
               type="button"
-              className={`printpal-nav-link ${activeModule === "billingReports" ? "active" : ""}`}
+              className={`printpal-nav-link ${activeModule === "quotationReports" ? "active" : ""}`}
               onClick={() => {
                 closeNewCustomerModal()
-                setActiveModule("billingReports")
+                setActiveModule("quotationReports")
               }}
             >
               <FileText />
-              <span>Billing Reports</span>
+              <span>Quotation Reports</span>
             </button>
           </div>
         </div>
@@ -3549,16 +3549,16 @@ export function LeadsApp() {
         activeModuleLabel={
           activeModule === "leads"
             ? "Leads"
-            : activeModule === "billing"
-              ? "Billing"
-              : activeModule === "billingReports"
-                ? "Reports"
+            : activeModule === "quotation"
+              ? "Quotation"
+              : activeModule === "quotationReports"
+                ? "Quotation Reports"
                 : "Settings"
         }
       />
 
       {/* ── 3. Main Content Body (Desktop - 1 & 2) ── */}
-      {activeModule === "billing" ? (
+      {activeModule === "quotation" ? (
         <QuotationView
           customers={customers}
           products={products}
@@ -3572,14 +3572,14 @@ export function LeadsApp() {
           renegotiatingQuote={renegotiatingQuote}
           onClearRenegotiatingQuote={() => setRenegotiatingQuote(null)}
         />
-      ) : activeModule === "billingReports" ? (
-        <BillingReportsView
+      ) : activeModule === "quotationReports" ? (
+        <QuotationReportsView
           customers={customers}
           showToast={showToast}
           businessDetails={businessDetails}
           onCreateQuotation={() => {
             setRenegotiatingQuote(null)
-            setActiveModule("billing")
+            setActiveModule("quotation")
           }}
           onRenegotiateQuotation={handleRenegotiateQuotation}
         />

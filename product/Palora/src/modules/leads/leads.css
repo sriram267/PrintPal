@@ -646,7 +646,9 @@
   align-items: center;
 }
 
-/* Billing Reports Grid: Same card, 36px floating pill header, and 52px row rhythm as Leads */
+/* Quotation / Billing Reports Grid: Same card, 36px floating pill header, and 52px row rhythm as Leads */
+.printpal-table-header.printpal-quotation-reports-grid,
+.printpal-table-row.printpal-quotation-reports-grid,
 .printpal-table-header.printpal-billing-reports-grid,
 .printpal-table-row.printpal-billing-reports-grid {
   display: grid !important;
@@ -654,6 +656,8 @@
   align-items: center;
 }
 
+.printpal-table-header.printpal-quotation-reports-grid > div:first-child,
+.printpal-table-row.printpal-quotation-reports-grid > div:first-child,
 .printpal-table-header.printpal-billing-reports-grid > div:first-child,
 .printpal-table-row.printpal-billing-reports-grid > div:first-child {
   width: auto !important;

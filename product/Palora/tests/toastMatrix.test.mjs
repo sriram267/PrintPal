@@ -10,7 +10,9 @@ import path from 'node:path';
 
 const ROOT = process.cwd();
 const PAL_NOTCH_PATH = path.join(ROOT, '..', 'Ui component library', 'src', 'components', 'ui', 'pal-notch.tsx');
-const BILLING_REPORTS_PATH = path.join(ROOT, 'src', 'modules', 'leads', 'BillingReportsView.tsx');
+const BILLING_REPORTS_PATH = fs.existsSync(path.join(ROOT, 'src', 'modules', 'leads', 'QuotationReportsView.tsx'))
+  ? path.join(ROOT, 'src', 'modules', 'leads', 'QuotationReportsView.tsx')
+  : path.join(ROOT, 'src', 'modules', 'leads', 'BillingReportsView.tsx');
 const QUOTATION_VIEW_PATH = path.join(ROOT, 'src', 'modules', 'leads', 'QuotationView.tsx');
 const LEADS_APP_PATH = path.join(ROOT, 'src', 'modules', 'leads', 'LeadsApp.tsx');
 

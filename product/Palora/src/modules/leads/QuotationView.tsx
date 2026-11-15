@@ -794,7 +794,7 @@ export function QuotationView({
           `Quotation ${quoteNumber} Created`,
           `${selectedCustomer.name} • ₹${grandTotal.toLocaleString('en-IN')}`,
           { label: 'View PDF', onClick: () => setIsPreviewOpen(true) },
-          'BILLING'
+          'QUOTATION'
         );
         setIsPreviewOpen(true);
       } else {
@@ -808,7 +808,7 @@ export function QuotationView({
         `Quotation ${quoteNumber} Saved Locally`,
         `${selectedCustomer.name} • ₹${grandTotal.toLocaleString('en-IN')}`,
         { label: 'View PDF', onClick: () => setIsPreviewOpen(true) },
-        'BILLING'
+        'QUOTATION'
       );
       setIsPreviewOpen(true);
     }

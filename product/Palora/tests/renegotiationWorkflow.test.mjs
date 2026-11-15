@@ -55,12 +55,12 @@ async function runTests() {
   assert.equal(vLower.nextQuoteNumber, "Q-010-V2");
   console.log("  ✓ getNextQuoteVersion accurately computes next versions.");
 
-  // 2. Verify removal of Draft/Sent status chip from BillingReportsView
-  console.log("Test 2: Verifying removal of Draft chip status in BillingReportsView...");
-  const billingReportsSrc = fs.readFileSync(
-    path.resolve("src/modules/leads/BillingReportsView.tsx"),
-    "utf-8"
-  );
+  // 2. Verify removal of Draft/Sent status chip from QuotationReportsView / BillingReportsView
+  console.log("Test 2: Verifying removal of Draft chip status in QuotationReportsView...");
+  const targetReportFile = fs.existsSync(path.resolve("src/modules/leads/QuotationReportsView.tsx"))
+    ? path.resolve("src/modules/leads/QuotationReportsView.tsx")
+    : path.resolve("src/modules/leads/BillingReportsView.tsx");
+  const billingReportsSrc = fs.readFileSync(targetReportFile, "utf-8");
   assert.ok(
     !billingReportsSrc.includes("<StatusBadge"),
     "BillingReportsView must not render StatusBadge chip in table row"
@@ -106,8 +106,9 @@ async function runTests() {
     "LeadsApp must trigger Pal Notch notification with badge 'QUOTATION REVISION'"
   );
   assert.ok(
+    leadsAppSrc.includes("is auto-populated in the quotation screen") ||
     leadsAppSrc.includes("is auto-populated in the billing screen"),
-    "Pal Notch copy must inform user quotation revision is auto-populated in billing screen"
+    "Pal Notch copy must inform user quotation revision is auto-populated in quotation screen"
   );
   assert.ok(
     leadsAppSrc.includes("handleRenegotiateQuotation"),
