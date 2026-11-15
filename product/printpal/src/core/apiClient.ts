@@ -106,7 +106,6 @@ export function installAuthFetchInterceptor() {
     // Intercept protected API routes
     if (
       (urlString.startsWith("/api/") || urlString.includes("/api/")) &&
-      !urlString.includes("/api/waitlist") &&
       !urlString.includes("/api/health")
     ) {
       const token = await getAuthToken();

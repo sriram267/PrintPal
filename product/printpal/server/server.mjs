@@ -678,14 +678,16 @@ server.addContentTypeParser(
 );
 
 // 3c. Public Routes Allowlist
+// (No waitlist route: the waitlist lives ONLY in Clerk. The website and the login page use Clerk's <Waitlist />.)
 const PUBLIC_ROUTES = new Set([
   "GET:/api/health",
-  "POST:/api/waitlist",
 ]);
 
-const CLERK_SECRET_KEY =
-  process.env.CLERK_SECRET_KEY ||
-  "sk_test_HcZmGpnFNeGZpDuLkonXcR2fR51VXJFxBusWexue72";
+// Must come from the environment (Render env var / local .env). Never hard-code a secret here.
+const CLERK_SECRET_KEY = process.env.CLERK_SECRET_KEY;
+if (!CLERK_SECRET_KEY) {
+  throw new Error("CLERK_SECRET_KEY is not set. Add it to the environment (or to .env for local development).");
+}
 
 // 3d. Mandatory Clerk Authentication & Tenant Resolution Hook
 server.addHook("onRequest", async (req, reply) => {
@@ -725,55 +727,6 @@ const repo = createTenantRepository(pg);
 server.get("/api/health", async () => {
   return { status: "ok", timestamp: new Date().toISOString() };
 });
-
-// ── WAITLIST ENDPOINT (Rate-limited to 5 submissions/min per IP) ──
-server.post(
-  "/api/waitlist",
-  {
-    config: {
-      rateLimit: {
-        max: 5,
-        timeWindow: "1 minute",
-      },
-    },
-  },
-  async (req, reply) => {
-    const { email } = req.body || {};
-    if (!email || typeof email !== "string" || !email.includes("@")) {
-      reply.status(400);
-      return { error: "A valid email address is required" };
-    }
-
-    try {
-      await pg.query(
-        `INSERT INTO waitlist (email) VALUES ($1) ON CONFLICT (email) DO NOTHING;`,
-        [email.trim().toLowerCase()]
-      );
-
-      // Register into Clerk Waitlist if Clerk secret key is present
-      if (process.env.CLERK_SECRET_KEY) {
-        try {
-          await fetch("https://api.clerk.com/v1/waitlist_entries", {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${process.env.CLERK_SECRET_KEY}`,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ email_address: email.trim().toLowerCase() }),
-          });
-        } catch (clerkErr) {
-          console.warn("[Clerk Waitlist Sync Notice]:", clerkErr.message);
-        }
-      }
-
-      return { success: true, message: "Added to waitlist" };
-    } catch (err) {
-      console.error("[Waitlist Error]:", err);
-      reply.status(500);
-      return { error: err.message };
-    }
-  }
-);
 
 // ── CLERK AUTH / TENANT SYNC (Authenticated & Server-Side Verified) ──
 server.post("/api/auth/sync-user", async (req, reply) => {
