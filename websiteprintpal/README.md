@@ -18,7 +18,11 @@ npm run dev            # http://localhost:5180
 | `VITE_CLERK_PUBLISHABLE_KEY` | Clerk **publishable** key (`pk_...`). Public by design. Never put the secret key (`sk_...`) in this project. |
 | `VITE_APP_URL` | The PrintPal app. "Sign in" and Clerk's "Already have access? Sign in" go here. |
 
-## Clerk
+## One system for people: Clerk
+
+Clerk is the only place people are stored: waitlist entries, invitations, accounts, sessions. Neon holds only each
+shop's business data, keyed by Clerk user id (created on first login by the app's `/api/auth/sync-user`).
+There is no waitlist table or waitlist API on the PrintPal backend. Both the website and the app's login page use Clerk's own components.
 
 The site and the app share one Clerk instance.
 
