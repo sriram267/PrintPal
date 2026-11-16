@@ -8,6 +8,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import fs from "node:fs";
 import { calcLine, SYSTEM_METHODS, METHOD_MAP, roundHalfUp } from "./calcLine.mjs";
+import { computeQuoteTotals, validateQuoteMoney, MAX_MONEY } from "./quoteTotals.mjs";
 import { resolveTenantId, SYSTEM_TEMPLATE_TENANT_ID, DEFAULT_TENANT_ID } from "./tenantContext.mjs";
 import { createTenantRepository } from "./repository.mjs";
 import { copyCatalogueForTenant } from "./catalogueCopy.mjs";
@@ -914,7 +915,17 @@ server.post("/api/quotations", async (req, reply) => {
     sites = [],
   } = body;
 
-  const effectiveCustomerId = customerId || (body.customer?.id) || `cust-${Date.now()}`;
+  const moneyError = validateQuoteMoney({ transportCost, designCharges, installationCharges, discountPercent, gstRate });
+  if (moneyError) {
+    reply.status(400);
+    return { error: moneyError };
+  }
+
+  const effectiveCustomerId = customerId || body.customer?.id;
+  if (!effectiveCustomerId) {
+    reply.status(400);
+    return { error: "customerId is required" };
+  }
 
   // Determine or reuse quoteId consistently by quoteNumber or explicit id scoped to this tenant
   let quoteId = body.id || null;
@@ -987,6 +998,10 @@ server.post("/api/quotations", async (req, reply) => {
       }
 
       if (calcResult.status === "ok" && calcResult.total !== null) {
+        if (!Number.isFinite(calcResult.total) || calcResult.total > MAX_MONEY) {
+          reply.status(400);
+          return { error: `"${line.product_title || line.productTitle || "Signage item"}" has a total that looks too large. Please check the size and rate.` };
+        }
         computedSubtotal += calcResult.total;
       }
 
@@ -1015,8 +1030,14 @@ server.post("/api/quotations", async (req, reply) => {
 
   const finalStatus = action === "create" ? "Sent" : quoteStatus;
   const finalSubtotal = roundHalfUp(computedSubtotal, 2);
-  const totalBase = finalSubtotal + Number(transportCost) + Number(designCharges) + Number(installationCharges);
-  const finalGrandTotal = roundHalfUp(totalBase + totalBase * (Number(gstRate) / 100), 2);
+  const { grandTotal: finalGrandTotal } = computeQuoteTotals({
+    sitesSubtotal: finalSubtotal,
+    designCharges,
+    installationCharges,
+    transportCost,
+    discountPercent,
+    gstRate,
+  });
 
   // Save through tenant-scoped repository
   try {

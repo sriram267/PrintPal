@@ -136,7 +136,7 @@ export function createTenantRepository(pg) {
         const isWhatsAppSame = body.isWhatsAppSame !== false;
         const whatsappNumber = isWhatsAppSame ? phone : body.whatsappNumber?.trim() || "";
         const followUpDate = body.followUpDate || "";
-        const billingAddress = body.billingAddress?.trim() || body.address?.trim() || "Local Address";
+        const billingAddress = body.billingAddress?.trim() || body.address?.trim() || "";
         const shippingAddress = body.shippingAddress?.trim() || billingAddress;
         const isShippingSame = body.isShippingSameAsBilling !== false;
         const gstin = body.gstin?.trim() || "";

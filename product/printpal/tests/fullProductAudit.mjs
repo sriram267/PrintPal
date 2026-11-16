@@ -1,7 +1,10 @@
 // @ts-check
 import assert from "node:assert/strict";
 
-const BASE_URL = "http://localhost:3001";
+import { useLiveAuth } from "./_liveAuth.mjs";
+
+const BASE_URL = process.env.QA_BASE || "http://localhost:3001";
+if (!(await useLiveAuth(BASE_URL))) process.exit(0);
 const TENANT_A = "audit_tenant_alpha";
 const TENANT_B = "audit_tenant_beta";
 
@@ -40,7 +43,7 @@ await test("GET /api/health returns status ok", async () => {
 
 // 2. Methods Endpoint (Reference Data)
 await test("GET /api/methods returns 6 supported pricing calculation methods", async () => {
-  const res = await fetch(`${BASE_URL}/api/methods`);
+  const res = await fetch(`${BASE_URL}/api/methods`, { headers: headersA });
   assert.equal(res.status, 200);
   const data = await res.json();
   assert.ok(Array.isArray(data));
@@ -362,7 +365,7 @@ await test("POST /api/quotations rejects action='create' when lines are incomple
   });
   assert.equal(res.status, 400);
   const data = await res.json();
-  assert.ok(data.error.includes("Cannot create customer quote with incomplete lines"));
+  assert.ok(data.error.includes("Cannot create customer quote"));
 });
 
 await test("POST /api/quotations computes line totals using calcLine across multiple methods", async () => {

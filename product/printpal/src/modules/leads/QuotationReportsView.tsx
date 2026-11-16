@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { palNotch } from '@ui/pal-notch';
 import { QuotePDFPreview } from './QuotePDFPreview';
+import { computeQuoteTotals, formatQuoteDate } from '../quotation/quoteTotals';
 import type { CustomerRecord } from './types';
 import type { BusinessDetailsRecord } from '../settings';
 
@@ -228,7 +229,7 @@ function QuotationGroups({
               <div className="text-right font-semibold text-[#202428] tabular-nums pr-2">
                 {fmt(top.grandTotal)}
               </div>
-              <div className="text-[13px] text-[#737B84] truncate">{top.quoteDate}</div>
+              <div className="text-[13px] text-[#737B84] whitespace-nowrap">{formatQuoteDate(top.quoteDate)}</div>
               <div />
             </div>
 
@@ -285,7 +286,7 @@ function QuotationGroups({
                       {fmt(q.grandTotal)}
                     </div>
 
-                    <div className="text-[13px] text-[#737B84] truncate">{q.quoteDate}</div>
+                    <div className="text-[13px] text-[#737B84] whitespace-nowrap">{formatQuoteDate(q.quoteDate)}</div>
 
                     <div
                       className="printpal-cell-actions flex items-center justify-end gap-1.5"
@@ -400,16 +401,20 @@ export function QuotationReportsView({
               contactPerson,
               phone,
               sitesCount: sites.length || q.sitesCount || 1,
-              grandTotal: Number(q.grand_total || q.grandTotal || 0),
               discountPercent: Number(q.discount_percent || q.discountPercent || 0),
               gstRate: Number(q.gst_rate || q.gstRate || 18),
               sitesSubtotal: Number(q.subtotal || q.sitesSubtotal || 0),
               designCharges: Number(q.design_charges || q.designCharges || 0),
               installationCharges: Number(q.installation_charges || q.installationCharges || 0),
               transportCost: Number(q.transport_cost || q.transportCost || 0),
-              discountAmount: 0,
-              taxableTotal: Number(q.grand_total || 0),
-              gstAmount: 0,
+              ...computeQuoteTotals({
+                sitesSubtotal: Number(q.subtotal || q.sitesSubtotal || 0),
+                designCharges: Number(q.design_charges || q.designCharges || 0),
+                installationCharges: Number(q.installation_charges || q.installationCharges || 0),
+                transportCost: Number(q.transport_cost || q.transportCost || 0),
+                discountPercent: Number(q.discount_percent || q.discountPercent || 0),
+                gstRate: Number(q.gst_rate ?? q.gstRate ?? 18),
+              }),
               fabNotes: notes.fabNotes || q.fabNotes || '',
               commercialTerms: notes.commercialTerms || q.commercialTerms || '',
               sitesJson: sites,

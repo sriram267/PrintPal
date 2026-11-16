@@ -1,7 +1,10 @@
 // @ts-check
 import assert from "node:assert/strict";
 
-const BASE_URL = "http://localhost:3001";
+import { useLiveAuth } from "./_liveAuth.mjs";
+
+const BASE_URL = process.env.QA_BASE || "http://localhost:3001";
+const liveServer = await useLiveAuth(BASE_URL);
 const TENANT_A = "test_tenant_followup";
 
 function isDueForFollowUpReminder(followUpDateStr, mockCurrentDate) {
@@ -57,6 +60,11 @@ async function runTests() {
   const dAfter = new Date(2026, 10, 18, 1, 0, 0);
   assert.equal(isDueForFollowUpReminder(testFollowUpDate, dAfter), false, "Day after should NOT trigger reminder");
   console.log("  ✓ Date logic validated successfully.");
+
+  if (!liveServer) {
+    console.log("Only the date checks ran; the saved-follow-up checks need a signed-in server (see above).");
+    return;
+  }
 
   // 2. Test Backend Persistence for Enquiries with follow_up_date
   console.log("Test 2: Testing backend API for enquiry follow_up_date persistence...");

@@ -41,6 +41,7 @@ import {
   mapLegacyMethodCode,
 } from '../quotation/calcLine';
 import type { MethodCode } from '../quotation/calcLine';
+import { computeQuoteTotals } from '../quotation/quoteTotals';
 import type { BusinessDetailsRecord } from '../settings';
 
 export interface RenegotiatingQuoteData {
@@ -673,18 +674,15 @@ export function QuotationView({
     }, 0);
   }, [selectedCustomer, sites]);
 
-  const grossBeforeDiscount = selectedCustomer
-    ? sitesSubtotal + Number(designCharges) + Number(installationCharges) + Number(transportCost)
-    : 0;
-
-  const discountAmount =
-    selectedCustomer && discountPercent > 0
-      ? Math.round((grossBeforeDiscount * discountPercent) / 100)
-      : 0;
-
-  const taxableTotal = Math.max(0, grossBeforeDiscount - discountAmount);
-  const gstAmount = selectedCustomer ? Math.round((taxableTotal * gstRate) / 100) : 0;
-  const grandTotal = selectedCustomer ? taxableTotal + gstAmount : 0;
+  const quoteTotals = computeQuoteTotals({
+    sitesSubtotal: selectedCustomer ? sitesSubtotal : 0,
+    designCharges: selectedCustomer ? Number(designCharges) : 0,
+    installationCharges: selectedCustomer ? Number(installationCharges) : 0,
+    transportCost: selectedCustomer ? Number(transportCost) : 0,
+    discountPercent: selectedCustomer ? discountPercent : 0,
+    gstRate: selectedCustomer ? gstRate : 0,
+  });
+  const { discountAmount, taxableTotal, gstAmount, grandTotal } = quoteTotals;
 
   // Create Customer Quote handler (validates inline fields first, then dispatches to API)
   // fresh = just created: closing the sheet then lands on Quotation Reports. Re-opening later leaves you in place.

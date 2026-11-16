@@ -56,10 +56,11 @@ test('Backend Quotations Endpoint Safety & Error Handling', () => {
   const serverPath = path.join(ROOT, 'server', 'server.mjs');
   const serverContent = fs.readFileSync(serverPath, 'utf8');
 
-  // 1. Verify customerId fallback
+  // 1. A quote must belong to a customer: the server refuses one without (it used to invent a customer id)
   assert.ok(
-    serverContent.includes('const effectiveCustomerId = customerId || (body.customer?.id) || `cust-${Date.now()}`'),
-    'Backend must safely handle customer ID'
+    serverContent.includes('const effectiveCustomerId = customerId || body.customer?.id;') &&
+      serverContent.includes('"customerId is required"'),
+    'Backend must refuse a quote with no customer'
   );
 
   // 2. Verify try-catch around repo.quotations.save

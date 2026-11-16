@@ -1,9 +1,9 @@
 /**
- * QuotePDFPreview — Architectural Print & Signage Shop Quotation Document
+ * QuotePDFPreview: the quotation / invoice sheet.
  *
- * Designed as an authentic A4 printed document on warm cotton paper (#FAF8F4),
- * typeset with Newsreader (editorial display) and Inter (tabular grotesk).
- * Rendered via a body portal (#printpal-pdf-print-root) for clean multi-page A4 print fidelity.
+ * Plain white A4. On screen it comes out of the Pal notch; on Download it prints through the browser
+ * (Save as PDF) with no browser header or footer. It is rendered through a body portal
+ * (#printpal-pdf-print-root) so the print rules can hide the rest of the app.
  */
 
 import * as React from 'react';
@@ -13,6 +13,7 @@ import type { CustomerRecord } from './types';
 import type { QuoteSite } from './QuotationView';
 import type { BusinessDetailsRecord } from '../settings';
 import { formatQuoteLineText } from '../quotation/quoteFormatters';
+import { formatQuoteDate } from '../quotation/quoteTotals';
 
 export interface QuotePDFPreviewProps {
   isOpen: boolean;
@@ -117,7 +118,18 @@ export function QuotePDFPreview({
     );
   }, []);
 
+  // The browser names the saved PDF after the page title, so the title becomes e.g. "Invoice Q-001-V2 - Acme Signs".
+  const printTitle = `${documentType} ${quoteNumber}${businessDetails?.legalName ? ` - ${businessDetails.legalName.trim()}` : ''}`;
+  const printTitleRef = React.useRef(printTitle);
+  printTitleRef.current = printTitle;
   const handleDownload = React.useCallback(() => {
+    const originalTitle = document.title;
+    document.title = printTitleRef.current;
+    const restore = () => {
+      document.title = originalTitle;
+      window.removeEventListener('afterprint', restore);
+    };
+    window.addEventListener('afterprint', restore);
     window.print();
   }, []);
   const handleDownloadRef = React.useRef(handleDownload);
@@ -197,6 +209,10 @@ export function QuotePDFPreview({
     .filter(Boolean)
     .join('  /  ');
 
+  // Older customers were saved with the filler text "Local Address" when no address was typed; never print it.
+  const rawCustomerAddress = ((customer as { address?: string }).address || '').trim();
+  const customerAddress = rawCustomerAddress.toLowerCase() === 'local address' ? '' : rawCustomerAddress;
+
   const resolvedTerms = commercialTerms || businessDetails?.defaultTerms || '';
 
   return createPortal(
@@ -259,7 +275,7 @@ export function QuotePDFPreview({
           {/* ═══ WARM PAPER A4 DOCUMENT SHEET (Flat, Zero Shadows Inside, Zero Cards) ═══ */}
           <article
             id="printpal-pdf-document"
-            className="pdf-sheet shrink-0 relative w-full bg-[#FAF8F4] text-[#151C24] px-6 py-8 sm:px-14 sm:py-14 flex flex-col justify-between"
+            className="pdf-sheet shrink-0 relative w-full bg-white text-[#151C24] px-6 py-8 sm:px-14 sm:py-14 flex flex-col justify-between"
             style={{
               minHeight: '1040px',
               fontFeatureSettings: '"cv02", "cv03", "cv04", "cv11"',
@@ -292,16 +308,8 @@ export function QuotePDFPreview({
                   </div>
 
                   <div className="text-[12px] text-[#5C6570] leading-[1.55] space-y-0.5">
-                    {addrLineA ? (
-                      <p>
-                        {addrLineA}
-                        {cityStatePin ? `, ${cityStatePin}` : ''}
-                      </p>
-                    ) : (
-                      <p>
-                        Signage fabrication and installation
-                        {cityStatePin ? `, ${cityStatePin}` : ', Chennai, Tamil Nadu, India'}
-                      </p>
+                    {(addrLineA || cityStatePin) && (
+                      <p>{[addrLineA, cityStatePin].filter(Boolean).join(', ')}</p>
                     )}
                     {statutoryLine && (
                       <p className="text-[#151C24]/80 tabular-nums">{statutoryLine}</p>
@@ -332,15 +340,15 @@ export function QuotePDFPreview({
                     className="text-[12px] text-[#5C6570] mt-1"
                     style={{ fontVariantNumeric: 'tabular-nums' }}
                   >
-                    Issued {quoteDate}
+                    {documentType === 'Invoice' ? 'Date' : 'Issued'} {formatQuoteDate(quoteDate)}
                   </p>
                 </div>
               </header>
 
               {/* ── 2. Recipient Block ("Quotation issued to") ── */}
-              <section className="py-6 border-b border-[#DDD7CB]">
+              <section className="py-6 border-b border-[#E2E6EA]">
                 <p className="text-[12px] font-medium text-[#5C6570] mb-1.5">
-                  {documentType} issued to
+                  {documentType === 'Invoice' ? 'Billed to' : 'Prepared for'}
                 </p>
                 <h2
                   className="text-[17px] font-semibold text-[#151C24] tracking-[-0.01em]"
@@ -356,21 +364,15 @@ export function QuotePDFPreview({
                   {customerContactLine && (
                     <p style={{ fontVariantNumeric: 'tabular-nums' }}>{customerContactLine}</p>
                   )}
-                  {(customer as { address?: string }).address && (
-                    <p>{(customer as { address?: string }).address}</p>
-                  )}
+                  {customerAddress && <p>{customerAddress}</p>}
                 </div>
               </section>
 
-              {/* ── 3. Scope of Work Ledger Table ── */}
+              {/* ── 3. Items ── */}
               <section className="pt-6 pb-4">
-                <p className="text-[12px] font-medium text-[#5C6570] mb-3">
-                  Scope of work
-                </p>
-
                 <table className="w-full border-collapse text-left">
                   <thead>
-                    <tr className="bg-[#F1EDE4] border-y border-[#151C24]/20">
+                    <tr className="bg-[#F3F5F7] border-y border-[#151C24]/20">
                       <th className="py-2.5 pl-3 pr-4 text-[12px] font-medium text-[#151C24]">
                         Item and specification
                       </th>
@@ -385,12 +387,12 @@ export function QuotePDFPreview({
 
                   {sites.length === 0 ? (
                     <tbody>
-                      <tr className="border-b border-[#DDD7CB]">
+                      <tr className="border-b border-[#E2E6EA]">
                         <td
                           colSpan={3}
                           className="py-5 px-3 text-[12.5px] text-[#5C6570]"
                         >
-                          Summary quotation prepared for {customer.name}.
+                          No items on this {documentType.toLowerCase()}.
                         </td>
                       </tr>
                     </tbody>
@@ -398,7 +400,7 @@ export function QuotePDFPreview({
                     sites.map((site, sIdx) => (
                       <tbody key={site.id}>
                         {/* Clean typographic site divider row (no boxes, no numbered badges) */}
-                        <tr className="border-b border-[#DDD7CB]">
+                        <tr className="border-b border-[#E2E6EA]">
                           <td
                             colSpan={3}
                             className={`px-3 pb-2 ${sIdx === 0 ? 'pt-4' : 'pt-6'}`}
@@ -424,7 +426,7 @@ export function QuotePDFPreview({
                           return (
                             <tr
                               key={line.id}
-                              className="pdf-line-row border-b border-[#DDD7CB]"
+                              className="pdf-line-row border-b border-[#E2E6EA]"
                             >
                               <td className="py-3.5 pl-3 pr-4 align-top">
                                 <p className="text-[13.5px] font-semibold text-[#151C24] leading-[1.35]">
@@ -443,7 +445,7 @@ export function QuotePDFPreview({
                                 )}
                                 {line.discount > 0 && (
                                   <p className="text-[11.5px] font-medium text-[#1B6E3A] mt-0.5">
-                                    Line discount {line.discount}% applied
+                                    Discount {line.discount}%
                                   </p>
                                 )}
                               </td>
@@ -488,7 +490,7 @@ export function QuotePDFPreview({
 
                     {designCharges > 0 && (
                       <div className="flex items-baseline justify-between gap-4">
-                        <dt className="text-[#5C6570]">Design and 3D visualizer</dt>
+                        <dt className="text-[#5C6570]">Design charges</dt>
                         <dd
                           className="text-[#151C24] text-right"
                           style={{ fontVariantNumeric: 'tabular-nums' }}
@@ -536,7 +538,7 @@ export function QuotePDFPreview({
                       </div>
                     )}
 
-                    <div className="pt-2 border-t border-[#DDD7CB] flex items-baseline justify-between gap-4">
+                    <div className="pt-2 border-t border-[#E2E6EA] flex items-baseline justify-between gap-4">
                       <dt className="text-[#5C6570]">Taxable amount</dt>
                       <dd
                         className="text-[#151C24] text-right"
@@ -559,14 +561,9 @@ export function QuotePDFPreview({
 
                   {/* Grand total — visually heavier and distinctly scaled */}
                   <div className="pt-3.5 flex items-baseline justify-between gap-4">
-                    <div>
-                      <p className="text-[13px] font-semibold text-[#151C24]">
-                        Grand total
-                      </p>
-                      <p className="text-[11px] text-[#5C6570] mt-0.5">
-                        INR, all taxes inclusive
-                      </p>
-                    </div>
+                    <p className="text-[13px] font-semibold text-[#151C24]">
+                      Total (incl. GST)
+                    </p>
                     <p
                       className="text-[30px] sm:text-[34px] font-semibold text-[#151C24] text-right whitespace-nowrap"
                       style={{
@@ -586,11 +583,11 @@ export function QuotePDFPreview({
             {/* ── 5. Bottom Editorial Region: Fabrication Notes, Commercial Terms, Signatory & Footer ── */}
             <div>
               {(fabNotes || resolvedTerms) && (
-                <section className="pdf-notes-block pt-6 pb-8 border-t border-[#DDD7CB] grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-10">
+                <section className="pdf-notes-block pt-6 pb-8 border-t border-[#E2E6EA] grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-10">
                   {fabNotes && (
                     <div>
                       <h3 className="text-[12px] font-semibold text-[#151C24] mb-1.5">
-                        Fabrication notes
+                        Notes
                       </h3>
                       <p className="text-[11.5px] text-[#46505B] leading-[1.6]">
                         {fabNotes}
@@ -600,7 +597,7 @@ export function QuotePDFPreview({
                   {resolvedTerms && (
                     <div>
                       <h3 className="text-[12px] font-semibold text-[#151C24] mb-1.5">
-                        Commercial terms
+                        Terms
                       </h3>
                       <p className="text-[11.5px] text-[#46505B] leading-[1.6]">
                         {resolvedTerms}
@@ -677,9 +674,11 @@ export function QuotePDFPreview({
         }
 
         @media print {
+          /* A zero page margin is what makes the browser drop its own header and footer (date, page title,
+             localhost address, page number). The sheet supplies the real margins itself, below. */
           @page {
             size: A4 portrait;
-            margin: 12mm 14mm;
+            margin: 0;
           }
 
           * {
@@ -688,7 +687,7 @@ export function QuotePDFPreview({
           }
 
           html, body {
-            background: #FAF8F4 !important;
+            background: #FFFFFF !important;
             margin: 0 !important;
             padding: 0 !important;
             height: auto !important;
@@ -733,9 +732,13 @@ export function QuotePDFPreview({
           #printpal-pdf-document {
             max-width: 100% !important;
             width: 100% !important;
-            min-height: auto !important;
-            padding: 0 !important;
-            background: #FAF8F4 !important;
+            min-height: 0 !important;
+            box-sizing: border-box !important;
+            /* Margins live here (the page margin is 0). "clone" repeats them on every printed page. */
+            padding: 14mm 16mm !important;
+            background: #FFFFFF !important;
+            -webkit-box-decoration-break: clone;
+            box-decoration-break: clone;
           }
 
           .pdf-line-row,
