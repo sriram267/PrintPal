@@ -21,9 +21,11 @@ const BILLING_REPORTS_PATH = fs.existsSync(path.join(ROOT, 'src', 'modules', 'le
   : path.join(ROOT, 'src', 'modules', 'leads', 'BillingReportsView.tsx');
 const QUOTATION_VIEW_PATH = path.join(ROOT, 'src', 'modules', 'leads', 'QuotationView.tsx');
 const LEADS_APP_PATH = path.join(ROOT, 'src', 'modules', 'leads', 'LeadsApp.tsx');
+/* Source files may be checked out with CRLF line endings; compare on LF. */
+const read = (p) => fs.readFileSync(p, 'utf8').replace(/\r\n/g, '\n');
 
 test('1. Pal Notch Modal-Closing Toast Queueing Architecture', () => {
-  const content = fs.readFileSync(PAL_NOTCH_PATH, 'utf8');
+  const content = read(PAL_NOTCH_PATH);
 
   // Verify pendingToastRef exists
   assert.ok(content.includes('pendingToastRef = React.useRef'), 'Pal Notch must define pendingToastRef');
@@ -47,137 +49,62 @@ test('1. Pal Notch Modal-Closing Toast Queueing Architecture', () => {
   );
 });
 
-test('2. Quotation CRUD Toasts in Pal Notch', () => {
-  const billingContent = fs.readFileSync(BILLING_REPORTS_PATH, 'utf8');
-  const quoteContent = fs.readFileSync(QUOTATION_VIEW_PATH, 'utf8');
 
-  // Delete Quote
-  assert.ok(
-    billingContent.includes('showToast(`Quotation "${q.quoteNumber}" deleted successfully`, \'success\')'),
-    'BillingReportsView must show success toast when deleting quotation'
-  );
+test('2. Quotation CRUD Toasts in Pal Notch (plain shop language)', () => {
+  const billingContent = read(BILLING_REPORTS_PATH);
+  const quoteContent = read(QUOTATION_VIEW_PATH);
 
-  // Delete Site
-  assert.ok(
-    quoteContent.includes('showToast(`Site "${site.siteName}" deleted successfully\`, \'success\')'),
-    'QuotationView must show success toast when deleting site'
-  );
+  assert.ok(billingContent.includes("showToast(`${q.quoteNumber} deleted`, 'success')"), 'deleting a quotation confirms briefly');
+  assert.ok(quoteContent.includes("showToast(`${site.siteName} deleted`, 'success')"), 'deleting a site confirms briefly');
+  assert.ok(quoteContent.includes("showToast(`${item.productTitle} deleted`, 'success')"), 'deleting an item confirms briefly');
 
-  // Delete Line Item
-  assert.ok(
-    quoteContent.includes('showToast(`Item "${item.productTitle}" deleted successfully\`, \'success\')'),
-    'QuotationView must show success toast when deleting line item'
-  );
-
-  // Create Quote
-  assert.ok(
-    quoteContent.includes('Quotation ${quoteNumber} Created'),
-    'QuotationView must trigger workshop notification badge on quote creation'
-  );
+  // Creating a quote: one message per outcome, local saves say so
+  assert.ok(quoteContent.includes('Quote ${quoteNumber} saved'), 'quote creation toast says the quote is saved');
+  assert.ok(quoteContent.includes('saved on this device'), 'local saves are stated plainly');
+  assert.ok(!quoteContent.includes('Cloud sync notice'), 'no sync jargon shown to the user');
+  assert.ok(!quoteContent.includes('Offline mode'), 'no mode jargon shown to the user');
 });
 
-test('3. Leads & Catalogue CRUD Toasts in LeadsApp', () => {
-  const leadsContent = fs.readFileSync(LEADS_APP_PATH, 'utf8');
+test('3. Leads & Catalogue CRUD Toasts in LeadsApp (plain shop language)', () => {
+  const c = read(LEADS_APP_PATH);
+  const expected = [
+    '${customerRecord.name} added to customers',
+    '${customerRecord.name} updated',
+    '${customerRecord.name} is now a customer',
+    'Enquiry from ${newEnquiry.contactName} added',
+    'Enquiry from ${newEnquiry.contactName} updated',
+    '${supplierPayload.supplierName} added to suppliers',
+    '${supplierPayload.supplierName} updated',
+    '${newProd.title} added to products',
+    '${newProd.title} updated',
+    '${newMat.name} added to materials',
+    '${newMat.name} updated',
+    '${newFin.name} added to finishes',
+    '${newFin.name} updated',
+    '${trimmedName} added to taxes',
+    '${trimmedName} updated',
+    'Business details saved',
+    'showToast(`${name} deleted`, "success")',
+    'showToast(`Enquiry from ${name} deleted`, "success")',
+  ];
+  for (const s of expected) assert.ok(c.includes(s), `missing copy: ${s}`);
 
-  // Customers
-  assert.ok(
-    leadsContent.includes('Customer "${customerRecord.name}" created successfully'),
-    'Customer create toast must use standardized success copy'
-  );
-  assert.ok(
-    leadsContent.includes('Customer "${customerRecord.name}" updated successfully'),
-    'Customer update toast must use standardized success copy'
-  );
-  assert.ok(
-    leadsContent.includes('Customer "${name}" deleted successfully'),
-    'Customer delete toast must use standardized success copy'
-  );
+  // Jargon that must not come back
+  for (const bad of ['created successfully', 'updated successfully', 'deleted successfully', 'auto-populated', 'billing screen', 'Failed to ']) {
+    assert.ok(!c.includes(bad), `jargon should be gone: ${bad}`);
+  }
 
-  // Enquiries
-  assert.ok(
-    leadsContent.includes('Enquiry for "${newEnquiry.contactName}" created successfully'),
-    'Enquiry create toast must use standardized success copy'
-  );
-  assert.ok(
-    leadsContent.includes('Enquiry "${name}" deleted successfully'),
-    'Enquiry delete toast must use standardized success copy'
-  );
+  // Revision message tells the owner what to do, in their words
+  assert.ok(c.includes('started from ${q.quoteNumber}'), 'revision toast names the new and the original quote');
+  assert.ok(c.includes('Prices and sites are copied over. Change what the customer asked for, then create the quote.'), 'revision toast says what to do next');
+});
 
-  // Suppliers
-  assert.ok(
-    leadsContent.includes('Supplier "${supplierPayload.supplierName}" created successfully'),
-    'Supplier create toast must use standardized success copy'
-  );
-  assert.ok(
-    leadsContent.includes('Supplier "${supplierPayload.supplierName}" updated successfully'),
-    'Supplier update toast must use standardized success copy'
-  );
-  assert.ok(
-    leadsContent.includes('Supplier "${name}" deleted successfully'),
-    'Supplier delete toast must use standardized success copy'
-  );
-
-  // Products
-  assert.ok(
-    leadsContent.includes('Product "${newProd.title}" created successfully'),
-    'Product create toast must use standardized success copy'
-  );
-  assert.ok(
-    leadsContent.includes('Product "${newProd.title}" updated successfully'),
-    'Product update toast must use standardized success copy'
-  );
-  assert.ok(
-    leadsContent.includes('Product "${name}" deleted successfully'),
-    'Product delete toast must use standardized success copy'
-  );
-
-  // Materials
-  assert.ok(
-    leadsContent.includes('Material "${newMat.name}" created successfully'),
-    'Material create toast must use standardized success copy'
-  );
-  assert.ok(
-    leadsContent.includes('Material "${trimmed}" updated successfully') ||
-    leadsContent.includes('Material "${newMat.name}" updated successfully'),
-    'Material update toast must use standardized success copy'
-  );
-  assert.ok(
-    leadsContent.includes('Material "${name}" deleted successfully'),
-    'Material delete toast must use standardized success copy'
-  );
-
-  // Finishes
-  assert.ok(
-    leadsContent.includes('Finish "${newFin.name}" created successfully'),
-    'Finish create toast must use standardized success copy'
-  );
-  assert.ok(
-    leadsContent.includes('Finish "${trimmed}" updated successfully') ||
-    leadsContent.includes('Finish "${newFin.name}" updated successfully'),
-    'Finish update toast must use standardized success copy'
-  );
-  assert.ok(
-    leadsContent.includes('Finish "${name}" deleted successfully'),
-    'Finish delete toast must use standardized success copy'
-  );
-
-  // Taxes
-  assert.ok(
-    leadsContent.includes('Tax "${trimmedName}" created successfully'),
-    'Tax create toast must use standardized success copy'
-  );
-  assert.ok(
-    leadsContent.includes('Tax "${trimmedName}" updated successfully'),
-    'Tax update toast must use standardized success copy'
-  );
-  assert.ok(
-    leadsContent.includes('Tax "${name}" deleted successfully'),
-    'Tax delete toast must use standardized success copy'
-  );
-
-  // Business Details
-  assert.ok(
-    leadsContent.includes('Business details updated successfully'),
-    'Business details update toast must use standardized success copy'
-  );
+test('4. Toasts leave quickly and never freeze on hover', () => {
+  const content = read(PAL_NOTCH_PATH);
+  assert.ok(content.includes('TOAST_HOVER_MS'), 'hover shortens the toast');
+  assert.ok(content.includes('speedUpToast'), 'hover handler speeds the toast up');
+  assert.ok(!/onMouseEnter=\{\(\) => \{\s*if \(isToast\) setIsPaused\(true\)/.test(content), 'hover must not pause the countdown');
+  assert.ok(!content.includes('animationPlayState: isPaused'), 'progress bar never pauses');
+  // Base durations are short: success 2s, error 4s
+  assert.ok(/success: 2000/.test(content) && /error: 4000/.test(content), 'short base durations');
 });

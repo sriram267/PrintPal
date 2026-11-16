@@ -470,12 +470,11 @@ export function QuotationReportsView({
 
   const handleFinalizeChange = (q: QuotationListItem, finalized: boolean) => {
     palNotch.confirm({
-      badge: finalized ? 'FINALIZE INVOICE' : 'REOPEN QUOTATION',
-      title: finalized ? `Finalize ${q.quoteNumber} as invoice?` : `Reopen ${q.quoteNumber}?`,
+      title: finalized ? `Make ${q.quoteNumber} the invoice?` : `Reopen ${q.quoteNumber}?`,
       description: finalized
-        ? `This is the agreed quotation for ${q.customerName}. It becomes the invoice and is locked from edits and deletion.`
-        : `${q.quoteNumber} goes back to Open so it can be renegotiated or edited.`,
-      confirmText: finalized ? 'Finalize as Invoice' : 'Reopen Quotation',
+        ? `Use this as the final quote for ${q.customerName}. It becomes the invoice, and can't be edited or deleted.`
+        : `${q.quoteNumber} goes back to Open, so you can change it again.`,
+      confirmText: finalized ? 'Make invoice' : 'Reopen',
       cancelText: 'Cancel',
       variant: 'default',
       onConfirm: async () => {
@@ -487,7 +486,7 @@ export function QuotationReportsView({
           });
           if (res.status === 409) {
             const err = await res.json().catch(() => ({}));
-            showToast(err.error || 'Only the latest quotation can be finalized', 'error');
+            showToast(err.error || 'Only the latest quote can be made the invoice', 'error');
             return;
           }
         } catch {
@@ -495,7 +494,7 @@ export function QuotationReportsView({
         }
         applyFinalized(q, finalized);
         showToast(
-          finalized ? `${q.quoteNumber} finalized as invoice` : `${q.quoteNumber} reopened`,
+          finalized ? `${q.quoteNumber} is now the invoice` : `${q.quoteNumber} reopened`,
           'success'
         );
       },
@@ -510,10 +509,9 @@ export function QuotationReportsView({
 
   const handleDeleteRequest = (q: QuotationListItem) => {
     palNotch.confirm({
-      badge: "DELETE QUOTATION",
-      title: `Delete Quotation "${q.quoteNumber}"?`,
-      description: `Permanently delete quotation for ${q.customerName}? This action cannot be undone.`,
-      confirmText: "Delete Quotation",
+      title: `Delete ${q.quoteNumber}?`,
+      description: `The quote for ${q.customerName} will be removed. This can't be undone.`,
+      confirmText: "Delete",
       cancelText: "Cancel",
       variant: "destructive",
       onConfirm: async () => {
@@ -521,7 +519,7 @@ export function QuotationReportsView({
           const res = await fetch(`/api/quotations/${q.id}`, { method: 'DELETE' });
           if (res.status === 409) {
             const err = await res.json().catch(() => ({}));
-            showToast(err.error || 'This quotation is finalized and cannot be deleted', 'error');
+            showToast(err.error || "An invoice can't be deleted. Reopen it first.", 'error');
             return;
           }
         } catch {
@@ -532,7 +530,7 @@ export function QuotationReportsView({
           persistLocal(next);
           return next;
         });
-        showToast(`Quotation "${q.quoteNumber}" deleted successfully`, 'success');
+        showToast(`${q.quoteNumber} deleted`, 'success');
       },
     });
   };

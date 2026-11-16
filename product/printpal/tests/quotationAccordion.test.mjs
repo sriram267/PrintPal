@@ -31,9 +31,9 @@ assert.ok(pdf.includes("documentType = 'Quotation'") && pdf.includes("{documentT
 
 // Backend guards
 assert.ok(server.includes('"/api/quotations/:id/finalize"'), "PATCH finalize endpoint");
-assert.ok(server.includes("Only the latest quotation of a customer can be finalized"), "finalize only latest");
-assert.ok(server.includes("A finalized invoice cannot be deleted"), "delete guard");
-assert.ok(server.includes("is finalized as an invoice. Un-finalize it before editing"), "edit guard");
+assert.ok(server.includes("Only the latest quote can be made the invoice"), "finalize only latest");
+assert.ok(server.includes("An invoice can\u0027t be deleted. Reopen it first."), "delete guard");
+assert.ok(server.includes("so it can\u0027t be edited. Reopen it first."), "edit guard");
 assert.ok(repo.includes("setFinalized") && repo.includes("getLatestForCustomer"), "repo helpers");
 
 console.log("  ✓ all accordion / finalize assertions passed");

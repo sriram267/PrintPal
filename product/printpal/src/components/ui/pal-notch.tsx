@@ -136,10 +136,16 @@ function nextId(): string {
   return `pal-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`
 }
 
-function defaultDuration(variant: PalNotchVariant, hasAction: boolean): number {
+/* How long a toast stays: long enough to read once, no longer. Good news goes fast; problems linger a little;
+   anything with a button gets a moment to be pressed; longer text earns a few extra seconds. */
+const TOAST_BASE_MS = { success: 2000, info: 2200, workshop: 2200, warning: 3200, error: 4000 } as const
+const TOAST_HOVER_MS = 1100 // once the pointer is on a toast it wraps up quickly (it never freezes)
+
+function defaultDuration(variant: PalNotchVariant, hasAction: boolean, textLength: number): number {
   if (variant === "loading") return 0
-  if (hasAction || variant === "error" || variant === "warning") return 5000
-  return 3600
+  const base = TOAST_BASE_MS[variant]
+  const extra = Math.max(0, textLength - 40) * 30
+  return Math.min(6000, Math.max(hasAction ? 3500 : 0, base + extra))
 }
 
 function emitPush(options: PalNotchOptions): string {
@@ -149,7 +155,13 @@ function emitPush(options: PalNotchOptions): string {
     ...options,
     id,
     variant,
-    duration: options.duration ?? defaultDuration(variant, Boolean(options.action)),
+    duration:
+      options.duration ??
+      defaultDuration(
+        variant,
+        Boolean(options.action),
+        (options.title?.length ?? 0) + (options.description?.length ?? 0)
+      ),
     createdAt: Date.now(),
   }
   if (item.duration > 0) lastToast = item
@@ -813,7 +825,8 @@ export function PalNotch({ activeModuleLabel = "Ready" }: PalNotchProps) {
   const [confirmStage, setConfirmStage] = React.useState<ConfirmStage>("idle")
   const [measuredConfirmH, setMeasuredConfirmH] = React.useState<number>(254)
   const [isGreeting, setIsGreeting] = React.useState<boolean>(false)
-  const [isPaused, setIsPaused] = React.useState(false)
+  const [, setIsPaused] = React.useState(false)
+  const [hoverCutMs, setHoverCutMs] = React.useState<number | null>(null)
   const [toastRevision, setToastRevision] = React.useState(0)
   const [progressKey, setProgressKey] = React.useState(0)
 
@@ -1121,38 +1134,34 @@ export function PalNotch({ activeModuleLabel = "Ready" }: PalNotchProps) {
     }
   }, [confirmStage, activeConfirm, activePrompt, activeDoc, activeToast, handleDismissConfirm, handleDismissPrompt])
 
+  // Arm the dismiss timer whenever a toast appears. It is never paused.
   React.useEffect(() => {
     clearTimer()
+    setHoverCutMs(null)
     if (!activeToast || activeToast.duration <= 0 || Boolean(activeConfirm) || Boolean(activePrompt)) return
 
-    remainingRef.current = activeToast.duration
     startedAtRef.current = Date.now()
-
-    if (!isPaused) {
-      timerRef.current = window.setTimeout(() => {
-        setActiveToast(null)
-      }, remainingRef.current)
-    }
+    remainingRef.current = activeToast.duration
+    timerRef.current = window.setTimeout(() => {
+      setActiveToast(null)
+    }, activeToast.duration)
 
     return clearTimer
   }, [activeToast, activeConfirm, activePrompt, toastRevision, clearTimer])
 
-  React.useEffect(() => {
+  // Pointer on the toast = "I've seen it": wrap up fast instead of freezing it in place.
+  const speedUpToast = React.useCallback(() => {
+    if (!activeToast || activeToast.duration <= 0 || hoverCutMs !== null) return
+    const elapsed = Date.now() - startedAtRef.current
+    const left = activeToast.duration - elapsed
+    if (left <= TOAST_HOVER_MS) return
     clearTimer()
-    if (!activeToast || activeToast.duration <= 0 || Boolean(activeConfirm) || Boolean(activePrompt)) return
-
-    if (isPaused) {
-      const elapsed = Date.now() - startedAtRef.current
-      remainingRef.current = Math.max(400, remainingRef.current - elapsed)
-    } else {
-      startedAtRef.current = Date.now()
-      timerRef.current = window.setTimeout(() => {
-        setActiveToast(null)
-      }, remainingRef.current)
-    }
-
-    return clearTimer
-  }, [isPaused, activeToast, activeConfirm, activePrompt, clearTimer])
+    timerRef.current = window.setTimeout(() => {
+      setActiveToast(null)
+    }, TOAST_HOVER_MS)
+    // The countdown bar keeps its place and just finishes sooner.
+    setHoverCutMs(elapsed + TOAST_HOVER_MS)
+  }, [activeToast, hoverCutMs, clearTimer])
 
   React.useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -1599,10 +1608,7 @@ export function PalNotch({ activeModuleLabel = "Ready" }: PalNotchProps) {
               : {}),
           }}
           onMouseEnter={() => {
-            if (isToast) setIsPaused(true)
-          }}
-          onMouseLeave={() => {
-            if (isToast) setIsPaused(false)
+            if (isToast) speedUpToast()
           }}
         >
           {/* Concave Ears (Flush Bezel Transition) */}
@@ -2402,8 +2408,7 @@ export function PalNotch({ activeModuleLabel = "Ready" }: PalNotchProps) {
                       height: "100%",
                       borderRadius: 9999,
                       backgroundColor: "rgba(255, 255, 255, 0.32)",
-                      animationDuration: `${activeToast.duration}ms`,
-                      animationPlayState: isPaused ? "paused" : "running",
+                      animationDuration: `${hoverCutMs ?? activeToast.duration}ms`,
                     }}
                   />
                 </div>

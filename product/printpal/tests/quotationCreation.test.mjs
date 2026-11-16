@@ -29,19 +29,19 @@ test('Quotation Creation Resilience & Local-First Fallback', () => {
   );
 
   // 3. Verify PDF preview is opened in all cases so workshop operations never halt
-  const occurrences = (content.match(/setIsPreviewOpen\(true\)/g) || []).length;
+  const occurrences = (content.match(/showDocument\(\);/g) || []).length;
   assert.ok(
     occurrences >= 3,
-    'setIsPreviewOpen(true) must be called on success, non-200 response, and catch block'
+    'the quotation sheet must be shown on success, non-200 response, and catch block'
   );
 
   // 4. Verify Pal Notch notification is invoked in all cases
   assert.ok(
-    content.includes('Quotation ${quoteNumber} Created'),
+    content.includes('Quote ${quoteNumber} saved'),
     'Must notify user on cloud creation'
   );
   assert.ok(
-    content.includes('Quotation ${quoteNumber} Created Locally'),
+    content.includes('saved on this device'),
     'Must notify user on local creation'
   );
 

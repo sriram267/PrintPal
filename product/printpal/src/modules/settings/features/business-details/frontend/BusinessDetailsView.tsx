@@ -234,9 +234,9 @@ export function BusinessDetailsView({
     try {
       const dataUrl = await fileToDataUrl(file);
       updateField("logoUrl", dataUrl);
-      showToast("Company logo uploaded — save to apply", "success");
+      showToast("Logo added. Save to use it on your quotes.", "success");
     } catch {
-      showToast("Unable to read logo image file", "error");
+      showToast("Couldn't read that image. Try a PNG or JPG.", "error");
     }
   };
 
@@ -246,9 +246,9 @@ export function BusinessDetailsView({
     try {
       const dataUrl = await fileToDataUrl(file);
       updateField("signatureUrl", dataUrl);
-      showToast("Authorized signature uploaded — save to apply", "success");
+      showToast("Signature added. Save to use it on your quotes.", "success");
     } catch {
-      showToast("Unable to read signature image file", "error");
+      showToast("Couldn't read that image. Try a PNG or JPG.", "error");
     }
   };
 

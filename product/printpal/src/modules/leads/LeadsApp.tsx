@@ -1221,9 +1221,8 @@ export function LeadsApp() {
 
       // 2. Announce Login Successful in Pal Notch Dynamic Island
       palNotch.notify({
-        title: `Login successful — Welcome, ${displayName}!`,
+        title: `Welcome back, ${displayName}`,
         variant: "success",
-        duration: 4000,
       })
     }
   }, [user])
@@ -1275,7 +1274,7 @@ export function LeadsApp() {
       setTaxes((prev) =>
         prev.map((t) => (t.id === editingTax.id ? { ...t, name: trimmedName, percentage: parsedPercentage } : t))
       )
-      showToast(`Tax "${trimmedName}" updated successfully`, "success")
+      showToast(`${trimmedName} updated`, "success")
     } else {
       const newTax: TaxRecord = {
         id: `tax_${Date.now()}`,
@@ -1283,7 +1282,7 @@ export function LeadsApp() {
         percentage: parsedPercentage,
       }
       setTaxes((prev) => [...prev, newTax])
-      showToast(`Tax "${trimmedName}" created successfully`, "success")
+      showToast(`${trimmedName} added to taxes`, "success")
     }
 
     setIsTaxModalOpen(false)
@@ -1303,13 +1302,13 @@ export function LeadsApp() {
           body: JSON.stringify(updated),
         })
         if (res.ok) {
-          showToast("Business details updated successfully", "success")
+          showToast("Business details saved", "success")
           return
         }
       } catch {
         // Offline / localStorage persisted fallback
       }
-      showToast("Business details updated locally", "success")
+      showToast("Business details saved on this device", "success")
     },
     [showToast]
   )
@@ -1491,7 +1490,7 @@ export function LeadsApp() {
     setFormSites(updated)
     setActiveSearchSiteId(null)
     setGeoapifyPredictions([])
-    palNotch.info("Site location pinned", place.formattedAddress)
+    palNotch.info("Location added to the site", place.formattedAddress)
   }
 
   const handleOpenLiveView = (site: SiteRecord) => {
@@ -1499,12 +1498,7 @@ export function LeadsApp() {
     // Direct Google Maps 360-degree panorama Street View mode (free, no API key needed)
     const url = `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${site.lat},${site.lng}&heading=0&pitch=0&fov=80`
     window.open(url, "_blank", "noopener,noreferrer")
-    palNotch.info(
-      "Opened 360° Street View",
-      site.siteName || site.address || "Live site panorama",
-      undefined,
-      "MAP"
-    )
+    palNotch.info("Opened street view", site.siteName || site.address || undefined)
   }
 
   // Form State: Basic Details
@@ -1644,33 +1638,33 @@ export function LeadsApp() {
         if (type === "customer") {
           await leadsService.deleteCustomer(id)
           setCustomers((prev) => prev.filter((c) => c.id !== id))
-          showToast(`Customer "${name}" deleted successfully`, "success")
+          showToast(`${name} deleted`, "success")
         } else if (type === "enquiry") {
           await leadsService.deleteEnquiry(id)
           setEnquiries((prev) => prev.filter((e) => e.id !== id))
-          showToast(`Enquiry "${name}" deleted successfully`, "success")
+          showToast(`Enquiry from ${name} deleted`, "success")
         } else if (type === "supplier") {
           await leadsService.deleteSupplier(id)
           setSuppliers((prev) => prev.filter((s) => s.id !== id))
-          showToast(`Supplier "${name}" deleted successfully`, "success")
+          showToast(`${name} deleted`, "success")
         } else if (type === "product") {
           await leadsService.deleteProduct(id)
           setProducts((prev) => prev.filter((p) => p.id !== id))
-          showToast(`Product "${name}" deleted successfully`, "success")
+          showToast(`${name} deleted`, "success")
         } else if (type === "material") {
           await leadsService.deleteMaterial(id)
           setMaterials((prev) => prev.filter((m) => m.id !== id))
-          showToast(`Material "${name}" deleted successfully`, "success")
+          showToast(`${name} deleted`, "success")
         } else if (type === "finish") {
           await leadsService.deleteFinish(id)
           setFinishes((prev) => prev.filter((f) => f.id !== id))
-          showToast(`Finish "${name}" deleted successfully`, "success")
+          showToast(`${name} deleted`, "success")
         } else if (type === "tax") {
           setTaxes((prev) => prev.filter((t) => t.id !== id))
-          showToast(`Tax "${name}" deleted successfully`, "success")
+          showToast(`${name} deleted`, "success")
         }
       } catch (err) {
-        showToast(`Failed to delete ${type}`, "error")
+        showToast(`Couldn't delete this ${type}. Please try again.`, "error")
       }
     },
     [showToast]
@@ -1862,18 +1856,17 @@ export function LeadsApp() {
     (enq: EnquiryRecord) => {
       palNotch.notify({
         id: `followup-${enq.id}`,
-        badge: "FOLLOW UP REMINDER",
         variant: "warning",
-        title: `Follow up required: ${enq.contactName}`,
-        description: `Follow-up scheduled on ${enq.followUpDate || "today"}. Contact phone: ${enq.phone}`,
+        title: "Follow-up due",
+        description: `Planned for ${enq.followUpDate || "today"}`,
         customerCard: {
           name: enq.contactName,
           phone: enq.phone,
           email: enq.email,
         },
-        duration: 25000,
+        duration: 8000,
         action: {
-          label: "View customer",
+          label: "Open enquiry",
           onClick: () => {
             openDrawerForEnquiry(enq)
           },
@@ -1906,10 +1899,9 @@ export function LeadsApp() {
   const handleDeleteCustomer = React.useCallback(
     (id: string, name: string) => {
       palNotch.confirm({
-        badge: "DELETE CUSTOMER",
-        title: `Delete Customer "${name}"?`,
-        description: "This will permanently remove this customer and their contact records.",
-        confirmText: "Delete Customer",
+        title: `Delete ${name}?`,
+        description: "Their details and sites will be removed. This can't be undone.",
+        confirmText: "Delete",
         cancelText: "Cancel",
         variant: "destructive",
         onConfirm: () => executeDelete("customer", id, name),
@@ -1929,10 +1921,9 @@ export function LeadsApp() {
   const handleDeleteEnquiry = React.useCallback(
     (id: string, name: string) => {
       palNotch.confirm({
-        badge: "DELETE ENQUIRY",
-        title: `Delete Enquiry "${name}"?`,
-        description: "This action cannot be undone and will permanently remove this enquiry.",
-        confirmText: "Delete Enquiry",
+        title: `Delete the enquiry from ${name}?`,
+        description: "It will be removed. This can't be undone.",
+        confirmText: "Delete",
         cancelText: "Cancel",
         variant: "destructive",
         onConfirm: () => executeDelete("enquiry", id, name),
@@ -2059,16 +2050,9 @@ export function LeadsApp() {
       };
 
       palNotch.notify({
-        badge: "QUOTATION REVISION",
         variant: "info",
-        title: `Revising ${q.quoteNumber}`,
-        description: `For ${q.customerName}, the next version ${versionInfo.nextQuoteNumber} is auto-populated in the billing screen for renegotiation.`,
-        customerCard: {
-          name: q.customerName,
-          contactPerson: q.contactPerson,
-          phone: q.phone,
-        },
-        duration: 9000,
+        title: `${versionInfo.nextQuoteNumber} started from ${q.quoteNumber}`,
+        description: "Prices and sites are copied over. Change what the customer asked for, then create the quote.",
       });
 
       setRenegotiatingQuote(renegData);
@@ -2085,10 +2069,9 @@ export function LeadsApp() {
   const handleDeleteSupplier = React.useCallback(
     (id: string, name: string) => {
       palNotch.confirm({
-        badge: "DELETE SUPPLIER",
-        title: `Delete Supplier "${name}"?`,
-        description: "This action cannot be undone and will permanently remove this supplier record.",
-        confirmText: "Delete Supplier",
+        title: `Delete ${name}?`,
+        description: "This supplier will be removed. This can't be undone.",
+        confirmText: "Delete",
         cancelText: "Cancel",
         variant: "destructive",
         onConfirm: () => executeDelete("supplier", id, name),
@@ -2104,10 +2087,9 @@ export function LeadsApp() {
   const handleDeleteProduct = React.useCallback(
     (id: string, name: string) => {
       palNotch.confirm({
-        badge: "DELETE PRODUCT",
-        title: `Delete Product "${name}"?`,
-        description: "This will permanently remove this product from your workshop catalog.",
-        confirmText: "Delete Product",
+        title: `Delete ${name}?`,
+        description: "It will be removed from your products. This can't be undone.",
+        confirmText: "Delete",
         cancelText: "Cancel",
         variant: "destructive",
         onConfirm: () => executeDelete("product", id, name),
@@ -2134,9 +2116,9 @@ export function LeadsApp() {
         try {
           await leadsService.saveMaterial(updated)
           setMaterials((prev) => prev.map((m) => (m.id === updated.id ? updated : m)))
-          showToast(`Material "${trimmed}" updated successfully`, "success")
+          showToast(`${trimmed} updated`, "success")
         } catch (err) {
-          showToast("Failed to update material", "error")
+          showToast("Couldn't update the material. Please try again.", "error")
           throw err
         }
         return
@@ -2184,9 +2166,9 @@ export function LeadsApp() {
           }
           setQuickTargetService(null)
         }
-        showToast(`Material "${newMat.name}" created successfully`, "success")
+        showToast(`${newMat.name} added to materials`, "success")
       } catch (err) {
-        showToast("Failed to save material", "error")
+        showToast("Couldn't save the material. Please try again.", "error")
         throw err
       }
     },
@@ -2211,9 +2193,9 @@ export function LeadsApp() {
         try {
           await leadsService.saveFinish(updated)
           setFinishes((prev) => prev.map((f) => (f.id === updated.id ? updated : f)))
-          showToast(`Finish "${trimmed}" updated successfully`, "success")
+          showToast(`${trimmed} updated`, "success")
         } catch (err) {
-          showToast("Failed to update finish", "error")
+          showToast("Couldn't update the finish. Please try again.", "error")
           throw err
         }
         return
@@ -2261,9 +2243,9 @@ export function LeadsApp() {
           }
           setQuickTargetService(null)
         }
-        showToast(`Finish "${newFin.name}" created successfully`, "success")
+        showToast(`${newFin.name} added to finishes`, "success")
       } catch (err) {
-        showToast("Failed to save finish", "error")
+        showToast("Couldn't save the finish. Please try again.", "error")
         throw err
       }
     },
@@ -2274,16 +2256,15 @@ export function LeadsApp() {
     (mat?: MaterialRecord | null, targetService?: { siteIdx: number; srvIdx: number } | null) => {
       const isEdit = Boolean(mat)
       palNotch.prompt({
-        title: isEdit ? "Edit Material" : "Add New Material",
+        title: isEdit ? "Edit material" : "Add a material",
         description: isEdit
-          ? "Update the raw material or substrate name in your master catalog."
-          : "Enter the substrate or raw material name. It will be added to your master materials catalog.",
-        inputLabel: "Material Name",
+          ? "Change the name of this material."
+          : "Add a material you work with, like Acrylic or ACP.",
+        inputLabel: "Material name",
         inputPlaceholder: "e.g. Acrylic Sheet",
         defaultValue: mat?.name || "",
-        submitText: isEdit ? "Save Changes" : "Save Material",
+        submitText: isEdit ? "Save" : "Add",
         cancelText: "Cancel",
-        badge: isEdit ? "EDIT MATERIAL" : "NEW MATERIAL",
         icon: isEdit ? "edit" : "material",
         variant: "brand",
         errorMessage: "Please enter a material name",
@@ -2299,16 +2280,15 @@ export function LeadsApp() {
     (fin?: FinishRecord | null, targetService?: { siteIdx: number; srvIdx: number } | null) => {
       const isEdit = Boolean(fin)
       palNotch.prompt({
-        title: isEdit ? "Edit Finish" : "Add New Finish",
+        title: isEdit ? "Edit finish" : "Add a finish",
         description: isEdit
-          ? "Update the coating or finishing treatment name in your master catalog."
-          : "Enter the coating, treatment, or finishing process name. It will be added to your master finishes catalog.",
-        inputLabel: "Finish Name",
+          ? "Change the name of this finish."
+          : "Add a finish you offer, like Powder Coating or Vinyl.",
+        inputLabel: "Finish name",
         inputPlaceholder: "e.g. Powder Coating",
         defaultValue: fin?.name || "",
-        submitText: isEdit ? "Save Changes" : "Save Finish",
+        submitText: isEdit ? "Save" : "Add",
         cancelText: "Cancel",
-        badge: isEdit ? "EDIT FINISH" : "NEW FINISH",
         icon: isEdit ? "edit" : "finish",
         variant: "brand",
         errorMessage: "Please enter a finish name",
@@ -2330,10 +2310,9 @@ export function LeadsApp() {
   const handleDeleteMaterial = React.useCallback(
     (id: string, name: string) => {
       palNotch.confirm({
-        badge: "DELETE MATERIAL",
-        title: `Delete Material "${name}"?`,
-        description: "This will permanently remove this raw material and gauge specs from inventory.",
-        confirmText: "Delete Material",
+        title: `Delete ${name}?`,
+        description: "It will be removed from your materials. This can't be undone.",
+        confirmText: "Delete",
         cancelText: "Cancel",
         variant: "destructive",
         onConfirm: () => executeDelete("material", id, name),
@@ -2352,10 +2331,9 @@ export function LeadsApp() {
   const handleDeleteFinish = React.useCallback(
     (id: string, name: string) => {
       palNotch.confirm({
-        badge: "DELETE FINISH",
-        title: `Delete Finish "${name}"?`,
-        description: "This will permanently remove this powder/anodizing finish from your catalog.",
-        confirmText: "Delete Finish",
+        title: `Delete ${name}?`,
+        description: "It will be removed from your finishes. This can't be undone.",
+        confirmText: "Delete",
         cancelText: "Cancel",
         variant: "destructive",
         onConfirm: () => executeDelete("finish", id, name),
@@ -2367,10 +2345,9 @@ export function LeadsApp() {
   const handleDeleteTax = React.useCallback(
     (tax: TaxRecord) => {
       palNotch.confirm({
-        badge: "DELETE TAX",
-        title: `Delete Tax "${tax.name}"?`,
-        description: "This will permanently remove this tax rate.",
-        confirmText: "Delete Tax",
+        title: `Delete ${tax.name}?`,
+        description: "This tax rate will be removed. This can't be undone.",
+        confirmText: "Delete",
         cancelText: "Cancel",
         variant: "destructive",
         onConfirm: () => executeDelete("tax", tax.id, tax.name),
@@ -2533,10 +2510,10 @@ export function LeadsApp() {
 
     if (editingSupplierId) {
       setSuppliers((prev) => prev.map((s) => (s.id === editingSupplierId ? supplierPayload : s)))
-      showToast(`Supplier "${supplierPayload.supplierName}" updated successfully`, "success")
+      showToast(`${supplierPayload.supplierName} updated`, "success")
     } else {
       setSuppliers((prev) => [supplierPayload, ...prev])
-      showToast(`Supplier "${supplierPayload.supplierName}" created successfully`, "success")
+      showToast(`${supplierPayload.supplierName} added to suppliers`, "success")
     }
 
     closeNewCustomerModal()
@@ -2647,7 +2624,7 @@ export function LeadsApp() {
         return [newProd, ...prev]
       })
       showToast(
-        editingProductId ? `Product "${newProd.title}" updated successfully` : `Product "${newProd.title}" created successfully`,
+        editingProductId ? `${newProd.title} updated` : `${newProd.title} added to products`,
         "success"
       )
       if (productDrawerReturnTitle) {
@@ -2675,7 +2652,7 @@ export function LeadsApp() {
       }
       closeNewCustomerModal()
     } catch (err) {
-      showToast("Failed to save product", "error")
+      showToast("Couldn't save the product. Please try again.", "error")
     }
   }
 
@@ -2698,7 +2675,7 @@ export function LeadsApp() {
     try {
       await leadsService.saveProduct(newProd)
       setProducts((prev) => [newProd, ...prev])
-      showToast(`Product "${newProd.title}" created successfully`, "success")
+      showToast(`${newProd.title} added to products`, "success")
 
       if (quickTargetService) {
         const { siteIdx, srvIdx } = quickTargetService
@@ -2725,7 +2702,7 @@ export function LeadsApp() {
       setQuickProductSelectedFins([])
       setQuickTargetService(null)
     } catch (err) {
-      showToast("Failed to save product", "error")
+      showToast("Couldn't save the product. Please try again.", "error")
     }
   }
 
@@ -2801,12 +2778,12 @@ export function LeadsApp() {
         return [newMat, ...prev]
       })
       showToast(
-        editingMaterialId ? `Material "${newMat.name}" updated successfully` : `Material "${newMat.name}" created successfully`,
+        editingMaterialId ? `${newMat.name} updated` : `${newMat.name} added to materials`,
         "success"
       )
       closeNewCustomerModal()
     } catch (err) {
-      showToast("Failed to save material", "error")
+      showToast("Couldn't save the material. Please try again.", "error")
     }
   }
 
@@ -2876,12 +2853,12 @@ export function LeadsApp() {
         return [newFin, ...prev]
       })
       showToast(
-        editingFinishId ? `Finish "${newFin.name}" updated successfully` : `Finish "${newFin.name}" created successfully`,
+        editingFinishId ? `${newFin.name} updated` : `${newFin.name} added to finishes`,
         "success"
       )
       closeNewCustomerModal()
     } catch (err) {
-      showToast("Failed to save finish", "error")
+      showToast("Couldn't save the finish. Please try again.", "error")
     }
   }
 
@@ -3068,15 +3045,15 @@ export function LeadsApp() {
       setEnquiries((prev) => prev.filter((e) => e.id !== editingEnquiryId))
       setEditingEnquiryId(null)
       setCustomers((prev) => [customerRecord, ...prev])
-      showToast(`Enquiry converted to customer "${customerRecord.name}" successfully`, "success")
+      showToast(`${customerRecord.name} is now a customer`, "success")
     } else if (editingCustomerId) {
       setCustomers((prev) =>
         prev.map((c) => (c.id === editingCustomerId ? customerRecord : c))
       )
-      showToast(`Customer "${customerRecord.name}" updated successfully`, "success")
+      showToast(`${customerRecord.name} updated`, "success")
     } else {
       setCustomers((prev) => [customerRecord, ...prev])
-      showToast(`Customer "${customerRecord.name}" created successfully`, "success")
+      showToast(`${customerRecord.name} added to customers`, "success")
     }
 
     if (activeModule === "quotation") {
@@ -3214,7 +3191,7 @@ export function LeadsApp() {
       setEnquiries((prev) => prev.filter((e) => e.id !== editingEnquiryId))
       setEditingEnquiryId(null)
       setCustomers((prev) => [customerRecord, ...prev])
-      showToast(`Enquiry converted to customer "${customerRecord.name}" - Quote initiated`, "success")
+      showToast(`${customerRecord.name} is now a customer. You can quote them now.`, "success")
     } else if (editingCustomerId) {
       setCustomers((prev) =>
         prev.map((c) => (c.id === editingCustomerId ? customerRecord : c))
@@ -3280,10 +3257,10 @@ export function LeadsApp() {
       setEnquiries((prev) =>
         prev.map((e) => (e.id === editingEnquiryId ? newEnquiry : e))
       )
-      showToast(`Enquiry for "${newEnquiry.contactName}" updated successfully`, "success")
+      showToast(`Enquiry from ${newEnquiry.contactName} updated`, "success")
     } else {
       setEnquiries((prev) => [newEnquiry, ...prev])
-      showToast(`Enquiry for "${newEnquiry.contactName}" created successfully`, "success")
+      showToast(`Enquiry from ${newEnquiry.contactName} added`, "success")
     }
 
     if (newEnquiry.followUpDate && isDueForFollowUpReminder(newEnquiry.followUpDate)) {
@@ -3440,12 +3417,7 @@ export function LeadsApp() {
             className="w-9 h-9 flex items-center justify-center rounded-full text-[#737B84] hover:text-[#202428] hover:bg-[#F3F5F7] transition-colors cursor-pointer border-none bg-transparent"
             title="Help & Support"
             onClick={() =>
-              palNotch.info(
-                "PrintPal Workshop Support",
-                "Reach us at help@printpal.in for quotation or technical assistance.",
-                undefined,
-                "SUPPORT"
-              )
+              palNotch.info("Need help?", "Write to us at help@printpal.in")
             }
           >
             <HelpCircle className="h-[18px] w-[18px]" strokeWidth={1.8} />
@@ -3981,8 +3953,8 @@ export function LeadsApp() {
                         } catch { }
                         showToast(
                           nextVal
-                            ? "Taxes enabled for saleable items"
-                            : "Taxes disabled for saleable items",
+                            ? "Tax will now be added to items you sell"
+                            : "Tax will no longer be added to items you sell",
                           "info"
                         )
                       }}
@@ -4094,8 +4066,8 @@ export function LeadsApp() {
                         }
                         showToast(
                           nextVal
-                            ? "Supplier module enabled"
-                            : "Supplier module disabled",
+                            ? "Suppliers turned on"
+                            : "Suppliers turned off",
                           "info"
                         )
                       }}

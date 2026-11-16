@@ -933,13 +933,13 @@ server.post("/api/quotations", async (req, reply) => {
     const existingRow = await repo.quotations.getRow(req.tenantId, quoteId);
     if (existingRow && existingRow.quote_status === "Invoice") {
       reply.status(409);
-      return { error: "This quotation is finalized as an invoice. Un-finalize it before editing." };
+      return { error: "This quote is now the invoice, so it can't be edited. Reopen it first." };
     }
     if (!existingRow) {
       const latest = await repo.quotations.getLatestForCustomer(req.tenantId, effectiveCustomerId);
       if (latest && latest.quote_status === "Invoice") {
         reply.status(409);
-        return { error: `Quotation ${latest.quote_number} is finalized. Un-finalize it to create a new version.` };
+        return { error: `${latest.quote_number} is already the invoice. Reopen it to make a new version.` };
       }
     }
   }
@@ -1068,7 +1068,7 @@ server.patch("/api/quotations/:id/finalize", async (req, reply) => {
     const latest = await repo.quotations.getLatestForCustomer(req.tenantId, row.customer_id);
     if (latest && latest.id !== row.id) {
       reply.status(409);
-      return { error: "Only the latest quotation of a customer can be finalized" };
+      return { error: "Only the latest quote can be made the invoice" };
     }
   }
   const updated = await repo.quotations.setFinalized(req.tenantId, row.id, finalized);
@@ -1079,7 +1079,7 @@ server.delete("/api/quotations/:id", async (req, reply) => {
   const row = await repo.quotations.getRow(req.tenantId, req.params.id);
   if (row && row.quote_status === "Invoice") {
     reply.status(409);
-    return { error: "A finalized invoice cannot be deleted. Un-finalize it first." };
+    return { error: "An invoice can't be deleted. Reopen it first." };
   }
   const result = await repo.quotations.delete(req.tenantId, req.params.id);
   return result;

@@ -489,7 +489,7 @@ export function QuotationView({
     setIsSearchDropdownOpen(false);
     setSites(mapCustomerSitesToQuoteSites(cust.sites || [], products));
     setShowValidationErrors(false);
-    showToast(`Loaded customer "${cust.name}" into quotation`, 'info');
+    showToast(`Quoting for ${cust.name}`, 'info');
   };
 
   // Toggle Site Accordion Expand/Collapse
@@ -840,52 +840,44 @@ export function QuotationView({
         console.warn('[QuotationView] Backend unreachable, proceeding with local creation:', networkErr);
       }
 
+      // One plain message per outcome. Local saves say so, with what to do about it.
+      const summary = `${selectedCustomer.name} · ₹${grandTotal.toLocaleString('en-IN')}`;
+      const viewAction = { label: 'View', onClick: () => showDocument() };
+
       if (res && res.ok) {
         const data = await res.json().catch(() => ({}));
         onClearRenegotiatingQuote?.();
         syncToLocalStorage(data.quoteId || data.id);
-        palNotch.workshop(
-          `Quotation ${quoteNumber} Created`,
-          `${selectedCustomer.name} • ₹${grandTotal.toLocaleString('en-IN')}`,
-          { label: 'View PDF', onClick: () => showDocument() }
-        );
+        palNotch.workshop(`Quote ${quoteNumber} saved`, summary, viewAction);
         showDocument();
       } else {
         // Resilient Workshop Fallback: Always save locally and open preview so workshop operations never halt!
         onClearRenegotiatingQuote?.();
         syncToLocalStorage();
-        palNotch.workshop(
-          `Quotation ${quoteNumber} Created Locally`,
-          `${selectedCustomer.name} • ₹${grandTotal.toLocaleString('en-IN')}`,
-          { label: 'View PDF', onClick: () => showDocument() }
-        );
+        const why = !res
+          ? 'saved on this device (no internet)'
+          : res.status === 401
+            ? 'saved on this device. Sign in to back it up'
+            : 'saved on this device only';
+        palNotch.notify({
+          variant: 'warning',
+          title: `Quote ${quoteNumber} saved`,
+          description: `${summary} · ${why}`,
+          action: viewAction,
+        });
         showDocument();
-
-        if (!res) {
-          showToast(`Quotation ${quoteNumber} saved locally (Offline mode). PDF ready.`, 'info');
-        } else if (res.status === 401) {
-          showToast(`Quotation saved locally. Sign in to sync quotes to cloud.`, 'info');
-        } else {
-          const err = await res.json().catch(() => ({}));
-          const errMsg = err.error || err.message;
-          if (errMsg) {
-            showToast(`Saved locally. Cloud sync notice: ${errMsg}`, 'info');
-          } else {
-            showToast(`Quotation ${quoteNumber} created and saved locally`, 'info');
-          }
-        }
       }
     } catch (e) {
       console.error('[QuotationView] Unexpected quote creation failure:', e);
       onClearRenegotiatingQuote?.();
       syncToLocalStorage();
-      palNotch.workshop(
-        `Quotation ${quoteNumber} Saved Locally`,
-        `${selectedCustomer.name} • ₹${grandTotal.toLocaleString('en-IN')}`,
-        { label: 'View PDF', onClick: () => showDocument() }
-      );
+      palNotch.notify({
+        variant: 'warning',
+        title: `Quote ${quoteNumber} saved`,
+        description: `${selectedCustomer.name} · ₹${grandTotal.toLocaleString('en-IN')} · saved on this device only`,
+        action: { label: 'View', onClick: () => showDocument() },
+      });
       showDocument();
-      showToast(`Quotation saved locally`, 'info');
     }
   };
 
@@ -1148,15 +1140,14 @@ export function QuotationView({
                         onClick={(e) => {
                           e.stopPropagation();
                           palNotch.confirm({
-                            badge: "DELETE SITE",
-                            title: `Delete Site "${site.siteName}"?`,
-                            description: "This will permanently remove this entire site and all its configured product services.",
-                            confirmText: "Delete Site",
+                            title: `Delete ${site.siteName}?`,
+                            description: "The site and all its items will be removed from this quote.",
+                            confirmText: "Delete",
                             cancelText: "Cancel",
                             variant: "destructive",
                             onConfirm: () => {
                               handleDeleteSite(site.id);
-                              showToast(`Site "${site.siteName}" deleted successfully`, 'success');
+                              showToast(`${site.siteName} deleted`, 'success');
                             },
                           });
                         }}
@@ -1549,15 +1540,14 @@ export function QuotationView({
                                     type="button"
                                     onClick={() => {
                                       palNotch.confirm({
-                                        badge: "DELETE ITEM",
-                                        title: `Delete "${item.productTitle}"?`,
-                                        description: `Remove this item from ${site.siteName}? This action cannot be undone.`,
-                                        confirmText: "Delete Item",
+                                        title: `Delete ${item.productTitle}?`,
+                                        description: `It will be removed from ${site.siteName}.`,
+                                        confirmText: "Delete",
                                         cancelText: "Cancel",
                                         variant: "destructive",
                                         onConfirm: () => {
                                           handleDeleteLineItem(site.id, item.id);
-                                          showToast(`Item "${item.productTitle}" deleted successfully`, 'success');
+                                          showToast(`${item.productTitle} deleted`, 'success');
                                         },
                                       });
                                     }}

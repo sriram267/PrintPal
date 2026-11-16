@@ -103,13 +103,12 @@ async function runTests() {
     "utf-8"
   );
   assert.ok(
-    leadsAppSrc.includes('badge: "QUOTATION REVISION"'),
-    "LeadsApp must trigger Pal Notch notification with badge 'QUOTATION REVISION'"
+    leadsAppSrc.includes("started from ${q.quoteNumber}"),
+    "LeadsApp must tell the owner which new version was started from which quote"
   );
   assert.ok(
-    leadsAppSrc.includes("is auto-populated in the quotation screen") ||
-    leadsAppSrc.includes("is auto-populated in the billing screen"),
-    "Pal Notch copy must inform user quotation revision is auto-populated in quotation screen"
+    leadsAppSrc.includes("Prices and sites are copied over. Change what the customer asked for, then create the quote."),
+    "Pal Notch copy must say, in plain words, what to do next"
   );
   assert.ok(
     leadsAppSrc.includes("handleRenegotiateQuotation"),
