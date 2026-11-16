@@ -83,7 +83,7 @@ export interface QuotationViewProps {
    * When given, the printed-quotation sheet is shown by the parent (above whichever screen is active),
    * so it can keep printing/retracting while the screen behind switches to Quotation Reports.
    */
-  onShowDocument?: (doc: QuotePDFDocumentProps) => void;
+  onShowDocument?: (doc: QuotePDFDocumentProps, opts: { fresh: boolean }) => void;
 }
 
 export type PricingMethod =
@@ -687,13 +687,15 @@ export function QuotationView({
   const grandTotal = selectedCustomer ? taxableTotal + gstAmount : 0;
 
   // Create Customer Quote handler (validates inline fields first, then dispatches to API)
-  const showDocument = () => {
+  // fresh = just created: closing the sheet then lands on Quotation Reports. Re-opening later leaves you in place.
+  const showDocument = (fresh = false) => {
     if (!selectedCustomer) return;
     if (!onShowDocument) {
       setIsPreviewOpen(true);
       return;
     }
-    onShowDocument({
+    onShowDocument(
+      {
       customer: selectedCustomer,
       sites,
       quoteNumber,
@@ -711,7 +713,9 @@ export function QuotationView({
       fabNotes,
       commercialTerms,
       businessDetails,
-    });
+      },
+      { fresh }
+    );
   };
 
   const handleCreateCustomerQuote = async () => {
@@ -849,7 +853,7 @@ export function QuotationView({
         onClearRenegotiatingQuote?.();
         syncToLocalStorage(data.quoteId || data.id);
         palNotch.workshop(`Quote ${quoteNumber} saved`, summary, viewAction);
-        showDocument();
+        showDocument(true);
       } else {
         // Resilient Workshop Fallback: Always save locally and open preview so workshop operations never halt!
         onClearRenegotiatingQuote?.();
@@ -865,7 +869,7 @@ export function QuotationView({
           description: `${summary} · ${why}`,
           action: viewAction,
         });
-        showDocument();
+        showDocument(true);
       }
     } catch (e) {
       console.error('[QuotationView] Unexpected quote creation failure:', e);
@@ -877,7 +881,7 @@ export function QuotationView({
         description: `${selectedCustomer.name} · ₹${grandTotal.toLocaleString('en-IN')} · saved on this device only`,
         action: { label: 'View', onClick: () => showDocument() },
       });
-      showDocument();
+      showDocument(true);
     }
   };
 

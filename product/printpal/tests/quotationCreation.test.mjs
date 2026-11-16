@@ -29,7 +29,7 @@ test('Quotation Creation Resilience & Local-First Fallback', () => {
   );
 
   // 3. Verify PDF preview is opened in all cases so workshop operations never halt
-  const occurrences = (content.match(/showDocument\(\);/g) || []).length;
+  const occurrences = (content.match(/showDocument\(true\);/g) || []).length;
   assert.ok(
     occurrences >= 3,
     'the quotation sheet must be shown on success, non-200 response, and catch block'

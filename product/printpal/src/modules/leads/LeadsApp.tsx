@@ -955,7 +955,7 @@ export function LeadsApp() {
   // Quote just created → Quotation Reports opens its customer group and highlights the new line
   const [justCreatedQuote, setJustCreatedQuote] = React.useState<{ customerId: string; quoteNumber: string } | null>(null)
   /* The printed quotation sheet lives here, above every screen, so it can retract while the screen behind switches. */
-  const [documentSheet, setDocumentSheet] = React.useState<QuotePDFDocumentProps | null>(null)
+  const [documentSheet, setDocumentSheet] = React.useState<{ doc: QuotePDFDocumentProps; fresh: boolean } | null>(null)
 
   // Settings Module State
   const [settingsMenu, setSettingsMenu] = React.useState<"businessDetails" | "products" | "materials" | "finishes" | "tax" | "supplier">("products")
@@ -3537,14 +3537,16 @@ export function LeadsApp() {
       {documentSheet && (
         <QuotePDFPreview
           isOpen
-          {...documentSheet}
+          {...documentSheet.doc}
           onBeginClose={() => {
-            // The paper starts retracting: flip the screen behind to Quotation Reports with the new line.
+            // A freshly created quote: as the paper starts retracting, flip the screen behind to
+            // Quotation Reports with the new line. Re-opening an old quote leaves you where you are.
+            if (!documentSheet.fresh) return
             setRenegotiatingQuote(null)
             setQuotationSelectedCustomer(null)
             setJustCreatedQuote({
-              customerId: documentSheet.customer.id || "",
-              quoteNumber: documentSheet.quoteNumber,
+              customerId: documentSheet.doc.customer.id || "",
+              quoteNumber: documentSheet.doc.quoteNumber,
             })
             setActiveModule("quotationReports")
           }}
@@ -3566,7 +3568,7 @@ export function LeadsApp() {
           isSupplierEnabled={isSupplierEnabled}
           renegotiatingQuote={renegotiatingQuote}
           onClearRenegotiatingQuote={() => setRenegotiatingQuote(null)}
-          onShowDocument={(doc) => setDocumentSheet(doc)}
+          onShowDocument={(doc, opts) => setDocumentSheet({ doc, fresh: opts.fresh })}
           onQuotationCreated={(created) => {
             setRenegotiatingQuote(null)
             setQuotationSelectedCustomer(null)
