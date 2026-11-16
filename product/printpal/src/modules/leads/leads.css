@@ -652,8 +652,65 @@
 .printpal-table-header.printpal-billing-reports-grid,
 .printpal-table-row.printpal-billing-reports-grid {
   display: grid !important;
-  grid-template-columns: minmax(130px, 1.2fr) minmax(180px, 1.8fr) minmax(160px, 1.5fr) 100px 140px 120px 120px !important;
+  grid-template-columns: minmax(220px, 2fr) 130px minmax(160px, 1.5fr) 90px 140px 120px 110px !important;
   align-items: center;
+}
+
+/* Quotation Reports: customer accordion rows + version rows */
+.printpal-quote-group-row {
+  background: var(--printpal-white);
+}
+
+.printpal-quote-group-row:focus-visible {
+  outline: 2px solid var(--printpal-blue);
+  outline-offset: -2px;
+}
+
+.printpal-quote-version-row {
+  background: #fbfcfd;
+}
+
+.printpal-quote-version-row:hover {
+  background: var(--printpal-surface);
+}
+
+.printpal-quote-chevron {
+  transition: transform 0.15s ease;
+}
+
+.printpal-quote-chevron.is-open {
+  transform: rotate(90deg);
+}
+
+/* Derived status chips: Renegotiated · Open · Invoice */
+.printpal-status-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+.printpal-status-chip--renegotiated {
+  background: #F1F5F9;
+  border-color: #E2E8F0;
+  color: #475569;
+}
+
+.printpal-status-chip--open {
+  background: #FFF7ED;
+  border-color: #FED7AA;
+  color: var(--printpal-orange);
+}
+
+.printpal-status-chip--invoice {
+  background: #EFF6FF;
+  border-color: #BFDBFE;
+  color: var(--printpal-blue);
 }
 
 .printpal-table-header.printpal-quotation-reports-grid > div:first-child,

@@ -928,6 +928,22 @@ server.post("/api/quotations", async (req, reply) => {
     quoteId = `quote-${Date.now()}`;
   }
 
+  // A finalized invoice is locked; and no new version while the customer's latest quote is finalized.
+  if (req.tenantId) {
+    const existingRow = await repo.quotations.getRow(req.tenantId, quoteId);
+    if (existingRow && existingRow.quote_status === "Invoice") {
+      reply.status(409);
+      return { error: "This quotation is finalized as an invoice. Un-finalize it before editing." };
+    }
+    if (!existingRow) {
+      const latest = await repo.quotations.getLatestForCustomer(req.tenantId, effectiveCustomerId);
+      if (latest && latest.quote_status === "Invoice") {
+        reply.status(409);
+        return { error: `Quotation ${latest.quote_number} is finalized. Un-finalize it to create a new version.` };
+      }
+    }
+  }
+
   // Validate and recompute all lines with calcLine
   const processedLines = [];
   let computedSubtotal = 0;
@@ -1040,7 +1056,31 @@ server.post("/api/quotations", async (req, reply) => {
   };
 });
 
+// Finalize (quote -> invoice) or un-finalize. Only the newest quotation of a customer can be finalized.
+server.patch("/api/quotations/:id/finalize", async (req, reply) => {
+  const finalized = !!(req.body && req.body.finalized);
+  const row = await repo.quotations.getRow(req.tenantId, req.params.id);
+  if (!row) {
+    reply.status(404);
+    return { error: "Quotation not found" };
+  }
+  if (finalized) {
+    const latest = await repo.quotations.getLatestForCustomer(req.tenantId, row.customer_id);
+    if (latest && latest.id !== row.id) {
+      reply.status(409);
+      return { error: "Only the latest quotation of a customer can be finalized" };
+    }
+  }
+  const updated = await repo.quotations.setFinalized(req.tenantId, row.id, finalized);
+  return { id: updated.id, quoteStatus: updated.quote_status, finalized };
+});
+
 server.delete("/api/quotations/:id", async (req, reply) => {
+  const row = await repo.quotations.getRow(req.tenantId, req.params.id);
+  if (row && row.quote_status === "Invoice") {
+    reply.status(409);
+    return { error: "A finalized invoice cannot be deleted. Un-finalize it first." };
+  }
   const result = await repo.quotations.delete(req.tenantId, req.params.id);
   return result;
 });

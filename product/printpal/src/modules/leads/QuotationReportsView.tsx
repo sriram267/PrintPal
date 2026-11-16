@@ -5,8 +5,9 @@
  */
 
 import React from 'react';
-import { Trash2, FileText, Pencil } from 'lucide-react';
+import { Trash2, FileText, Pencil, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import { palNotch } from '@ui/pal-notch';
 import { QuotePDFPreview } from './QuotePDFPreview';
 import type { CustomerRecord } from './types';
@@ -18,7 +19,9 @@ export interface QuotationListItem {
   id: string;
   quoteNumber: string;
   quoteDate: string;
-  quoteStatus: 'Draft' | 'Sent';
+  /** 'Invoice' = finalized. Renegotiated / Open are derived from version order, not stored. */
+  quoteStatus: 'Draft' | 'Sent' | 'Invoice';
+  createdAt?: string;
   customerId?: string;
   customerName: string;
   contactPerson?: string;
@@ -79,20 +82,86 @@ function QuotationEmptyIllustration() {
   );
 }
 
-// ── Quotations Rows (Leads-matching .printpal-table-row & .printpal-cell-actions) ──
+// ── Grouping & derived status ─────────────────────────────────────────────────
+//
+// One customer = one accordion. Inside it, quotations are listed newest first.
+// Status is never picked by hand:
+//   • every quotation below the top one  → "Renegotiated"  (a newer version exists)
+//   • the top one                        → "Open"
+//   • the top one, once finalized        → "Invoice"       (quoteStatus === 'Invoice')
 
-function QuotationRows({
-  quotations,
+export type QuotationDisplayStatus = 'Renegotiated' | 'Open' | 'Invoice';
+
+export interface QuotationGroup {
+  key: string;
+  customerName: string;
+  /** Newest first — index 0 is the live / final one. */
+  quotes: QuotationListItem[];
+}
+
+function groupKeyOf(q: QuotationListItem): string {
+  return q.customerId ? `id:${q.customerId}` : `name:${(q.customerName || '').trim().toLowerCase()}`;
+}
+
+export function groupQuotationsByCustomer(items: QuotationListItem[]): QuotationGroup[] {
+  const map = new Map<string, QuotationGroup>();
+  items.forEach((q) => {
+    const key = groupKeyOf(q);
+    const g = map.get(key);
+    if (g) g.quotes.push(q);
+    else map.set(key, { key, customerName: q.customerName, quotes: [q] });
+  });
+  const groups = Array.from(map.values());
+  groups.forEach((g) => {
+    // Stable sort: newest first by createdAt when both have it, else keep incoming (newest-first) order.
+    g.quotes = g.quotes
+      .map((q, i) => ({ q, i }))
+      .sort((a, b) => {
+        const ta = a.q.createdAt ? Date.parse(a.q.createdAt) : NaN;
+        const tb = b.q.createdAt ? Date.parse(b.q.createdAt) : NaN;
+        if (!Number.isNaN(ta) && !Number.isNaN(tb) && ta !== tb) return tb - ta;
+        return a.i - b.i;
+      })
+      .map((x) => x.q);
+  });
+  return groups;
+}
+
+export function displayStatusOf(group: QuotationGroup, index: number): QuotationDisplayStatus {
+  if (index > 0) return 'Renegotiated';
+  return group.quotes[0].quoteStatus === 'Invoice' ? 'Invoice' : 'Open';
+}
+
+function StatusChip({ status }: { status: QuotationDisplayStatus }) {
+  const cls =
+    status === 'Invoice'
+      ? 'printpal-status-chip printpal-status-chip--invoice'
+      : status === 'Open'
+        ? 'printpal-status-chip printpal-status-chip--open'
+        : 'printpal-status-chip printpal-status-chip--renegotiated';
+  return <span className={cls}>{status}</span>;
+}
+
+// ── Accordion rows (Leads-matching .printpal-table-row & .printpal-cell-actions) ──
+
+function QuotationGroups({
+  groups,
+  expanded,
+  onToggle,
   onViewPDF,
   onDelete,
   onRenegotiate,
+  onFinalizeChange,
 }: {
-  quotations: QuotationListItem[];
+  groups: QuotationGroup[];
+  expanded: Set<string>;
+  onToggle: (key: string) => void;
   onViewPDF: (q: QuotationListItem) => void;
   onDelete: (q: QuotationListItem) => void;
   onRenegotiate?: (q: QuotationListItem) => void;
+  onFinalizeChange: (q: QuotationListItem, finalized: boolean) => void;
 }) {
-  if (quotations.length === 0) {
+  if (groups.length === 0) {
     return (
       <div className="printpal-empty-state-canvas">
         <div className="printpal-empty-state-card">
@@ -110,82 +179,148 @@ function QuotationRows({
 
   return (
     <>
-      {quotations.map((q) => (
-        <div
-          key={q.id}
-          className="printpal-table-row printpal-quotation-reports-grid printpal-billing-reports-grid cursor-pointer"
-          onClick={() => onViewPDF(q)}
-          title="Click to view Quotation PDF"
-        >
-          {/* Quote Number */}
-          <div className="font-medium pr-3 truncate">
-            <span className="font-mono font-semibold text-[#2878D0]">{q.quoteNumber}</span>
-          </div>
-
-          {/* Customer */}
-          <div className="font-medium pr-3 truncate text-[#202428]">
-            {q.customerName}
-          </div>
-
-          {/* Contact */}
-          <div className="flex flex-col justify-center pr-3 min-w-0">
-            <span className="text-[14px] text-[#202428] truncate">
-              {q.contactPerson || '—'}
-            </span>
-            {q.phone && (
-              <span className="text-[12px] text-[#737B84] tabular-nums truncate">{q.phone}</span>
-            )}
-          </div>
-
-          {/* Sites count */}
-          <div className="text-center text-[#202428] tabular-nums">
-            {q.sitesCount} {q.sitesCount === 1 ? 'site' : 'sites'}
-          </div>
-
-          {/* Grand Total */}
-          <div className="text-right font-semibold text-[#202428] tabular-nums pr-2">
-            {fmt(q.grandTotal)}
-          </div>
-
-          {/* Date */}
-          <div className="text-[13px] text-[#737B84] truncate">
-            {q.quoteDate}
-          </div>
-
-          {/* Actions matching Leads module */}
-          <div
-            className="printpal-cell-actions flex items-center justify-end gap-1.5"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {onRenegotiate && (
-              <button
-                type="button"
-                className="printpal-btn-edit-icon"
-                title="Renegotiate / Create Version 2"
-                onClick={() => onRenegotiate(q)}
-              >
-                <Pencil className="h-4 w-4 text-[#D7440E]" />
-              </button>
-            )}
-            <button
-              type="button"
-              className="printpal-btn-edit-icon"
-              title="Preview Quotation PDF"
-              onClick={() => onViewPDF(q)}
+      {groups.map((g) => {
+        const top = g.quotes[0];
+        const isOpen = expanded.has(g.key);
+        const topStatus = displayStatusOf(g, 0);
+        return (
+          <React.Fragment key={g.key}>
+            {/* ── Customer accordion row ── */}
+            <div
+              className="printpal-table-row printpal-quotation-reports-grid printpal-billing-reports-grid printpal-quote-group-row cursor-pointer"
+              role="button"
+              tabIndex={0}
+              aria-expanded={isOpen}
+              onClick={() => onToggle(g.key)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  onToggle(g.key);
+                }
+              }}
+              title={isOpen ? 'Collapse quotations' : 'Expand quotations'}
             >
-              <FileText className="h-4 w-4" />
-            </button>
-            <button
-              type="button"
-              className="printpal-btn-delete-icon"
-              title="Delete Quotation"
-              onClick={() => onDelete(q)}
-            >
-              <Trash2 className="h-4 w-4" />
-            </button>
-          </div>
-        </div>
-      ))}
+              <div className="flex items-center gap-2 pr-3 min-w-0">
+                <ChevronRight
+                  className={`h-4 w-4 flex-shrink-0 text-[#737B84] printpal-quote-chevron${isOpen ? ' is-open' : ''}`}
+                />
+                <span className="font-medium text-[#202428] truncate">{g.customerName}</span>
+                <span className="text-[12px] text-[#737B84] flex-shrink-0">
+                  {g.quotes.length} {g.quotes.length === 1 ? 'version' : 'versions'}
+                </span>
+              </div>
+              <div>
+                <StatusChip status={topStatus} />
+              </div>
+              <div className="flex flex-col justify-center pr-3 min-w-0">
+                <span className="text-[14px] text-[#202428] truncate">{top.contactPerson || '—'}</span>
+                {top.phone && (
+                  <span className="text-[12px] text-[#737B84] tabular-nums truncate">{top.phone}</span>
+                )}
+              </div>
+              <div className="text-center text-[#202428] tabular-nums">
+                {top.sitesCount} {top.sitesCount === 1 ? 'site' : 'sites'}
+              </div>
+              <div className="text-right font-semibold text-[#202428] tabular-nums pr-2">
+                {fmt(top.grandTotal)}
+              </div>
+              <div className="text-[13px] text-[#737B84] truncate">{top.quoteDate}</div>
+              <div />
+            </div>
+
+            {/* ── Versions, newest first ── */}
+            {isOpen &&
+              g.quotes.map((q, idx) => {
+                const status = displayStatusOf(g, idx);
+                const isTop = idx === 0;
+                const isFinal = status === 'Invoice';
+                return (
+                  <div
+                    key={q.id}
+                    className="printpal-table-row printpal-quotation-reports-grid printpal-billing-reports-grid printpal-quote-version-row cursor-pointer"
+                    onClick={() => onViewPDF(q)}
+                    title={`Click to view ${isFinal ? 'Invoice' : 'Quotation'} PDF`}
+                  >
+                    {/* Finalize checkbox (top version only) + Quote Number */}
+                    <div className="flex items-center gap-3 pr-3 min-w-0 pl-6">
+                      {isTop ? (
+                        <span
+                          onClick={(e) => e.stopPropagation()}
+                          title={isFinal ? 'Finalized as invoice — untick to reopen' : 'Tick to finalize as invoice'}
+                          className="flex items-center"
+                        >
+                          <Checkbox
+                            aria-label={`Finalize ${q.quoteNumber} as invoice`}
+                            checked={isFinal}
+                            onCheckedChange={(v) => onFinalizeChange(q, v === true)}
+                          />
+                        </span>
+                      ) : (
+                        <span className="inline-block w-[18px] flex-shrink-0" />
+                      )}
+                      <span className="font-mono font-semibold text-[#2878D0] truncate">{q.quoteNumber}</span>
+                    </div>
+
+                    <div>
+                      <StatusChip status={status} />
+                    </div>
+
+                    <div className="flex flex-col justify-center pr-3 min-w-0">
+                      <span className="text-[14px] text-[#202428] truncate">{q.contactPerson || '—'}</span>
+                      {q.phone && (
+                        <span className="text-[12px] text-[#737B84] tabular-nums truncate">{q.phone}</span>
+                      )}
+                    </div>
+
+                    <div className="text-center text-[#202428] tabular-nums">
+                      {q.sitesCount} {q.sitesCount === 1 ? 'site' : 'sites'}
+                    </div>
+
+                    <div className="text-right font-semibold text-[#202428] tabular-nums pr-2">
+                      {fmt(q.grandTotal)}
+                    </div>
+
+                    <div className="text-[13px] text-[#737B84] truncate">{q.quoteDate}</div>
+
+                    <div
+                      className="printpal-cell-actions flex items-center justify-end gap-1.5"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {onRenegotiate && isTop && !isFinal && (
+                        <button
+                          type="button"
+                          className="printpal-btn-edit-icon"
+                          title="Renegotiate / Create next version"
+                          onClick={() => onRenegotiate(q)}
+                        >
+                          <Pencil className="h-4 w-4 text-[#D7440E]" />
+                        </button>
+                      )}
+                      <button
+                        type="button"
+                        className="printpal-btn-edit-icon"
+                        title={`Preview ${isFinal ? 'Invoice' : 'Quotation'} PDF`}
+                        onClick={() => onViewPDF(q)}
+                      >
+                        <FileText className="h-4 w-4" />
+                      </button>
+                      {!isFinal && (
+                        <button
+                          type="button"
+                          className="printpal-btn-delete-icon"
+                          title="Delete Quotation"
+                          onClick={() => onDelete(q)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+          </React.Fragment>
+        );
+      })}
     </>
   );
 }
@@ -252,7 +387,8 @@ export function QuotationReportsView({
               id: q.id,
               quoteNumber: q.quote_number || q.quoteNumber,
               quoteDate: q.quote_date || q.quoteDate,
-              quoteStatus: (q.quote_status || q.status || 'Sent') as 'Draft' | 'Sent',
+              quoteStatus: (q.quote_status || q.status || 'Sent') as 'Draft' | 'Sent' | 'Invoice',
+              createdAt: q.created_at || q.createdAt,
               customerId,
               customerName,
               contactPerson,
@@ -275,7 +411,9 @@ export function QuotationReportsView({
           });
           setQuotations((prev) => {
             const ids = new Set(mapped.map((m) => m.id));
-            const remaining = prev.filter((p) => !ids.has(p.id));
+            const nums = new Set(mapped.map((m) => m.quoteNumber));
+            // Drop local copies the server already knows about (by id or quote number)
+            const remaining = prev.filter((p) => !ids.has(p.id) && !nums.has(p.quoteNumber));
             return [...mapped, ...remaining];
           });
         }
@@ -287,6 +425,71 @@ export function QuotationReportsView({
 
   // PDF preview state
   const [previewQuote, setPreviewQuote] = React.useState<QuotationListItem | null>(null);
+
+  // Accordion state: collapsed by default; open customers are tracked by group key
+  const [expanded, setExpanded] = React.useState<Set<string>>(() => new Set());
+  const groups = React.useMemo(() => groupQuotationsByCustomer(quotations), [quotations]);
+
+  const handleToggleGroup = (key: string) => {
+    setExpanded((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  };
+
+  const persistLocal = (list: QuotationListItem[]) => {
+    try {
+      localStorage.setItem('printpal_workshop_quotations', JSON.stringify(list));
+    } catch {
+      // storage unavailable — in-memory state still updated
+    }
+  };
+
+  const applyFinalized = (q: QuotationListItem, finalized: boolean) => {
+    setQuotations((prev) => {
+      const next = prev.map((item) =>
+        item.id === q.id ? { ...item, quoteStatus: (finalized ? 'Invoice' : 'Sent') as QuotationListItem['quoteStatus'] } : item
+      );
+      persistLocal(next);
+      return next;
+    });
+  };
+
+  const handleFinalizeChange = (q: QuotationListItem, finalized: boolean) => {
+    palNotch.confirm({
+      badge: finalized ? 'FINALIZE INVOICE' : 'REOPEN QUOTATION',
+      title: finalized ? `Finalize ${q.quoteNumber} as invoice?` : `Reopen ${q.quoteNumber}?`,
+      description: finalized
+        ? `This is the agreed quotation for ${q.customerName}. It becomes the invoice and is locked from edits and deletion.`
+        : `${q.quoteNumber} goes back to Open so it can be renegotiated or edited.`,
+      confirmText: finalized ? 'Finalize as Invoice' : 'Reopen Quotation',
+      cancelText: 'Cancel',
+      variant: 'default',
+      onConfirm: async () => {
+        try {
+          const res = await fetch(`/api/quotations/${q.id}/finalize`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ finalized }),
+          });
+          if (res.status === 409) {
+            const err = await res.json().catch(() => ({}));
+            showToast(err.error || 'Only the latest quotation can be finalized', 'error');
+            return;
+          }
+        } catch {
+          // offline — still applied locally
+        }
+        applyFinalized(q, finalized);
+        showToast(
+          finalized ? `${q.quoteNumber} finalized as invoice` : `${q.quoteNumber} reopened`,
+          'success'
+        );
+      },
+    });
+  };
 
   // ── Handlers ──────────────────────────────────────────────────────────────
 
@@ -304,11 +507,20 @@ export function QuotationReportsView({
       variant: "destructive",
       onConfirm: async () => {
         try {
-          await fetch(`/api/quotations/${q.id}`, { method: 'DELETE' });
+          const res = await fetch(`/api/quotations/${q.id}`, { method: 'DELETE' });
+          if (res.status === 409) {
+            const err = await res.json().catch(() => ({}));
+            showToast(err.error || 'This quotation is finalized and cannot be deleted', 'error');
+            return;
+          }
         } catch {
           // offline — still remove from local list
         }
-        setQuotations((prev) => prev.filter((item) => item.id !== q.id));
+        setQuotations((prev) => {
+          const next = prev.filter((item) => item.id !== q.id);
+          persistLocal(next);
+          return next;
+        });
         showToast(`Quotation "${q.quoteNumber}" deleted successfully`, 'success');
       },
     });
@@ -367,8 +579,8 @@ export function QuotationReportsView({
       {/* ── Table Card (Exact Leads 8px Padding & 36px Floating Header Bar) ── */}
       <div className="printpal-table-card">
         <div className="printpal-table-header printpal-quotation-reports-grid printpal-billing-reports-grid flex-shrink-0">
-          <div>Quote Number</div>
-          <div>Customer</div>
+          <div>Customer / Quote</div>
+          <div>Status</div>
           <div>Contact</div>
           <div className="text-center">Sites</div>
           <div className="text-right pr-2">Grand Total</div>
@@ -377,11 +589,14 @@ export function QuotationReportsView({
         </div>
 
         <div className="flex-1 min-h-0 overflow-y-auto printpal-compact-scroll">
-          <QuotationRows
-            quotations={quotations}
+          <QuotationGroups
+            groups={groups}
+            expanded={expanded}
+            onToggle={handleToggleGroup}
             onViewPDF={handleViewPDF}
             onDelete={handleDeleteRequest}
             onRenegotiate={onRenegotiateQuotation}
+            onFinalizeChange={handleFinalizeChange}
           />
         </div>
       </div>
@@ -408,6 +623,7 @@ export function QuotationReportsView({
           fabNotes={previewQuote.fabNotes}
           commercialTerms={previewQuote.commercialTerms}
           businessDetails={businessDetails}
+          documentType={previewQuote.quoteStatus === 'Invoice' ? 'Invoice' : 'Quotation'}
         />
       )}
     </main>

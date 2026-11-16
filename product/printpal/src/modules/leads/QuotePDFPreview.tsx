@@ -35,6 +35,8 @@ export interface QuotePDFPreviewProps {
   fabNotes?: string;
   commercialTerms?: string;
   businessDetails?: BusinessDetailsRecord;
+  /** 'Invoice' once the quotation is finalized; defaults to 'Quotation'. */
+  documentType?: 'Quotation' | 'Invoice';
 }
 
 function fmt(n: number) {
@@ -64,6 +66,7 @@ export function QuotePDFPreview({
   fabNotes,
   commercialTerms,
   businessDetails,
+  documentType = 'Quotation',
 }: QuotePDFPreviewProps) {
   // Dismiss cleanly on Escape key
   React.useEffect(() => {
@@ -130,7 +133,7 @@ export function QuotePDFPreview({
         id="printpal-pdf-print-root"
         role="dialog"
         aria-modal="true"
-        aria-label={`Quotation ${quoteNumber}`}
+        aria-label={`${documentType} ${quoteNumber}`}
         className="pdf-preview-shell fixed inset-0 z-[200] flex flex-col bg-[#16181D]/80 backdrop-blur-md"
         style={{ fontFamily: SANS_FONT }}
       >
@@ -138,7 +141,7 @@ export function QuotePDFPreview({
         <header className="pdf-preview-topbar flex-shrink-0 flex items-center justify-between px-4 sm:px-8 py-3 bg-[#16181D]/75 backdrop-blur-xl backdrop-saturate-150 border-b border-white/10">
           <div className="flex items-baseline gap-3">
             <span className="text-[13px] font-medium text-white">
-              Quotation {quoteNumber}
+              {documentType} {quoteNumber}
             </span>
             <span className="hidden sm:inline text-[12px] text-white/50">
               A4 print preview for {customer.name}
@@ -226,7 +229,7 @@ export function QuotePDFPreview({
                       lineHeight: 1.0,
                     }}
                   >
-                    Quotation
+                    {documentType}
                   </p>
                   <p
                     className="text-[15px] font-semibold text-[#D7440E] mt-2"
@@ -246,7 +249,7 @@ export function QuotePDFPreview({
               {/* ── 2. Recipient Block ("Quotation issued to") ── */}
               <section className="py-6 border-b border-[#DDD7CB]">
                 <p className="text-[12px] font-medium text-[#5C6570] mb-1.5">
-                  Quotation issued to
+                  {documentType} issued to
                 </p>
                 <h2
                   className="text-[17px] font-semibold text-[#151C24] tracking-[-0.01em]"

@@ -767,6 +767,8 @@ export function QuotationView({
           quoteNumber,
           quoteDate,
           quoteStatus: 'Sent',
+          customerId: safeCustomerId,
+          createdAt: new Date().toISOString(),
           customerName: selectedCustomer.name,
           contactPerson: selectedCustomer.contactPerson || '',
           phone: selectedCustomer.phone || '',

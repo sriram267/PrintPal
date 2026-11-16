@@ -978,6 +978,38 @@ export function createTenantRepository(pg) {
         return { success: true, quoteId };
       },
 
+      /** Newest quotation row (by created_at) for a customer, or null. */
+      async getLatestForCustomer(tenantId, customerId) {
+        await syncRls(tenantId);
+        const res = await pg.query(
+          `SELECT id, quote_number, quote_status FROM quotations
+           WHERE tenant_id = $1 AND customer_id = $2
+           ORDER BY created_at DESC, id DESC LIMIT 1`,
+          [tenantId, customerId]
+        );
+        return res.rows[0] || null;
+      },
+
+      async getRow(tenantId, id) {
+        await syncRls(tenantId);
+        const res = await pg.query(
+          "SELECT id, customer_id, quote_number, quote_status FROM quotations WHERE tenant_id = $1 AND id = $2",
+          [tenantId, id]
+        );
+        return res.rows[0] || null;
+      },
+
+      /** Flip a quotation between 'Sent' (open) and 'Invoice' (finalized). */
+      async setFinalized(tenantId, id, finalized) {
+        await syncRls(tenantId);
+        const res = await pg.query(
+          `UPDATE quotations SET quote_status = $3, updated_at = NOW()
+           WHERE tenant_id = $1 AND id = $2 RETURNING id, quote_status`,
+          [tenantId, id, finalized ? "Invoice" : "Sent"]
+        );
+        return res.rows[0] || null;
+      },
+
       async delete(tenantId, id) {
         await syncRls(tenantId);
         await pg.query(

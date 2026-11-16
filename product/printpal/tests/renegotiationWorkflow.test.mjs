@@ -70,7 +70,7 @@ async function runTests() {
     "StatusBadge function should be removed"
   );
   assert.ok(
-    billingReportsSrc.includes('title="Renegotiate / Create Version 2"'),
+    billingReportsSrc.includes('title="Renegotiate / Create next version"'),
     "BillingReportsView must have the edit/renegotiate button"
   );
   console.log("  ✓ Draft/Sent chip removed and Renegotiate button is present in BillingReportsView.");
