@@ -97,10 +97,16 @@ export interface PalNotchPromptItem extends PalNotchPromptOptions {
   id: string
 }
 
-/** Space between the paper's edge and the printer body's edge, and the height of the slot band. */
-export const DOC_RIM = 28
-export const DOC_BAR_H = 56
-export const DOC_SLOT_H = 10
+/* Printer geometry (px). The machine floats DOC_TOP below the screen edge; the paper is clipped at the
+   slot's bottom edge (DOC_CLIP_Y), so it slides out of the slot over the machine's lower lip. */
+export const DOC_RIM = 28 // paper edge → machine edge, each side
+export const DOC_TOP = 10 // gap above the machine
+export const DOC_PAD = 8 // body padding around the screen
+export const DOC_BAR_H = 56 // inner screen height
+export const DOC_GAP = 10 // screen → slot
+export const DOC_SLOT_H = 12 // slot height
+export const DOC_LIP = 14 // body below the slot
+export const DOC_CLIP_Y = DOC_TOP + DOC_PAD + DOC_BAR_H + DOC_GAP + DOC_SLOT_H
 
 /** The notch as a control bar for a document sheet (title, Download, Close). Stays until closed. */
 export interface PalNotchDocumentOptions {
@@ -1281,6 +1287,7 @@ export function PalNotch({ activeModuleLabel = "Ready" }: PalNotchProps) {
             height: 34px !important;
             transition: width 0.35s cubic-bezier(0.32, 1.22, 0.42, 1),
                         height 0.35s cubic-bezier(0.32, 1.22, 0.42, 1),
+                        margin-top 0.3s ease,
                         box-shadow 0.20s ease !important;
           }
 
@@ -1299,6 +1306,7 @@ export function PalNotch({ activeModuleLabel = "Ready" }: PalNotchProps) {
             min-height: 58px !important;
             transition: width 0.38s cubic-bezier(0.32, 1.22, 0.42, 1),
                         height 0.38s cubic-bezier(0.32, 1.22, 0.42, 1),
+                        margin-top 0.3s ease,
                         box-shadow 0.30s ease !important;
           }
 
@@ -1450,10 +1458,23 @@ export function PalNotch({ activeModuleLabel = "Ready" }: PalNotchProps) {
           .pal-island-wrapper.is-doc {
             width: var(--pal-doc-w, 440px) !important;
             min-height: 0 !important;
+            margin-top: ${DOC_TOP}px !important;
+            transition: width 0.42s cubic-bezier(0.32, 1.22, 0.42, 1),
+                        height 0.42s cubic-bezier(0.32, 1.22, 0.42, 1),
+                        margin-top 0.36s cubic-bezier(0.32, 1.22, 0.42, 1) !important;
           }
+          /* A free-standing machine: all corners rounded, lifted body, no bezel ears. */
+          .pal-island-wrapper.is-doc .pal-ear-l,
+          .pal-island-wrapper.is-doc .pal-ear-r { display: none !important; }
           .pal-island-surface.is-doc {
             min-height: 0 !important;
-            border-radius: 0 0 16px 16px !important;
+            border-radius: 24px !important;
+            padding: ${DOC_PAD}px ${DOC_PAD}px ${DOC_LIP}px ${DOC_PAD}px !important;
+            background: linear-gradient(180deg, #2C2D32 0%, #1B1C20 100%) !important;
+            box-shadow: 0 22px 34px -12px rgba(0, 0, 0, 0.6),
+                        0 4px 10px rgba(0, 0, 0, 0.35),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.14),
+                        inset 0 0 0 1px rgba(255, 255, 255, 0.06) !important;
           }
 
           @keyframes palBackdropIn {
@@ -2042,8 +2063,11 @@ export function PalNotch({ activeModuleLabel = "Ready" }: PalNotchProps) {
                 gap: 12,
                 width: "100%",
                 height: DOC_BAR_H,
-                padding: "0 18px 0 22px",
+                padding: "0 12px 0 16px",
                 boxSizing: "border-box",
+                borderRadius: 16,
+                background: "#0D0E10",
+                boxShadow: "inset 0 2px 8px rgba(0,0,0,0.65), inset 0 0 0 1px rgba(255,255,255,0.05)",
               }}
             >
               <div
@@ -2156,23 +2180,23 @@ export function PalNotch({ activeModuleLabel = "Ready" }: PalNotchProps) {
               </button>
             </div>
 
-            {/* The slot: a lit recess along the bottom edge, a touch wider than the paper that comes out of it. */}
+            {/* The slot: a dark recess in the machine face, wider than the paper that slides out of it. */}
             <div
               aria-hidden="true"
               style={{
+                marginTop: DOC_GAP,
                 height: DOC_SLOT_H,
                 display: "flex",
                 justifyContent: "center",
-                alignItems: "flex-end",
               }}
             >
               <div
                 style={{
-                  width: activeDoc.paperWidth + 12,
-                  height: 7,
-                  borderRadius: "4px 4px 0 0",
-                  background: "linear-gradient(180deg, #060607 0%, #2B2E34 100%)",
-                  boxShadow: "inset 0 2px 3px rgba(0,0,0,0.95), 0 -1px 0 rgba(255,255,255,0.16)",
+                  width: activeDoc.paperWidth + 20,
+                  height: DOC_SLOT_H,
+                  borderRadius: DOC_SLOT_H / 2,
+                  background: "#08080A",
+                  boxShadow: "inset 0 2px 4px rgba(0,0,0,0.95), 0 1px 0 rgba(255,255,255,0.09)",
                 }}
               />
             </div>

@@ -8,7 +8,7 @@
 
 import * as React from 'react';
 import { createPortal } from 'react-dom';
-import { palNotch, DOC_RIM, DOC_BAR_H, DOC_SLOT_H } from '@ui/pal-notch';
+import { palNotch, DOC_RIM, DOC_CLIP_Y } from '@ui/pal-notch';
 import type { CustomerRecord } from './types';
 import type { QuoteSite } from './QuotationView';
 import type { BusinessDetailsRecord } from '../settings';
@@ -201,24 +201,48 @@ export function QuotePDFPreview({
 
   return createPortal(
     <>
+      {/* Dimmed, blurred backdrop: sits below the machine (the notch), so the machine stays crisp. */}
+      <div
+        aria-hidden="true"
+        className={`pdf-backdrop fixed inset-0 z-[200] bg-[#16181D]/80 backdrop-blur-md ${
+          phase === 'closing' ? 'pdf-shell-out' : 'pdf-shell-in'
+        }`}
+        onPointerDown={() => {
+          if (phaseRef.current === 'printing') setPhase('open');
+        }}
+        onClick={() => {
+          if (phaseRef.current === 'open') handleClose();
+        }}
+      />
+
+      {/* Paper layer: ABOVE the machine, clipped at the slot's bottom edge, so the page slides out of the
+          slot over the machine's lower lip. Transparent and click-through except for the paper stage. */}
       <div
         id="printpal-pdf-print-root"
         role="dialog"
         aria-modal="true"
         aria-label={`${documentType} ${quoteNumber}`}
-        className={`pdf-preview-shell fixed inset-0 z-[200] flex flex-col bg-[#16181D]/80 backdrop-blur-md ${
-          phase === 'closing' ? 'pdf-shell-out' : 'pdf-shell-in'
-        }`}
-        style={{ fontFamily: SANS_FONT, paddingTop: DOC_BAR_H + DOC_SLOT_H }}
-        onPointerDown={() => {
-          // A tap while printing skips ahead to the finished page.
-          if (phaseRef.current === 'printing') setPhase('open');
-        }}
+        className="pdf-preview-shell fixed inset-0 z-[100000] flex flex-col pointer-events-none"
+        style={{ fontFamily: SANS_FONT, paddingTop: DOC_CLIP_Y }}
       >
-        {/* The notch above is the control bar (title, Download, Close). This is the paper stage:
-            it starts just under the notch, so the page appears to feed out of the slot. */}
+        {/* Soft shadow the machine's slot casts on the top of the page */}
         <div
-          className="pdf-stage flex-1 min-h-0 overflow-y-auto pb-10"
+          aria-hidden="true"
+          className="pdf-slot-shade absolute left-1/2 -translate-x-1/2"
+          style={{
+            top: DOC_CLIP_Y,
+            width: paperW,
+            height: 18,
+            background: 'linear-gradient(180deg, rgba(0,0,0,0.30) 0%, rgba(0,0,0,0) 100%)',
+            zIndex: 2,
+          }}
+        />
+        <div
+          className="pdf-stage pointer-events-auto flex-1 min-h-0 overflow-y-auto pb-10"
+          onPointerDown={() => {
+            // A tap while printing skips ahead to the finished page.
+            if (phaseRef.current === 'printing') setPhase('open');
+          }}
           onClick={(e) => {
             if (e.target === e.currentTarget && phaseRef.current === 'open') handleClose();
           }}
@@ -621,7 +645,7 @@ export function QuotePDFPreview({
         /* Paper feeds out of the notch in discrete steps, like a thermal printer, then retracts. */
         .pdf-stage { scrollbar-width: none; }
         .pdf-stage::-webkit-scrollbar { display: none; }
-        .pdf-feed { padding-top: 28px; }
+        .pdf-feed { padding-top: 0; }
         .pdf-feed #printpal-pdf-document { box-shadow: 0 28px 60px -14px rgba(0, 0, 0, 0.55), 0 2px 10px rgba(0, 0, 0, 0.25); }
         .pdf-feed-in { animation: pdfFeedIn ${FEED_MS}ms steps(36, end) both; }
         .pdf-feed-out { animation: pdfFeedOut ${RETRACT_MS}ms cubic-bezier(0.55, 0, 0.8, 0.3) both; }
@@ -640,7 +664,7 @@ export function QuotePDFPreview({
         @keyframes pdfShellOut { from { opacity: 1; } to { opacity: 0; } }
 
         @media (prefers-reduced-transparency: reduce) {
-          .pdf-preview-shell {
+          .pdf-backdrop {
             background: rgba(22, 24, 29, 0.96) !important;
             backdrop-filter: none !important;
           }
@@ -675,7 +699,10 @@ export function QuotePDFPreview({
             display: none !important;
           }
 
+          .pdf-slot-shade { display: none !important; }
+
           #printpal-pdf-print-root {
+            pointer-events: auto !important;
             position: static !important;
             inset: auto !important;
             background: transparent !important;
