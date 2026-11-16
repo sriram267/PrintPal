@@ -1488,7 +1488,7 @@ export function LeadsApp() {
     setFormSites(updated)
     setActiveSearchSiteId(null)
     setGeoapifyPredictions([])
-    palNotch.info("Site location pinned", place.formattedAddress, undefined, "GEO")
+    palNotch.info("Site location pinned", place.formattedAddress)
   }
 
   const handleOpenLiveView = (site: SiteRecord) => {

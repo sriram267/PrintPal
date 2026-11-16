@@ -1,11 +1,10 @@
 import * as React from "react"
 import { createPortal } from "react-dom"
 import {
-  CheckCircle2,
+  Check,
   AlertCircle,
   AlertTriangle,
   Info,
-  Zap,
   Loader2,
   Trash2,
   X,
@@ -190,68 +189,25 @@ export const palNotch = {
   },
 }
 
-const VARIANT_META: Record<
-  PalNotchVariant,
-  {
-    accentHex: string
-    glowColor: string
-    badgeBg: string
-    badgeColor: string
-    label: string
-  }
-> = {
-  success: {
-    accentHex: "#34D399",
-    glowColor: "rgba(52, 211, 153, 0.38)",
-    badgeBg: "rgba(52, 211, 153, 0.16)",
-    badgeColor: "#34D399",
-    label: "DONE",
-  },
-  error: {
-    accentHex: "#F4505E",
-    glowColor: "rgba(244, 80, 94, 0.42)",
-    badgeBg: "rgba(244, 80, 94, 0.18)",
-    badgeColor: "#FF8D97",
-    label: "ACTION",
-  },
-  warning: {
-    accentHex: "#F5A524",
-    glowColor: "rgba(245, 165, 36, 0.36)",
-    badgeBg: "rgba(245, 165, 36, 0.18)",
-    badgeColor: "#FCD34D",
-    label: "CHECK",
-  },
-  info: {
-    accentHex: "#22D3EE",
-    glowColor: "rgba(34, 211, 238, 0.32)",
-    badgeBg: "rgba(34, 211, 238, 0.16)",
-    badgeColor: "#67E8F9",
-    label: "UPDATE",
-  },
-  workshop: {
-    accentHex: "#D7440E",
-    glowColor: "rgba(215, 68, 14, 0.44)",
-    badgeBg: "rgba(215, 68, 14, 0.22)",
-    badgeColor: "#FF8C61",
-    label: "PRINTPAL",
-  },
-  loading: {
-    accentHex: "#6366F1",
-    glowColor: "rgba(99, 102, 241, 0.38)",
-    badgeBg: "rgba(99, 102, 241, 0.18)",
-    badgeColor: "#A5B4FC",
-    label: "SYNCING",
-  },
+/* Calm, muted tones: the toast is a quiet black pill, the colour lives only in the small icon disc. */
+const VARIANT_META: Record<PalNotchVariant, { color: string; disc: string }> = {
+  success: { color: "#6FD39A", disc: "rgba(111, 211, 154, 0.14)" },
+  error: { color: "#F08A80", disc: "rgba(240, 138, 128, 0.14)" },
+  warning: { color: "#EDBA6B", disc: "rgba(237, 186, 107, 0.14)" },
+  info: { color: "#8DB4F0", disc: "rgba(141, 180, 240, 0.14)" },
+  workshop: { color: "#EE7A4A", disc: "rgba(238, 122, 74, 0.14)" },
+  loading: { color: "#C4CAD3", disc: "rgba(196, 202, 211, 0.12)" },
 }
 
 function VariantIcon({ variant }: { variant: PalNotchVariant }) {
-  const size = 16
-  if (variant === "success") return <CheckCircle2 size={size} color="#34D399" />
-  if (variant === "error") return <AlertCircle size={size} color="#F4505E" />
-  if (variant === "warning") return <AlertTriangle size={size} color="#F5A524" />
-  if (variant === "workshop") return <Zap size={size} color="#FF7849" />
-  if (variant === "loading") return <Loader2 size={size} color="#818CF8" className="animate-spin" />
-  return <Info size={size} color="#22D3EE" />
+  const size = 15
+  const color = VARIANT_META[variant].color
+  const stroke = 2.4
+  if (variant === "success") return <Check size={size} color={color} strokeWidth={stroke} />
+  if (variant === "error") return <AlertCircle size={size} color={color} strokeWidth={stroke} />
+  if (variant === "warning") return <AlertTriangle size={size} color={color} strokeWidth={stroke} />
+  if (variant === "loading") return <Loader2 size={size} color={color} strokeWidth={stroke} className="animate-spin" />
+  return <Info size={size} color={color} strokeWidth={stroke} />
 }
 
 // ── Coucou Mochi Entrance Animation Kinematics & Pure 2D Canvas Engine ──
@@ -1273,9 +1229,9 @@ export function PalNotch({ activeModuleLabel = "Ready" }: PalNotchProps) {
           }
 
           .pal-island-wrapper.is-toast {
-            width: min(520px, calc(100vw - 28px)) !important;
+            width: min(400px, calc(100vw - 28px)) !important;
             height: auto !important;
-            min-height: 86px !important;
+            min-height: 58px !important;
             transition: width 0.38s cubic-bezier(0.32, 1.22, 0.42, 1),
                         height 0.38s cubic-bezier(0.32, 1.22, 0.42, 1),
                         box-shadow 0.30s ease !important;
@@ -1415,11 +1371,11 @@ export function PalNotch({ activeModuleLabel = "Ready" }: PalNotchProps) {
 
           .pal-island-surface.is-toast {
             height: auto !important;
-            min-height: 86px !important;
-            border-radius: 0 0 24px 24px !important;
+            min-height: 58px !important;
+            border-radius: 0 0 22px 22px !important;
             background: #000000 !important;
             color: #F5F6F8 !important;
-            box-shadow: 0 24px 56px -8px rgba(0, 0, 0, 0.72), 0 4px 20px rgba(0, 0, 0, 0.45), inset 0 -1px 0 rgba(255, 255, 255, 0.08) !important;
+            box-shadow: 0 14px 32px -8px rgba(0, 0, 0, 0.45), 0 2px 8px rgba(0, 0, 0, 0.25), inset 0 -1px 0 rgba(255, 255, 255, 0.08) !important;
             cursor: default !important;
           }
 
@@ -1562,8 +1518,6 @@ export function PalNotch({ activeModuleLabel = "Ready" }: PalNotchProps) {
                 ? "#000000"
                 : isGreetingActive
                 ? "radial-gradient(120% 90% at 50% 120%, rgba(52, 211, 153, 0.40), transparent 70%), #000000"
-                : isToast && meta
-                ? `radial-gradient(120% 90% at 50% 120%, ${meta.glowColor}, transparent 65%), #000000`
                 : "#000000",
             }}
           >
@@ -1996,7 +1950,7 @@ export function PalNotch({ activeModuleLabel = "Ready" }: PalNotchProps) {
             </div>
           )}
 
-          {/* ── ACTIVE TOAST NOTIFICATION (Sileo × Coucou Fluid Card) ── */}
+          {/* ── ACTIVE TOAST: a calm black pill. Colour lives only in the small icon disc. ── */}
           {isToast && activeToast && meta && (
             <div
               key={toastRevision}
@@ -2006,17 +1960,19 @@ export function PalNotch({ activeModuleLabel = "Ready" }: PalNotchProps) {
                 flexDirection: "column",
                 overflow: "hidden",
                 width: "100%",
+                position: "relative",
               }}
             >
               <div
                 style={{
                   display: "flex",
-                  alignItems: "flex-start",
+                  alignItems: activeToast.description || activeToast.badge || activeToast.customerCard ? "flex-start" : "center",
                   gap: 12,
-                  padding: "14px 16px 12px 16px",
+                  padding: "13px 12px 14px 16px",
+                  minHeight: 56,
+                  boxSizing: "border-box",
                 }}
               >
-                {/* Variant Icon Circle */}
                 <div
                   style={{
                     width: 28,
@@ -2026,41 +1982,26 @@ export function PalNotch({ activeModuleLabel = "Ready" }: PalNotchProps) {
                     alignItems: "center",
                     justifyContent: "center",
                     flexShrink: 0,
-                    marginTop: 2,
-                    backgroundColor: meta.badgeBg,
+                    backgroundColor: meta.disc,
                   }}
                 >
                   <VariantIcon variant={activeToast.variant} />
                 </div>
 
-                {/* Text Content */}
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                    <span
-                      style={{
-                        fontSize: 9.5,
-                        fontWeight: 700,
-                        textTransform: "uppercase",
-                        letterSpacing: "0.08em",
-                        padding: "2px 7px",
-                        borderRadius: 9999,
-                        lineHeight: 1,
-                        backgroundColor: meta.badgeBg,
-                        color: meta.badgeColor,
-                      }}
-                    >
-                      {activeToast.badge || meta.label}
-                    </span>
-                  </div>
-
+                <div style={{ flex: 1, minWidth: 0, paddingTop: 1 }}>
+                  {activeToast.badge && (
+                    <div style={{ fontSize: 11, fontWeight: 500, color: "#8A93A0", marginBottom: 2 }}>
+                      {activeToast.badge.charAt(0) + activeToast.badge.slice(1).toLowerCase()}
+                    </div>
+                  )}
                   <p
                     style={{
-                      fontSize: 13,
+                      fontSize: 14,
                       fontWeight: 600,
                       color: "#F5F6F8",
                       lineHeight: 1.35,
-                      marginTop: 4,
-                      marginBottom: 0,
+                      margin: 0,
+                      letterSpacing: "-0.005em",
                       wordBreak: "break-word",
                     }}
                   >
@@ -2070,11 +2011,10 @@ export function PalNotch({ activeModuleLabel = "Ready" }: PalNotchProps) {
                   {activeToast.description && (
                     <p
                       style={{
-                        fontSize: 11.5,
-                        color: "#94A3B8",
+                        fontSize: 12.5,
+                        color: "#9AA3AF",
                         lineHeight: 1.45,
-                        marginTop: 2,
-                        marginBottom: 0,
+                        margin: "2px 0 0 0",
                         wordBreak: "break-word",
                       }}
                     >
@@ -2085,11 +2025,10 @@ export function PalNotch({ activeModuleLabel = "Ready" }: PalNotchProps) {
                   {activeToast.customerCard && (
                     <div
                       style={{
-                        marginTop: 6,
-                        padding: "6px 10px",
-                        borderRadius: 8,
-                        backgroundColor: "rgba(255, 255, 255, 0.08)",
-                        border: "1px solid rgba(255, 255, 255, 0.12)",
+                        marginTop: 8,
+                        padding: "8px 10px",
+                        borderRadius: 10,
+                        backgroundColor: "rgba(255, 255, 255, 0.06)",
                         display: "flex",
                         flexDirection: "column",
                         gap: 2,
@@ -2097,20 +2036,9 @@ export function PalNotch({ activeModuleLabel = "Ready" }: PalNotchProps) {
                     >
                       <span
                         style={{
-                          fontSize: 9,
-                          fontWeight: 700,
-                          color: "#94A3B8",
-                          textTransform: "uppercase",
-                          letterSpacing: "0.06em",
-                        }}
-                      >
-                        CUSTOMER DETAILS
-                      </span>
-                      <span
-                        style={{
                           fontSize: 13,
-                          fontWeight: 700,
-                          color: "#FFFFFF",
+                          fontWeight: 600,
+                          color: "#F5F6F8",
                           overflow: "hidden",
                           textOverflow: "ellipsis",
                           whiteSpace: "nowrap",
@@ -2118,37 +2046,26 @@ export function PalNotch({ activeModuleLabel = "Ready" }: PalNotchProps) {
                       >
                         {activeToast.customerCard.name}
                       </span>
-                      <div
-                        style={{
-                          display: "flex",
-                          flexWrap: "wrap",
-                          alignItems: "center",
-                          gap: 10,
-                          fontSize: 11,
-                          color: "#94A3B8",
-                          marginTop: 1,
-                        }}
-                      >
-                        {activeToast.customerCard.phone && (
-                          <span>📞 {activeToast.customerCard.phone}</span>
-                        )}
-                        {activeToast.customerCard.email && (
-                          <span>✉️ {activeToast.customerCard.email}</span>
-                        )}
-                      </div>
+                      {(activeToast.customerCard.phone || activeToast.customerCard.email) && (
+                        <div
+                          style={{
+                            display: "flex",
+                            flexWrap: "wrap",
+                            alignItems: "center",
+                            columnGap: 12,
+                            fontSize: 12,
+                            color: "#9AA3AF",
+                          }}
+                        >
+                          {activeToast.customerCard.phone && <span>{activeToast.customerCard.phone}</span>}
+                          {activeToast.customerCard.email && <span>{activeToast.customerCard.email}</span>}
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
 
-                {/* Action CTA & Close Button */}
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 6,
-                    flexShrink: 0,
-                  }}
-                >
+                <div style={{ display: "flex", alignItems: "center", gap: 4, flexShrink: 0 }}>
                   {activeToast.action && (
                     <button
                       type="button"
@@ -2161,18 +2078,17 @@ export function PalNotch({ activeModuleLabel = "Ready" }: PalNotchProps) {
                         height: 28,
                         padding: "0 12px",
                         borderRadius: 9999,
-                        backgroundColor: "#D7440E",
+                        backgroundColor: "rgba(255, 255, 255, 0.12)",
                         border: "none",
                         color: "#FFFFFF",
-                        fontSize: 11.5,
+                        fontSize: 12.5,
                         fontWeight: 600,
                         cursor: "pointer",
-                        transition: "all 0.15s ease",
+                        transition: "background-color 0.15s ease",
                         whiteSpace: "nowrap",
-                        boxShadow: "0 2px 8px rgba(215, 68, 14, 0.35)",
                       }}
-                      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#c23b0a")}
-                      onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#D7440E")}
+                      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.2)")}
+                      onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.12)")}
                     >
                       {activeToast.action.label}
                     </button>
@@ -2194,16 +2110,16 @@ export function PalNotch({ activeModuleLabel = "Ready" }: PalNotchProps) {
                       justifyContent: "center",
                       backgroundColor: "transparent",
                       border: "none",
-                      color: "#94A3B8",
+                      color: "#7C8591",
                       cursor: "pointer",
                       transition: "all 0.15s ease",
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.color = "#FFFFFF"
-                      e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.12)"
+                      e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.1)"
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.color = "#94A3B8"
+                      e.currentTarget.style.color = "#7C8591"
                       e.currentTarget.style.backgroundColor = "transparent"
                     }}
                   >
@@ -2212,36 +2128,31 @@ export function PalNotch({ activeModuleLabel = "Ready" }: PalNotchProps) {
                 </div>
               </div>
 
-              {/* Centered Coucou Countdown Progress Bar */}
+              {/* Hairline countdown along the bottom edge, neutral so it never competes with the message */}
               {activeToast.duration > 0 && (
                 <div
                   style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    paddingBottom: 8,
+                    position: "absolute",
+                    left: 18,
+                    right: 18,
+                    bottom: 5,
+                    height: 2,
+                    borderRadius: 9999,
+                    backgroundColor: "rgba(255, 255, 255, 0.08)",
+                    overflow: "hidden",
                   }}
                 >
                   <div
+                    key={progressKey}
+                    className="pal-progress-drain"
                     style={{
-                      width: 140,
-                      height: 2,
+                      height: "100%",
                       borderRadius: 9999,
-                      backgroundColor: "rgba(255, 255, 255, 0.15)",
-                      overflow: "hidden",
+                      backgroundColor: "rgba(255, 255, 255, 0.32)",
+                      animationDuration: `${activeToast.duration}ms`,
+                      animationPlayState: isPaused ? "paused" : "running",
                     }}
-                  >
-                    <div
-                      key={progressKey}
-                      className="pal-progress-drain"
-                      style={{
-                        height: "100%",
-                        borderRadius: 9999,
-                        backgroundColor: meta.accentHex,
-                        animationDuration: `${activeToast.duration}ms`,
-                        animationPlayState: isPaused ? "paused" : "running",
-                      }}
-                    />
-                  </div>
+                  />
                 </div>
               )}
             </div>
