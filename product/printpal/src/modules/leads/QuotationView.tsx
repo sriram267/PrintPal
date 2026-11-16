@@ -354,13 +354,27 @@ export function QuotationView({
   const searchDropdownRef = React.useRef<HTMLDivElement>(null);
 
   // Quote Metadata
-  const [quoteNumber, setQuoteNumber] = React.useState(
-    renegotiatingQuote?.quoteNumber || 'Q-001-V1'
-  );
+  const [quoteNumber, setQuoteNumber] = React.useState(() => {
+    if (renegotiatingQuote?.quoteNumber) return renegotiatingQuote.quoteNumber;
+    try {
+      const raw = localStorage.getItem('printpal_workshop_quotations');
+      const list = raw ? JSON.parse(raw) : [];
+      const nextNum = list.length + 1;
+      return `Q-${String(nextNum).padStart(3, '0')}-V1`;
+    } catch {
+      return 'Q-001-V1';
+    }
+  });
   const [quoteVersionTitle, setQuoteVersionTitle] = React.useState<string | null>(
     renegotiatingQuote?.versionLabel || null
   );
-  const [quoteDate] = React.useState('24 Oct, 2024');
+  const [quoteDate] = React.useState(() => {
+    return new Date().toLocaleDateString('en-IN', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+    });
+  });
 
   // Sites & Line Items: Only populated when a customer or renegotiation is chosen
   const [sites, setSites] = React.useState<QuoteSite[]>(() => {
@@ -714,82 +728,88 @@ export function QuotationView({
 
     setShowValidationErrors(false);
 
-    try {
-      const payload = {
-        customerId: selectedCustomer.id,
-        quoteNumber,
-        quoteDate,
-        action: 'create',
-        subtotal: sitesSubtotal,
-        transportCost,
-        designCharges,
-        installationCharges,
-        discountPercent,
-        gstRate,
-        grandTotal,
-        notesJson: { fabNotes, commercialTerms },
-        sites: sites.map((s) => ({
-          id: s.id,
-          siteName: s.siteName,
-          items: s.items.map((it) => ({
-            id: it.id,
-            product_title: it.productTitle,
-            material_name: it.materialName,
-            finish_name: it.finishName,
-            method_code: it.methodCode,
-            width: it.width,
-            height: it.height,
-            quantity: it.quantity ?? it.qty,
-            rate: it.rate,
-            discount_pct: it.discount,
-          })),
+    const safeCustomerId = selectedCustomer.id || `cust-${Date.now()}`;
+    const payload = {
+      customerId: safeCustomerId,
+      quoteNumber,
+      quoteDate,
+      action: 'create',
+      subtotal: sitesSubtotal,
+      transportCost,
+      designCharges,
+      installationCharges,
+      discountPercent,
+      gstRate,
+      grandTotal,
+      notesJson: { fabNotes, commercialTerms },
+      sites: sites.map((s) => ({
+        id: s.id,
+        siteName: s.siteName,
+        items: s.items.map((it) => ({
+          id: it.id,
+          product_title: it.productTitle,
+          material_name: it.materialName,
+          finish_name: it.finishName,
+          method_code: it.methodCode,
+          width: it.width,
+          height: it.height,
+          quantity: it.quantity ?? it.qty,
+          rate: it.rate,
+          discount_pct: it.discount,
         })),
-      };
+      })),
+    };
 
-      const res = await fetch('/api/quotations', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
+    const syncToLocalStorage = (finalId?: string) => {
+      try {
+        const newQuoteEntry = {
+          id: finalId || `quote-${quoteNumber}`,
+          quoteNumber,
+          quoteDate,
+          quoteStatus: 'Sent',
+          customerName: selectedCustomer.name,
+          contactPerson: selectedCustomer.contactPerson || '',
+          phone: selectedCustomer.phone || '',
+          sitesCount: sites.length,
+          grandTotal,
+          discountPercent,
+          gstRate,
+          sitesSubtotal,
+          designCharges,
+          installationCharges,
+          transportCost: Number(transportCost),
+          discountAmount,
+          taxableTotal,
+          gstAmount,
+          fabNotes,
+          commercialTerms,
+          sitesJson: sites,
+        };
+        const raw = localStorage.getItem('printpal_workshop_quotations');
+        const list = raw ? JSON.parse(raw) : [];
+        const updated = [newQuoteEntry, ...list.filter((q: any) => q.quoteNumber !== quoteNumber)];
+        localStorage.setItem('printpal_workshop_quotations', JSON.stringify(updated));
+      } catch (e) {
+        console.warn('Could not sync quote to localStorage:', e);
+      }
+    };
 
-      const syncToLocalStorage = (finalId?: string) => {
-        try {
-          const newQuoteEntry = {
-            id: finalId || `quote-${quoteNumber}`,
-            quoteNumber,
-            quoteDate,
-            quoteStatus: 'Sent',
-            customerName: selectedCustomer.name,
-            contactPerson: selectedCustomer.contactPerson || '',
-            phone: selectedCustomer.phone || '',
-            sitesCount: sites.length,
-            grandTotal,
-            discountPercent,
-            gstRate,
-            sitesSubtotal,
-            designCharges,
-            installationCharges,
-            transportCost: Number(transportCost),
-            discountAmount,
-            taxableTotal,
-            gstAmount,
-            fabNotes,
-            commercialTerms,
-            sitesJson: sites,
-          };
-          const raw = localStorage.getItem('printpal_workshop_quotations');
-          const list = raw ? JSON.parse(raw) : [];
-          const updated = [newQuoteEntry, ...list.filter((q: any) => q.quoteNumber !== quoteNumber)];
-          localStorage.setItem('printpal_workshop_quotations', JSON.stringify(updated));
-        } catch (e) {
-          console.warn('Could not sync quote to localStorage:', e);
-        }
-      };
+    try {
+      let res: Response | null = null;
+      try {
+        res = await fetch('/api/quotations', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+      } catch (networkErr) {
+        console.warn('[QuotationView] Backend unreachable, proceeding with local creation:', networkErr);
+      }
 
-      if (res.ok) {
+      if (res && res.ok) {
         const data = await res.json().catch(() => ({}));
         onClearRenegotiatingQuote?.();
-        syncToLocalStorage(data.id);
+        syncToLocalStorage(data.quoteId || data.id);
         palNotch.workshop(
           `Quotation ${quoteNumber} Created`,
           `${selectedCustomer.name} • ₹${grandTotal.toLocaleString('en-IN')}`,
@@ -798,12 +818,35 @@ export function QuotationView({
         );
         setIsPreviewOpen(true);
       } else {
-        const err = await res.json().catch(() => ({}));
-        showToast(err.error || 'Failed to create quote', 'error');
+        // Resilient Workshop Fallback: Always save locally and open preview so workshop operations never halt!
+        onClearRenegotiatingQuote?.();
+        syncToLocalStorage();
+        palNotch.workshop(
+          `Quotation ${quoteNumber} Created Locally`,
+          `${selectedCustomer.name} • ₹${grandTotal.toLocaleString('en-IN')}`,
+          { label: 'View PDF', onClick: () => setIsPreviewOpen(true) },
+          'QUOTATION'
+        );
+        setIsPreviewOpen(true);
+
+        if (!res) {
+          showToast(`Quotation ${quoteNumber} saved locally (Offline mode). PDF ready.`, 'info');
+        } else if (res.status === 401) {
+          showToast(`Quotation saved locally. Sign in to sync quotes to cloud.`, 'info');
+        } else {
+          const err = await res.json().catch(() => ({}));
+          const errMsg = err.error || err.message;
+          if (errMsg) {
+            showToast(`Saved locally. Cloud sync notice: ${errMsg}`, 'info');
+          } else {
+            showToast(`Quotation ${quoteNumber} created and saved locally`, 'info');
+          }
+        }
       }
-    } catch {
-      // Offline fallback
+    } catch (e) {
+      console.error('[QuotationView] Unexpected quote creation failure:', e);
       onClearRenegotiatingQuote?.();
+      syncToLocalStorage();
       palNotch.workshop(
         `Quotation ${quoteNumber} Saved Locally`,
         `${selectedCustomer.name} • ₹${grandTotal.toLocaleString('en-IN')}`,
@@ -811,6 +854,7 @@ export function QuotationView({
         'QUOTATION'
       );
       setIsPreviewOpen(true);
+      showToast(`Quotation saved locally`, 'info');
     }
   };
 

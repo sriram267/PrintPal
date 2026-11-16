@@ -38,11 +38,21 @@ export async function getAuthToken(): Promise<string | null> {
   }
 
   // Fallback to global window.Clerk session instance
-  if (typeof window !== "undefined" && window.Clerk?.session) {
-    try {
-      return await window.Clerk.session.getToken();
-    } catch (err) {
-      console.warn("[apiClient] window.Clerk.session.getToken error:", err);
+  if (typeof window !== "undefined") {
+    const clerk = (window as any).Clerk;
+    if (clerk?.session?.getToken) {
+      try {
+        const token = await clerk.session.getToken();
+        if (token) return token;
+      } catch (err) {
+        console.warn("[apiClient] window.Clerk.session.getToken error:", err);
+      }
+    }
+    if (clerk?.client?.activeSessions?.[0]?.getToken) {
+      try {
+        const token = await clerk.client.activeSessions[0].getToken();
+        if (token) return token;
+      } catch {}
     }
   }
 

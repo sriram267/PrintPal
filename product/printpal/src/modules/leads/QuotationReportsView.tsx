@@ -223,10 +223,7 @@ export function QuotationReportsView({
       .then((apiQuotes) => {
         if (Array.isArray(apiQuotes)) {
           if (apiQuotes.length === 0) {
-            try {
-              localStorage.setItem('printpal_workshop_quotations', JSON.stringify([]));
-            } catch {}
-            setQuotations([]);
+            // Keep existing local storage quotations rather than wiping them
             return;
           }
           const mapped: QuotationListItem[] = apiQuotes.map((q: any) => {

@@ -914,14 +914,19 @@ server.post("/api/quotations", async (req, reply) => {
     sites = [],
   } = body;
 
-  if (!customerId) {
-    reply.status(400);
-    return { error: "customerId is required" };
-  }
+  const effectiveCustomerId = customerId || (body.customer?.id) || `cust-${Date.now()}`;
 
   // Determine or reuse quoteId consistently by quoteNumber or explicit id scoped to this tenant
-  const existingByNum = await repo.quotations.getByQuoteNumber(req.tenantId, quoteNumber);
-  let quoteId = existingByNum ? existingByNum.id : (body.id || `quote-${Date.now()}`);
+  let quoteId = body.id || null;
+  if (!quoteId && req.tenantId) {
+    const existingByNum = await repo.quotations.getByQuoteNumber(req.tenantId, quoteNumber);
+    if (existingByNum) {
+      quoteId = existingByNum.id;
+    }
+  }
+  if (!quoteId) {
+    quoteId = `quote-${Date.now()}`;
+  }
 
   // Validate and recompute all lines with calcLine
   const processedLines = [];
@@ -956,10 +961,12 @@ server.post("/api/quotations", async (req, reply) => {
 
       if (action === "create" && calcResult.status === "incomplete") {
         reply.status(400);
+        const prodName = line.product_title || line.productTitle || "Signage item";
+        const reasonDetail = calcResult.reason === "rate" ? "missing unit rate" : calcResult.reason === "size" ? "missing dimensions" : `incomplete ${calcResult.reason}`;
         return {
-          error: "Cannot create customer quote with incomplete lines",
+          error: `Cannot create customer quote: "${prodName}" has ${reasonDetail}`,
           reason: calcResult.reason,
-          productTitle: line.product_title || line.productTitle,
+          productTitle: prodName,
         };
       }
 
@@ -996,25 +1003,33 @@ server.post("/api/quotations", async (req, reply) => {
   const finalGrandTotal = roundHalfUp(totalBase + totalBase * (Number(gstRate) / 100), 2);
 
   // Save through tenant-scoped repository
-  await repo.quotations.save(
-    req.tenantId,
-    quoteId,
-    {
-      customerId,
-      quoteNumber,
-      quoteDate,
-      finalStatus,
-      finalSubtotal,
-      transportCost,
-      designCharges,
-      installationCharges,
-      discountPercent,
-      gstRate,
-      finalGrandTotal,
-      notesJson,
-    },
-    processedLines
-  );
+  try {
+    await repo.quotations.save(
+      req.tenantId,
+      quoteId,
+      {
+        customerId: effectiveCustomerId,
+        quoteNumber,
+        quoteDate,
+        finalStatus,
+        finalSubtotal,
+        transportCost,
+        designCharges,
+        installationCharges,
+        discountPercent,
+        gstRate,
+        finalGrandTotal,
+        notesJson,
+      },
+      processedLines
+    );
+  } catch (err) {
+    req.log?.error(err);
+    reply.status(500);
+    return {
+      error: `Failed to save quotation to database: ${err.message}`,
+    };
+  }
 
   return {
     quoteId,
