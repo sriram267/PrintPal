@@ -674,6 +674,16 @@
   background: var(--printpal-surface);
 }
 
+/* Newly created quotation: brief blue wash that fades out */
+@keyframes printpalQuoteRowNew {
+  0%, 35% { background: #EFF6FF; }
+  100% { background: #fbfcfd; }
+}
+
+.printpal-quote-row-new {
+  animation: printpalQuoteRowNew 2.4s ease-out 1;
+}
+
 .printpal-quote-chevron {
   transition: transform 0.15s ease;
 }

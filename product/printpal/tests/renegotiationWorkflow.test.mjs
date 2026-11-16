@@ -85,15 +85,16 @@ async function runTests() {
     quoteViewSrc.includes("renegotiatingQuote"),
     "QuotationView must accept renegotiatingQuote prop"
   );
+  // The version already lives in the quote number (Q-001-V2) — it must not be repeated as chips/suffixes.
   assert.ok(
-    quoteViewSrc.includes("quoteVersionTitle"),
-    "QuotationView must manage quoteVersionTitle state"
+    !quoteViewSrc.includes("quoteVersionTitle"),
+    "QuotationView must not repeat the version label (quote number already carries it)"
   );
   assert.ok(
-    quoteViewSrc.includes("Create Customer Quote (${quoteVersionTitle})"),
-    "Action button must reflect Version 2"
+    quoteViewSrc.includes("onQuotationCreated"),
+    "QuotationView must navigate to Quotation Reports after the PDF of a created quote is closed"
   );
-  console.log("  ✓ QuotationView reflects Version 2 title, badge, and action button.");
+  console.log("  ✓ QuotationView shows the version once (in the quote number) and hands off to reports.");
 
   // 4. Verify Pal Notch UX copy in LeadsApp.tsx
   console.log("Test 4: Verifying Pal Notch notification and UX copy in LeadsApp...");

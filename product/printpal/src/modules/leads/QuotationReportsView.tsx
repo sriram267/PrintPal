@@ -49,6 +49,8 @@ export interface QuotationReportsViewProps {
   businessDetails?: BusinessDetailsRecord;
   onCreateQuotation?: () => void;
   onRenegotiateQuotation?: (quote: QuotationListItem) => void;
+  /** Quotation just created: its customer group opens and the new line is highlighted. */
+  highlightQuote?: { customerId: string; quoteNumber: string } | null;
 }
 
 // Backward-compatible alias
@@ -152,7 +154,9 @@ function QuotationGroups({
   onDelete,
   onRenegotiate,
   onFinalizeChange,
+  highlightedNumber,
 }: {
+  highlightedNumber?: string;
   groups: QuotationGroup[];
   expanded: Set<string>;
   onToggle: (key: string) => void;
@@ -237,7 +241,8 @@ function QuotationGroups({
                 return (
                   <div
                     key={q.id}
-                    className="printpal-table-row printpal-quotation-reports-grid printpal-billing-reports-grid printpal-quote-version-row cursor-pointer"
+                    ref={q.quoteNumber === highlightedNumber ? (el) => el?.scrollIntoView({ block: 'nearest' }) : undefined}
+                    className={`printpal-table-row printpal-quotation-reports-grid printpal-billing-reports-grid printpal-quote-version-row cursor-pointer${q.quoteNumber === highlightedNumber ? ' printpal-quote-row-new' : ''}`}
                     onClick={() => onViewPDF(q)}
                     title={`Click to view ${isFinal ? 'Invoice' : 'Quotation'} PDF`}
                   >
@@ -345,6 +350,7 @@ export function QuotationReportsView({
   businessDetails,
   onCreateQuotation,
   onRenegotiateQuotation,
+  highlightQuote,
 }: QuotationReportsViewProps) {
   const [quotations, setQuotations] = React.useState<QuotationListItem[]>(loadQuotationsFromStorage);
 
@@ -427,7 +433,12 @@ export function QuotationReportsView({
   const [previewQuote, setPreviewQuote] = React.useState<QuotationListItem | null>(null);
 
   // Accordion state: collapsed by default; open customers are tracked by group key
-  const [expanded, setExpanded] = React.useState<Set<string>>(() => new Set());
+  const [expanded, setExpanded] = React.useState<Set<string>>(() => {
+    if (!highlightQuote) return new Set();
+    const hit = quotations.find((q) => q.quoteNumber === highlightQuote.quoteNumber);
+    return new Set([hit ? groupKeyOf(hit) : `id:${highlightQuote.customerId}`]);
+  });
+  const highlightedNumber = highlightQuote?.quoteNumber;
   const groups = React.useMemo(() => groupQuotationsByCustomer(quotations), [quotations]);
 
   const handleToggleGroup = (key: string) => {
@@ -597,6 +608,7 @@ export function QuotationReportsView({
             onDelete={handleDeleteRequest}
             onRenegotiate={onRenegotiateQuotation}
             onFinalizeChange={handleFinalizeChange}
+            highlightedNumber={highlightedNumber}
           />
         </div>
       </div>

@@ -77,6 +77,8 @@ export interface QuotationViewProps {
   isSupplierEnabled?: boolean;
   renegotiatingQuote?: RenegotiatingQuoteData | null;
   onClearRenegotiatingQuote?: () => void;
+  /** Called when the PDF of a just-created quotation is closed → go to Quotation Reports. */
+  onQuotationCreated?: (created: { customerId: string; quoteNumber: string }) => void;
 }
 
 export type PricingMethod =
@@ -335,6 +337,7 @@ export function QuotationView({
   isSupplierEnabled = true,
   renegotiatingQuote,
   onClearRenegotiatingQuote,
+  onQuotationCreated,
 }: QuotationViewProps) {
   // Mode: Customer vs Supplier
   const [quotationMode, setQuotationMode] = React.useState<string>('customer');
@@ -365,9 +368,6 @@ export function QuotationView({
       return 'Q-001-V1';
     }
   });
-  const [quoteVersionTitle, setQuoteVersionTitle] = React.useState<string | null>(
-    renegotiatingQuote?.versionLabel || null
-  );
   const [quoteDate] = React.useState(() => {
     return new Date().toLocaleDateString('en-IN', {
       day: '2-digit',
@@ -395,7 +395,6 @@ export function QuotationView({
     if (renegotiatingQuote) {
       setSelectedCustomer(renegotiatingQuote.customer);
       setQuoteNumber(renegotiatingQuote.quoteNumber);
-      setQuoteVersionTitle(renegotiatingQuote.versionLabel);
       if (renegotiatingQuote.sites && renegotiatingQuote.sites.length > 0) {
         setSites(JSON.parse(JSON.stringify(renegotiatingQuote.sites)));
       }
@@ -1007,21 +1006,11 @@ export function QuotationView({
                 <div className="flex flex-col">
                   <div className="flex items-center gap-2 mb-1">
                     <span className="text-[11px] font-bold text-[#737B84] tracking-wider uppercase">
-                      CUSTOMER DETAILS •
+                      CUSTOMER DETAILS
                     </span>
-                    {quoteVersionTitle && (
-                      <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-[#EFF6FF] text-[#1D4ED8] border border-[#BFDBFE]">
-                        {quoteVersionTitle}
-                      </span>
-                    )}
                   </div>
-                  <h2 className="text-[18px] font-bold text-[#202428] mb-2 leading-tight flex items-center gap-2.5">
-                    <span>{selectedCustomer.name}</span>
-                    {quoteVersionTitle && (
-                      <span className="text-[14px] font-semibold text-[#1D4ED8]">
-                        ({quoteVersionTitle})
-                      </span>
-                    )}
+                  <h2 className="text-[18px] font-bold text-[#202428] mb-2 leading-tight">
+                    {selectedCustomer.name}
                   </h2>
                   <div className="flex flex-wrap items-center gap-4 text-[13px] text-[#737B84]">
                     {selectedCustomer.contactPerson && (
@@ -1070,11 +1059,6 @@ export function QuotationView({
                         <span className="text-[13px] font-bold text-[#202428] font-mono">
                           {quoteNumber}
                         </span>
-                        {quoteVersionTitle && (
-                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-[#EFF6FF] text-[#1D4ED8] border border-[#BFDBFE]">
-                            {quoteVersionTitle}
-                          </span>
-                        )}
                       </div>
                     </div>
                     <div className="h-7 w-[1px] bg-[#E2E8F0]" />
@@ -1767,11 +1751,7 @@ export function QuotationView({
                     }`}
                 >
                   <span>
-                    {selectedCustomer
-                      ? quoteVersionTitle
-                        ? `Create Customer Quote (${quoteVersionTitle})`
-                        : 'Create Customer Quote'
-                      : 'Select Customer to Create Quote'}
+                    {selectedCustomer ? 'Create Customer Quote' : 'Select Customer to Create Quote'}
                   </span>
                 </Button>
               </div>
@@ -1784,7 +1764,14 @@ export function QuotationView({
       {isPreviewOpen && selectedCustomer && (
         <QuotePDFPreview
           isOpen={isPreviewOpen}
-          onClose={() => setIsPreviewOpen(false)}
+          onClose={() => {
+            setIsPreviewOpen(false);
+            // Preview only opens after a quotation was created → land on the reports page.
+            onQuotationCreated?.({
+              customerId: selectedCustomer.id || '',
+              quoteNumber,
+            });
+          }}
           customer={selectedCustomer}
           sites={sites}
           quoteNumber={quoteNumber}

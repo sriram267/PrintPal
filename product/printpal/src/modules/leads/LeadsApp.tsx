@@ -951,6 +951,8 @@ export function LeadsApp() {
   const [finishes, setFinishes] = React.useState<FinishRecord[]>([])
   const [quotationSelectedCustomer, setQuotationSelectedCustomer] = React.useState<CustomerRecord | null>(null)
   const [renegotiatingQuote, setRenegotiatingQuote] = React.useState<RenegotiatingQuoteData | null>(null)
+  // Quote just created → Quotation Reports opens its customer group and highlights the new line
+  const [justCreatedQuote, setJustCreatedQuote] = React.useState<{ customerId: string; quoteNumber: string } | null>(null)
 
   // Settings Module State
   const [settingsMenu, setSettingsMenu] = React.useState<"businessDetails" | "products" | "materials" | "finishes" | "tax" | "supplier">("products")
@@ -2056,8 +2058,8 @@ export function LeadsApp() {
       palNotch.notify({
         badge: "QUOTATION REVISION",
         variant: "info",
-        title: `Quotation Revision (${versionInfo.versionLabel}) Auto-Populated`,
-        description: `For ${q.customerName}, quotation revision (${versionInfo.versionLabel}) is auto-populated in the billing screen. A newer version of this quotation is being created for renegotiation.`,
+        title: `Revising ${q.quoteNumber}`,
+        description: `For ${q.customerName}, the next version ${versionInfo.nextQuoteNumber} is auto-populated in the billing screen for renegotiation.`,
         customerCard: {
           name: q.customerName,
           contactPerson: q.contactPerson,
@@ -3571,14 +3573,23 @@ export function LeadsApp() {
           isSupplierEnabled={isSupplierEnabled}
           renegotiatingQuote={renegotiatingQuote}
           onClearRenegotiatingQuote={() => setRenegotiatingQuote(null)}
+          onQuotationCreated={(created) => {
+            setRenegotiatingQuote(null)
+            setQuotationSelectedCustomer(null)
+            setJustCreatedQuote(created)
+            setActiveModule("quotationReports")
+          }}
         />
       ) : activeModule === "quotationReports" ? (
         <QuotationReportsView
           customers={customers}
           showToast={showToast}
           businessDetails={businessDetails}
+          highlightQuote={justCreatedQuote}
           onCreateQuotation={() => {
             setRenegotiatingQuote(null)
+            setQuotationSelectedCustomer(null)
+            setJustCreatedQuote(null)
             setActiveModule("quotation")
           }}
           onRenegotiateQuotation={handleRenegotiateQuotation}
