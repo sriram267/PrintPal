@@ -6082,7 +6082,7 @@ export function LeadsApp() {
                             className={`printpal-site-tab-btn ${activeRightTab === "services" ? "active" : ""}`}
                             onClick={() => setActiveRightTab("services")}
                           >
-                            Services & Site Details
+                            Signage
                           </button>
                           <button
                             type="button"

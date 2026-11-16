@@ -778,7 +778,7 @@ export class LeadsController {
     const tabServices = document.createElement('button');
     tabServices.type = 'button';
     tabServices.className = `printpal-site-tab-btn ${this.activeRightTab === 'services' ? 'active' : ''}`;
-    tabServices.textContent = 'Services & Site Details';
+    tabServices.textContent = 'Signage';
     tabServices.onclick = () => {
       this.activeRightTab = 'services';
       this.refreshModalContent();
