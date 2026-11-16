@@ -97,11 +97,18 @@ export interface PalNotchPromptItem extends PalNotchPromptOptions {
   id: string
 }
 
+/** Space between the paper's edge and the printer body's edge, and the height of the slot band. */
+export const DOC_RIM = 28
+export const DOC_BAR_H = 56
+export const DOC_SLOT_H = 10
+
 /** The notch as a control bar for a document sheet (title, Download, Close). Stays until closed. */
 export interface PalNotchDocumentOptions {
   title: string
   subtitle?: string
   downloadLabel?: string
+  /** Width of the paper that will come out, so the notch can size its slot to it. */
+  paperWidth: number
   onDownload: () => void
   onClose: () => void
 }
@@ -967,7 +974,7 @@ export function PalNotch({ activeModuleLabel = "Ready" }: PalNotchProps) {
       if (event.type === "document") {
         // A toast fired just before the sheet opened (e.g. "Quotation created") waits until the sheet closes.
         const fresh = lastToast && Date.now() - lastToast.createdAt < 1500 ? lastToast : null
-        pendingToastRef.current = activeToast ?? fresh
+        pendingToastRef.current = activeToast ?? fresh ?? pendingToastRef.current
         lastToast = null
         if (stageTimerRef.current !== null) {
           window.clearTimeout(stageTimerRef.current)
@@ -1438,7 +1445,16 @@ export function PalNotch({ activeModuleLabel = "Ready" }: PalNotchProps) {
             cursor: default !important;
           }
 
-
+          /* Document mode: the notch widens into a small printer body, a little wider than the paper.
+             These come after the toast rules on purpose so they win. */
+          .pal-island-wrapper.is-doc {
+            width: var(--pal-doc-w, 440px) !important;
+            min-height: 0 !important;
+          }
+          .pal-island-surface.is-doc {
+            min-height: 0 !important;
+            border-radius: 0 0 16px 16px !important;
+          }
 
           @keyframes palBackdropIn {
             from {
@@ -1556,6 +1572,9 @@ export function PalNotch({ activeModuleLabel = "Ready" }: PalNotchProps) {
             cursor: !isExpanded || isGreetingActive ? "pointer" : "default",
             ...((isConfirmExpanding || isModalActive || isConfirmClosing)
               ? ({ "--confirm-target-h": `${measuredConfirmH}px` } as React.CSSProperties)
+              : {}),
+            ...(isDoc && activeDoc
+              ? ({ "--pal-doc-w": `${activeDoc.paperWidth + DOC_RIM * 2}px` } as React.CSSProperties)
               : {}),
           }}
           onMouseEnter={() => {
@@ -2014,13 +2033,16 @@ export function PalNotch({ activeModuleLabel = "Ready" }: PalNotchProps) {
             <div
               key={`doc-${toastRevision}`}
               className="pal-content-spring-in"
+              style={{ position: "relative", width: "100%", boxSizing: "border-box" }}
+            >
+            <div
               style={{
                 display: "flex",
                 alignItems: "center",
                 gap: 12,
                 width: "100%",
-                minHeight: 58,
-                padding: "10px 12px 12px 16px",
+                height: DOC_BAR_H,
+                padding: "0 18px 0 22px",
                 boxSizing: "border-box",
               }}
             >
@@ -2132,6 +2154,28 @@ export function PalNotch({ activeModuleLabel = "Ready" }: PalNotchProps) {
               >
                 <X size={16} />
               </button>
+            </div>
+
+            {/* The slot: a lit recess along the bottom edge, a touch wider than the paper that comes out of it. */}
+            <div
+              aria-hidden="true"
+              style={{
+                height: DOC_SLOT_H,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "flex-end",
+              }}
+            >
+              <div
+                style={{
+                  width: activeDoc.paperWidth + 12,
+                  height: 7,
+                  borderRadius: "4px 4px 0 0",
+                  background: "linear-gradient(180deg, #060607 0%, #2B2E34 100%)",
+                  boxShadow: "inset 0 2px 3px rgba(0,0,0,0.95), 0 -1px 0 rgba(255,255,255,0.16)",
+                }}
+              />
+            </div>
             </div>
           )}
 

@@ -8,7 +8,7 @@
 
 import * as React from 'react';
 import { createPortal } from 'react-dom';
-import { palNotch } from '@ui/pal-notch';
+import { palNotch, DOC_RIM, DOC_BAR_H, DOC_SLOT_H } from '@ui/pal-notch';
 import type { CustomerRecord } from './types';
 import type { QuoteSite } from './QuotationView';
 import type { BusinessDetailsRecord } from '../settings';
@@ -93,13 +93,26 @@ export function QuotePDFPreview({
   onBeginCloseRef.current = onBeginClose;
   const closeTimer = React.useRef<number | null>(null);
 
+  // The paper is always a little narrower than the notch, so it visibly comes out of the slot.
+  const computePaperWidth = () =>
+    Math.max(280, Math.min(794, (typeof window === 'undefined' ? 794 : window.innerWidth) - 28 - DOC_RIM * 2));
+  const [paperW, setPaperW] = React.useState(computePaperWidth);
+  React.useEffect(() => {
+    const onResize = () => setPaperW(computePaperWidth());
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
   const handleClose = React.useCallback(() => {
     if (phaseRef.current === 'closing') return;
     setPhase('closing');
-    palNotch.closeDocument();
     onBeginCloseRef.current?.();
+    // The notch stays a printer until the paper is back inside, then relaxes into whatever toast is waiting.
     closeTimer.current = window.setTimeout(
-      () => onCloseRef.current(),
+      () => {
+        palNotch.closeDocument();
+        onCloseRef.current();
+      },
       prefersReducedMotion() ? 0 : RETRACT_MS
     );
   }, []);
@@ -110,21 +123,25 @@ export function QuotePDFPreview({
   const handleDownloadRef = React.useRef(handleDownload);
   handleDownloadRef.current = handleDownload;
 
-  // The notch becomes the control bar: title, Download, Close.
+  // The notch becomes the printer: title, Download, Close, and a slot sized to the paper.
   React.useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen || phaseRef.current === 'closing') return;
     palNotch.document({
       title: `${documentType} ${quoteNumber}`,
       subtitle: customer.name,
+      paperWidth: paperW,
       onDownload: () => handleDownloadRef.current(),
       onClose: handleClose,
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, paperW]);
+
+  React.useEffect(() => {
     return () => {
       palNotch.closeDocument();
       if (closeTimer.current !== null) window.clearTimeout(closeTimer.current);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen]);
+  }, []);
 
   // Printing ends on its own, or on the first tap/click to skip it.
   React.useEffect(() => {
@@ -192,7 +209,7 @@ export function QuotePDFPreview({
         className={`pdf-preview-shell fixed inset-0 z-[200] flex flex-col bg-[#16181D]/80 backdrop-blur-md ${
           phase === 'closing' ? 'pdf-shell-out' : 'pdf-shell-in'
         }`}
-        style={{ fontFamily: SANS_FONT, paddingTop: 58 }}
+        style={{ fontFamily: SANS_FONT, paddingTop: DOC_BAR_H + DOC_SLOT_H }}
         onPointerDown={() => {
           // A tap while printing skips ahead to the finished page.
           if (phaseRef.current === 'printing') setPhase('open');
@@ -201,13 +218,14 @@ export function QuotePDFPreview({
         {/* The notch above is the control bar (title, Download, Close). This is the paper stage:
             it starts just under the notch, so the page appears to feed out of the slot. */}
         <div
-          className="pdf-stage flex-1 min-h-0 overflow-y-auto pb-10 px-3 sm:px-6"
+          className="pdf-stage flex-1 min-h-0 overflow-y-auto pb-10"
           onClick={(e) => {
             if (e.target === e.currentTarget && phaseRef.current === 'open') handleClose();
           }}
         >
           <div
-            className={`pdf-feed mx-auto w-full max-w-[794px] flex flex-col items-center gap-6 ${
+            style={{ width: paperW }}
+            className={`pdf-feed mx-auto flex flex-col items-center gap-6 ${
               phase === 'printing' ? 'pdf-feed-in' : phase === 'closing' ? 'pdf-feed-out' : ''
             }`}
             onClick={(e) => {
@@ -601,6 +619,8 @@ export function QuotePDFPreview({
       {/* ── Print Fidelity + Accessibility Media Rules ── */}
       <style>{`
         /* Paper feeds out of the notch in discrete steps, like a thermal printer, then retracts. */
+        .pdf-stage { scrollbar-width: none; }
+        .pdf-stage::-webkit-scrollbar { display: none; }
         .pdf-feed { padding-top: 28px; }
         .pdf-feed #printpal-pdf-document { box-shadow: 0 28px 60px -14px rgba(0, 0, 0, 0.55), 0 2px 10px rgba(0, 0, 0, 0.25); }
         .pdf-feed-in { animation: pdfFeedIn ${FEED_MS}ms steps(36, end) both; }
@@ -670,6 +690,7 @@ export function QuotePDFPreview({
             animation: none !important;
             transform: none !important;
             padding: 0 !important;
+            width: 100% !important;
           }
 
           .pdf-feed #printpal-pdf-document {
