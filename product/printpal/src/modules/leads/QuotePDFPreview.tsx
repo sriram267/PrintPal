@@ -8,7 +8,6 @@
 
 import * as React from 'react';
 import { createPortal } from 'react-dom';
-import { X, Download } from 'lucide-react';
 import { palNotch } from '@ui/pal-notch';
 import type { CustomerRecord } from './types';
 import type { QuoteSite } from './QuotationView';
@@ -17,7 +16,10 @@ import { formatQuoteLineText } from '../quotation/quoteFormatters';
 
 export interface QuotePDFPreviewProps {
   isOpen: boolean;
+  /** Called once the paper has finished retracting; the sheet can be unmounted. */
   onClose: () => void;
+  /** Called the moment closing starts, so the screen behind can switch while the paper retracts. */
+  onBeginClose?: () => void;
   customer: CustomerRecord;
   sites: QuoteSite[];
   quoteNumber: string;
@@ -39,6 +41,16 @@ export interface QuotePDFPreviewProps {
   documentType?: 'Quotation' | 'Invoice';
 }
 
+/** Everything the sheet needs to render, so a parent can hold it above the screen that created it. */
+export type QuotePDFDocumentProps = Omit<QuotePDFPreviewProps, 'isOpen' | 'onClose' | 'onBeginClose'>;
+
+const FEED_MS = 1500;
+const RETRACT_MS = 440;
+
+function prefersReducedMotion() {
+  return typeof window !== 'undefined' && !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+}
+
 function fmt(n: number) {
   return `₹${n.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
@@ -49,6 +61,7 @@ const SANS_FONT = "'Inter', system-ui, -apple-system, sans-serif";
 export function QuotePDFPreview({
   isOpen,
   onClose,
+  onBeginClose,
   customer,
   sites,
   quoteNumber,
@@ -68,18 +81,70 @@ export function QuotePDFPreview({
   businessDetails,
   documentType = 'Quotation',
 }: QuotePDFPreviewProps) {
+  // printing: paper feeds out of the notch · open: readable · closing: paper retracts into the notch
+  const [phase, setPhase] = React.useState<'printing' | 'open' | 'closing'>(
+    prefersReducedMotion() ? 'open' : 'printing'
+  );
+  const phaseRef = React.useRef(phase);
+  phaseRef.current = phase;
+  const onCloseRef = React.useRef(onClose);
+  onCloseRef.current = onClose;
+  const onBeginCloseRef = React.useRef(onBeginClose);
+  onBeginCloseRef.current = onBeginClose;
+  const closeTimer = React.useRef<number | null>(null);
+
+  const handleClose = React.useCallback(() => {
+    if (phaseRef.current === 'closing') return;
+    setPhase('closing');
+    palNotch.closeDocument();
+    onBeginCloseRef.current?.();
+    closeTimer.current = window.setTimeout(
+      () => onCloseRef.current(),
+      prefersReducedMotion() ? 0 : RETRACT_MS
+    );
+  }, []);
+
+  const handleDownload = React.useCallback(() => {
+    window.print();
+  }, []);
+  const handleDownloadRef = React.useRef(handleDownload);
+  handleDownloadRef.current = handleDownload;
+
+  // The notch becomes the control bar: title, Download, Close.
+  React.useEffect(() => {
+    if (!isOpen) return;
+    palNotch.document({
+      title: `${documentType} ${quoteNumber}`,
+      subtitle: customer.name,
+      onDownload: () => handleDownloadRef.current(),
+      onClose: handleClose,
+    });
+    return () => {
+      palNotch.closeDocument();
+      if (closeTimer.current !== null) window.clearTimeout(closeTimer.current);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen]);
+
+  // Printing ends on its own, or on the first tap/click to skip it.
+  React.useEffect(() => {
+    if (!isOpen || phase !== 'printing') return;
+    const t = window.setTimeout(() => setPhase('open'), FEED_MS + 60);
+    return () => window.clearTimeout(t);
+  }, [isOpen, phase]);
+
   // Dismiss cleanly on Escape key
   React.useEffect(() => {
     if (!isOpen) return;
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         e.preventDefault();
-        onClose();
+        handleClose();
       }
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [isOpen, onClose]);
+  }, [isOpen, handleClose]);
 
   if (!isOpen || typeof document === 'undefined') return null;
 
@@ -117,16 +182,6 @@ export function QuotePDFPreview({
 
   const resolvedTerms = commercialTerms || businessDetails?.defaultTerms || '';
 
-  const handleDownload = () => {
-    palNotch.info(
-      `Preparing A4 PDF for ${quoteNumber}`,
-      `Save as PDF in the print dialog for ${customer.name}.`,
-      undefined,
-      'PDF'
-    );
-    window.print();
-  };
-
   return createPortal(
     <>
       <div
@@ -134,37 +189,31 @@ export function QuotePDFPreview({
         role="dialog"
         aria-modal="true"
         aria-label={`${documentType} ${quoteNumber}`}
-        className="pdf-preview-shell fixed inset-0 z-[200] flex flex-col bg-[#16181D]/80 backdrop-blur-md"
-        style={{ fontFamily: SANS_FONT }}
+        className={`pdf-preview-shell fixed inset-0 z-[200] flex flex-col bg-[#16181D]/80 backdrop-blur-md ${
+          phase === 'closing' ? 'pdf-shell-out' : 'pdf-shell-in'
+        }`}
+        style={{ fontFamily: SANS_FONT, paddingTop: 58 }}
+        onPointerDown={() => {
+          // A tap while printing skips ahead to the finished page.
+          if (phaseRef.current === 'printing') setPhase('open');
+        }}
       >
-        {/* ── Translucent floating screen chrome (hidden when printing) ── */}
-        <header className="pdf-preview-topbar flex-shrink-0 flex items-center justify-between px-4 sm:px-8 py-3 bg-[#16181D]/75 backdrop-blur-xl backdrop-saturate-150 border-b border-white/10">
-          <div className="flex items-baseline gap-3">
-            <span className="text-[13px] font-medium text-white">
-              {documentType} {quoteNumber}
-            </span>
-            <span className="hidden sm:inline text-[12px] text-white/50">
-              A4 print preview for {customer.name}
-            </span>
-          </div>
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label="Close quotation preview"
-            className="w-8 h-8 flex items-center justify-center rounded-full text-white/65 hover:text-white hover:bg-white/10 active:scale-95 transition-all duration-100 cursor-pointer"
-          >
-            <X className="h-4 w-4" />
-          </button>
-        </header>
-
-        {/* ── Scrollable paper presentation stage ── */}
+        {/* The notch above is the control bar (title, Download, Close). This is the paper stage:
+            it starts just under the notch, so the page appears to feed out of the slot. */}
         <div
-          className="pdf-stage flex-1 min-h-0 overflow-y-auto py-6 sm:py-10 px-3 sm:px-6"
+          className="pdf-stage flex-1 min-h-0 overflow-y-auto pb-10 px-3 sm:px-6"
           onClick={(e) => {
-            if (e.target === e.currentTarget) onClose();
+            if (e.target === e.currentTarget && phaseRef.current === 'open') handleClose();
           }}
         >
-          <div className="mx-auto w-full max-w-[794px] flex flex-col items-center gap-6">
+          <div
+            className={`pdf-feed mx-auto w-full max-w-[794px] flex flex-col items-center gap-6 ${
+              phase === 'printing' ? 'pdf-feed-in' : phase === 'closing' ? 'pdf-feed-out' : ''
+            }`}
+            onClick={(e) => {
+              if (e.target === e.currentTarget && phaseRef.current === 'open') handleClose();
+            }}
+          >
           {/* ═══ WARM PAPER A4 DOCUMENT SHEET (Flat, Zero Shadows Inside, Zero Cards) ═══ */}
           <article
             id="printpal-pdf-document"
@@ -545,41 +594,41 @@ export function QuotePDFPreview({
             </div>
           </article>
 
-          {/* ── Single Screen Action Below Paper (hidden on print) ── */}
-          <div className="pdf-preview-actions shrink-0 flex flex-col items-center gap-2 pb-4">
-            <button
-              type="button"
-              onClick={handleDownload}
-              className="flex items-center gap-2 bg-[#D7440E] hover:bg-[#c03d0c] active:scale-[0.97] text-white font-medium text-[14px] px-7 py-3 rounded-lg transition-all duration-100 shadow-lg shadow-black/25 cursor-pointer"
-            >
-              <Download className="h-4 w-4" />
-              Download PDF
-            </button>
-            <p className="text-[11.5px] text-white/55">
-              Choose Save as PDF in the print dialog
-            </p>
-          </div>
           </div>
         </div>
       </div>
 
       {/* ── Print Fidelity + Accessibility Media Rules ── */}
       <style>{`
+        /* Paper feeds out of the notch in discrete steps, like a thermal printer, then retracts. */
+        .pdf-feed { padding-top: 28px; }
+        .pdf-feed #printpal-pdf-document { box-shadow: 0 28px 60px -14px rgba(0, 0, 0, 0.55), 0 2px 10px rgba(0, 0, 0, 0.25); }
+        .pdf-feed-in { animation: pdfFeedIn ${FEED_MS}ms steps(36, end) both; }
+        .pdf-feed-out { animation: pdfFeedOut ${RETRACT_MS}ms cubic-bezier(0.55, 0, 0.8, 0.3) both; }
+        .pdf-shell-in { animation: pdfShellIn 0.28s ease-out both; }
+        .pdf-shell-out { animation: pdfShellOut ${RETRACT_MS}ms ease-in both; pointer-events: none; }
+        @keyframes pdfFeedIn {
+          from { transform: translateY(-100%); }
+          to { transform: translateY(0); }
+        }
+        @keyframes pdfFeedOut {
+          0% { transform: translateY(0); opacity: 1; }
+          70% { opacity: 1; }
+          100% { transform: translateY(-100%); opacity: 0; }
+        }
+        @keyframes pdfShellIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes pdfShellOut { from { opacity: 1; } to { opacity: 0; } }
+
         @media (prefers-reduced-transparency: reduce) {
           .pdf-preview-shell {
             background: rgba(22, 24, 29, 0.96) !important;
             backdrop-filter: none !important;
           }
-          .pdf-preview-topbar {
-            background: #16181D !important;
-            backdrop-filter: none !important;
-          }
         }
 
         @media (prefers-reduced-motion: reduce) {
-          .pdf-preview-shell button {
-            transition: none !important;
-            transform: none !important;
+          .pdf-feed-in, .pdf-feed-out, .pdf-shell-in, .pdf-shell-out {
+            animation: none !important;
           }
         }
 
@@ -613,11 +662,18 @@ export function QuotePDFPreview({
             backdrop-filter: none !important;
             display: block !important;
             overflow: visible !important;
+            padding: 0 !important;
+            animation: none !important;
           }
 
-          .pdf-preview-topbar,
-          .pdf-preview-actions {
-            display: none !important;
+          .pdf-feed {
+            animation: none !important;
+            transform: none !important;
+            padding: 0 !important;
+          }
+
+          .pdf-feed #printpal-pdf-document {
+            box-shadow: none !important;
           }
 
           .pdf-stage {

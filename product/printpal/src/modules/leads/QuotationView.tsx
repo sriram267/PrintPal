@@ -13,7 +13,7 @@ import {
   AlertCircle,
   X,
 } from 'lucide-react';
-import { QuotePDFPreview } from './QuotePDFPreview';
+import { QuotePDFPreview, type QuotePDFDocumentProps } from './QuotePDFPreview';
 import { Button } from '@ui/button';
 import { palNotch } from '@ui/pal-notch';
 import { Input } from '@ui/input';
@@ -79,6 +79,11 @@ export interface QuotationViewProps {
   onClearRenegotiatingQuote?: () => void;
   /** Called when the PDF of a just-created quotation is closed → go to Quotation Reports. */
   onQuotationCreated?: (created: { customerId: string; quoteNumber: string }) => void;
+  /**
+   * When given, the printed-quotation sheet is shown by the parent (above whichever screen is active),
+   * so it can keep printing/retracting while the screen behind switches to Quotation Reports.
+   */
+  onShowDocument?: (doc: QuotePDFDocumentProps) => void;
 }
 
 export type PricingMethod =
@@ -338,6 +343,7 @@ export function QuotationView({
   renegotiatingQuote,
   onClearRenegotiatingQuote,
   onQuotationCreated,
+  onShowDocument,
 }: QuotationViewProps) {
   // Mode: Customer vs Supplier
   const [quotationMode, setQuotationMode] = React.useState<string>('customer');
@@ -681,6 +687,33 @@ export function QuotationView({
   const grandTotal = selectedCustomer ? taxableTotal + gstAmount : 0;
 
   // Create Customer Quote handler (validates inline fields first, then dispatches to API)
+  const showDocument = () => {
+    if (!selectedCustomer) return;
+    if (!onShowDocument) {
+      setIsPreviewOpen(true);
+      return;
+    }
+    onShowDocument({
+      customer: selectedCustomer,
+      sites,
+      quoteNumber,
+      quoteDate,
+      sitesSubtotal,
+      designCharges,
+      installationCharges,
+      transportCost,
+      discountPercent,
+      discountAmount,
+      taxableTotal,
+      gstRate,
+      gstAmount,
+      grandTotal,
+      fabNotes,
+      commercialTerms,
+      businessDetails,
+    });
+  };
+
   const handleCreateCustomerQuote = async () => {
     if (!selectedCustomer || sites.length === 0) return;
 
@@ -814,10 +847,9 @@ export function QuotationView({
         palNotch.workshop(
           `Quotation ${quoteNumber} Created`,
           `${selectedCustomer.name} • ₹${grandTotal.toLocaleString('en-IN')}`,
-          { label: 'View PDF', onClick: () => setIsPreviewOpen(true) },
-          'QUOTATION'
+          { label: 'View PDF', onClick: () => showDocument() }
         );
-        setIsPreviewOpen(true);
+        showDocument();
       } else {
         // Resilient Workshop Fallback: Always save locally and open preview so workshop operations never halt!
         onClearRenegotiatingQuote?.();
@@ -825,10 +857,9 @@ export function QuotationView({
         palNotch.workshop(
           `Quotation ${quoteNumber} Created Locally`,
           `${selectedCustomer.name} • ₹${grandTotal.toLocaleString('en-IN')}`,
-          { label: 'View PDF', onClick: () => setIsPreviewOpen(true) },
-          'QUOTATION'
+          { label: 'View PDF', onClick: () => showDocument() }
         );
-        setIsPreviewOpen(true);
+        showDocument();
 
         if (!res) {
           showToast(`Quotation ${quoteNumber} saved locally (Offline mode). PDF ready.`, 'info');
@@ -851,10 +882,9 @@ export function QuotationView({
       palNotch.workshop(
         `Quotation ${quoteNumber} Saved Locally`,
         `${selectedCustomer.name} • ₹${grandTotal.toLocaleString('en-IN')}`,
-        { label: 'View PDF', onClick: () => setIsPreviewOpen(true) },
-        'QUOTATION'
+        { label: 'View PDF', onClick: () => showDocument() }
       );
-      setIsPreviewOpen(true);
+      showDocument();
       showToast(`Quotation saved locally`, 'info');
     }
   };

@@ -2,6 +2,8 @@ import * as React from "react"
 import { createPortal } from "react-dom"
 import {
   Check,
+  Download,
+  FileText,
   AlertCircle,
   AlertTriangle,
   Info,
@@ -95,9 +97,20 @@ export interface PalNotchPromptItem extends PalNotchPromptOptions {
   id: string
 }
 
+/** The notch as a control bar for a document sheet (title, Download, Close). Stays until closed. */
+export interface PalNotchDocumentOptions {
+  title: string
+  subtitle?: string
+  downloadLabel?: string
+  onDownload: () => void
+  onClose: () => void
+}
+
 type NotchListener = (
   action:
     | { type: "push"; item: PalNotchNotification }
+    | { type: "document"; item: PalNotchDocumentOptions }
+    | { type: "documentClose" }
     | { type: "confirm"; item: PalNotchConfirmItem }
     | { type: "prompt"; item: PalNotchPromptItem }
     | { type: "greeting" }
@@ -126,11 +139,21 @@ function emitPush(options: PalNotchOptions): string {
     duration: options.duration ?? defaultDuration(variant, Boolean(options.action)),
     createdAt: Date.now(),
   }
+  if (item.duration > 0) lastToast = item
   listeners.forEach((fn) => fn({ type: "push", item }))
   return id
 }
 
+/* The most recent timed toast, so a document opened in the same breath can hold it until it closes. */
+let lastToast: PalNotchNotification | null = null
+
 export const palNotch = {
+  document: (options: PalNotchDocumentOptions) => {
+    listeners.forEach((fn) => fn({ type: "document", item: options }))
+  },
+  closeDocument: () => {
+    listeners.forEach((fn) => fn({ type: "documentClose" }))
+  },
   notify: (options: PalNotchOptions) => emitPush(options),
   confirm: (options: PalNotchConfirmOptions): string => {
     const id = options.id || nextId()
@@ -203,7 +226,7 @@ function VariantIcon({ variant }: { variant: PalNotchVariant }) {
   const size = 15
   const color = VARIANT_META[variant].color
   const stroke = 2.4
-  if (variant === "success") return <Check size={size} color={color} strokeWidth={stroke} />
+  if (variant === "success" || variant === "workshop") return <Check size={size} color={color} strokeWidth={stroke} />
   if (variant === "error") return <AlertCircle size={size} color={color} strokeWidth={stroke} />
   if (variant === "warning") return <AlertTriangle size={size} color={color} strokeWidth={stroke} />
   if (variant === "loading") return <Loader2 size={size} color={color} strokeWidth={stroke} className="animate-spin" />
@@ -770,6 +793,7 @@ export function PalNotch({ activeModuleLabel = "Ready" }: PalNotchProps) {
   const [activeToast, setActiveToast] = React.useState<PalNotchNotification | null>(null)
   const [activeConfirm, setActiveConfirm] = React.useState<PalNotchConfirmItem | null>(null)
   const [activePrompt, setActivePrompt] = React.useState<PalNotchPromptItem | null>(null)
+  const [activeDoc, setActiveDoc] = React.useState<PalNotchDocumentOptions | null>(null)
   const [promptValue, setPromptValue] = React.useState<string>("")
   const [promptError, setPromptError] = React.useState<string | null>(null)
   const [isPromptSubmitting, setIsPromptSubmitting] = React.useState<boolean>(false)
@@ -940,7 +964,37 @@ export function PalNotch({ activeModuleLabel = "Ready" }: PalNotchProps) {
 
   React.useEffect(() => {
     const handler: NotchListener = (event) => {
-      if (event.type === "push") {
+      if (event.type === "document") {
+        // A toast fired just before the sheet opened (e.g. "Quotation created") waits until the sheet closes.
+        const fresh = lastToast && Date.now() - lastToast.createdAt < 1500 ? lastToast : null
+        pendingToastRef.current = activeToast ?? fresh
+        lastToast = null
+        if (stageTimerRef.current !== null) {
+          window.clearTimeout(stageTimerRef.current)
+          stageTimerRef.current = null
+        }
+        setIsGreeting(false)
+        setActiveToast(null)
+        setActiveConfirm(null)
+        setActivePrompt(null)
+        setConfirmStage("idle")
+        setActiveDoc(event.item)
+        setToastRevision((r) => r + 1)
+      } else if (event.type === "documentClose") {
+        setActiveDoc(null)
+        const queued = pendingToastRef.current
+        pendingToastRef.current = null
+        if (queued) {
+          setActiveToast(queued)
+          setToastRevision((r) => r + 1)
+          setProgressKey((k) => k + 1)
+          setIsPaused(false)
+        }
+      } else if (event.type === "push") {
+        if (activeDoc) {
+          pendingToastRef.current = event.item
+          return
+        }
         if (confirmStage !== "idle") {
           pendingToastRef.current = event.item
           return
@@ -1025,8 +1079,8 @@ export function PalNotch({ activeModuleLabel = "Ready" }: PalNotchProps) {
           }, 280)
         }, 220)
       } else if (event.type === "greeting") {
-        // If confirmation dialog or prompt modal is active, greeting cannot override it
-        if (confirmStage !== "idle") {
+        // If confirmation dialog, prompt modal or document sheet is active, greeting cannot override it
+        if (confirmStage !== "idle" || activeDoc) {
           return
         }
         pendingToastRef.current = null
@@ -1052,7 +1106,7 @@ export function PalNotch({ activeModuleLabel = "Ready" }: PalNotchProps) {
     return () => {
       listeners.delete(handler)
     }
-  }, [confirmStage, activeConfirm, activePrompt, handleDismissConfirm, handleDismissPrompt])
+  }, [confirmStage, activeConfirm, activePrompt, activeDoc, activeToast, handleDismissConfirm, handleDismissPrompt])
 
   React.useEffect(() => {
     clearTimer()
@@ -1129,9 +1183,10 @@ export function PalNotch({ activeModuleLabel = "Ready" }: PalNotchProps) {
   const isConfirmOpen = confirmStage === "open"
   const isConfirmClosing = confirmStage === "closing"
 
-  const isToast = Boolean(activeToast) && !isModalActive
-  const isGreetingActive = isGreeting && !isModalActive && !isToast
-  const isExpanded = isModalActive || isToast || isGreetingActive || isConfirmClosing
+  const isDoc = Boolean(activeDoc) && !isModalActive
+  const isToast = Boolean(activeToast) && !isModalActive && !isDoc
+  const isGreetingActive = isGreeting && !isModalActive && !isToast && !isDoc
+  const isExpanded = isModalActive || isToast || isDoc || isGreetingActive || isConfirmClosing
   const meta = activeToast ? VARIANT_META[activeToast.variant] : null
 
   const islandClass = isConfirmWidening
@@ -1142,6 +1197,8 @@ export function PalNotch({ activeModuleLabel = "Ready" }: PalNotchProps) {
     ? "is-confirm"
     : isConfirmClosing
     ? "pal-confirm-closing"
+    : isDoc
+    ? "is-doc"
     : isToast
     ? "is-toast"
     : isGreetingActive
@@ -1228,7 +1285,8 @@ export function PalNotch({ activeModuleLabel = "Ready" }: PalNotchProps) {
                         box-shadow 0.30s ease !important;
           }
 
-          .pal-island-wrapper.is-toast {
+          .pal-island-wrapper.is-toast,
+          .pal-island-wrapper.is-doc {
             width: min(400px, calc(100vw - 28px)) !important;
             height: auto !important;
             min-height: 58px !important;
@@ -1369,7 +1427,8 @@ export function PalNotch({ activeModuleLabel = "Ready" }: PalNotchProps) {
             cursor: pointer !important;
           }
 
-          .pal-island-surface.is-toast {
+          .pal-island-surface.is-toast,
+          .pal-island-surface.is-doc {
             height: auto !important;
             min-height: 58px !important;
             border-radius: 0 0 22px 22px !important;
@@ -1489,7 +1548,7 @@ export function PalNotch({ activeModuleLabel = "Ready" }: PalNotchProps) {
           ref={wrapperRef}
           className={`pal-island-wrapper ${islandClass}`}
           onClick={() => {
-            if (!activeConfirm && !activePrompt && !activeToast && confirmStage === "idle") {
+            if (!activeConfirm && !activePrompt && !activeToast && !activeDoc && confirmStage === "idle") {
               setIsGreeting((prev) => !prev)
             }
           }}
@@ -1947,6 +2006,132 @@ export function PalNotch({ activeModuleLabel = "Ready" }: PalNotchProps) {
                   )}
                 </ModalButton>
               </div>
+            </div>
+          )}
+
+          {/* ── DOCUMENT BAR: the notch is the printer slot and the control bar for the sheet ── */}
+          {isDoc && activeDoc && (
+            <div
+              key={`doc-${toastRevision}`}
+              className="pal-content-spring-in"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 12,
+                width: "100%",
+                minHeight: 58,
+                padding: "10px 12px 12px 16px",
+                boxSizing: "border-box",
+              }}
+            >
+              <div
+                style={{
+                  width: 32,
+                  height: 32,
+                  borderRadius: "50%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                  backgroundColor: "rgba(255, 255, 255, 0.08)",
+                }}
+              >
+                <FileText size={16} color="#E6E9EE" strokeWidth={2.2} />
+              </div>
+
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <p
+                  style={{
+                    fontSize: 14,
+                    fontWeight: 600,
+                    color: "#F5F6F8",
+                    lineHeight: 1.3,
+                    margin: 0,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {activeDoc.title}
+                </p>
+                {activeDoc.subtitle && (
+                  <p
+                    style={{
+                      fontSize: 12,
+                      color: "#9AA3AF",
+                      lineHeight: 1.3,
+                      margin: "1px 0 0 0",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {activeDoc.subtitle}
+                  </p>
+                )}
+              </div>
+
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  activeDoc.onDownload()
+                }}
+                style={{
+                  height: 32,
+                  padding: "0 14px",
+                  borderRadius: 9999,
+                  backgroundColor: "#D7440E",
+                  border: "none",
+                  color: "#FFFFFF",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                  cursor: "pointer",
+                  whiteSpace: "nowrap",
+                  transition: "background-color 0.15s ease",
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#C23B0A")}
+                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#D7440E")}
+              >
+                <Download size={14} strokeWidth={2.4} />
+                {activeDoc.downloadLabel || "Download"}
+              </button>
+
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  activeDoc.onClose()
+                }}
+                aria-label="Close"
+                style={{
+                  width: 30,
+                  height: 30,
+                  borderRadius: "50%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  backgroundColor: "transparent",
+                  border: "none",
+                  color: "#9AA3AF",
+                  cursor: "pointer",
+                  flexShrink: 0,
+                  transition: "all 0.15s ease",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.color = "#FFFFFF"
+                  e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.1)"
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.color = "#9AA3AF"
+                  e.currentTarget.style.backgroundColor = "transparent"
+                }}
+              >
+                <X size={16} />
+              </button>
             </div>
           )}
 

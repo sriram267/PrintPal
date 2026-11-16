@@ -52,6 +52,7 @@ import {
 } from "@ui/modal-system"
 import { QuotationView, type RenegotiatingQuoteData, type QuoteSite } from "./QuotationView"
 import { QuotationReportsView, type QuotationListItem } from "./QuotationReportsView"
+import { QuotePDFPreview, type QuotePDFDocumentProps } from "./QuotePDFPreview"
 import {
   BusinessDetailsView,
   type BusinessDetailsRecord,
@@ -953,6 +954,8 @@ export function LeadsApp() {
   const [renegotiatingQuote, setRenegotiatingQuote] = React.useState<RenegotiatingQuoteData | null>(null)
   // Quote just created → Quotation Reports opens its customer group and highlights the new line
   const [justCreatedQuote, setJustCreatedQuote] = React.useState<{ customerId: string; quoteNumber: string } | null>(null)
+  /* The printed quotation sheet lives here, above every screen, so it can retract while the screen behind switches. */
+  const [documentSheet, setDocumentSheet] = React.useState<QuotePDFDocumentProps | null>(null)
 
   // Settings Module State
   const [settingsMenu, setSettingsMenu] = React.useState<"businessDetails" | "products" | "materials" | "finishes" | "tax" | "supplier">("products")
@@ -3559,6 +3562,24 @@ export function LeadsApp() {
         }
       />
 
+      {documentSheet && (
+        <QuotePDFPreview
+          isOpen
+          {...documentSheet}
+          onBeginClose={() => {
+            // The paper starts retracting: flip the screen behind to Quotation Reports with the new line.
+            setRenegotiatingQuote(null)
+            setQuotationSelectedCustomer(null)
+            setJustCreatedQuote({
+              customerId: documentSheet.customer.id || "",
+              quoteNumber: documentSheet.quoteNumber,
+            })
+            setActiveModule("quotationReports")
+          }}
+          onClose={() => setDocumentSheet(null)}
+        />
+      )}
+
       {/* ── 3. Main Content Body (Desktop - 1 & 2) ── */}
       {activeModule === "quotation" ? (
         <QuotationView
@@ -3573,6 +3594,7 @@ export function LeadsApp() {
           isSupplierEnabled={isSupplierEnabled}
           renegotiatingQuote={renegotiatingQuote}
           onClearRenegotiatingQuote={() => setRenegotiatingQuote(null)}
+          onShowDocument={(doc) => setDocumentSheet(doc)}
           onQuotationCreated={(created) => {
             setRenegotiatingQuote(null)
             setQuotationSelectedCustomer(null)
