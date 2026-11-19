@@ -1,4 +1,33 @@
 {
+  "src/core/badge-group.tsx": [
+    "#0369A1",
+    "#047857",
+    "#065F46",
+    "#075985",
+    "#1B64B3",
+    "#202428",
+    "#2878D0",
+    "#99E6C9",
+    "#9A3412",
+    "#BADBF7",
+    "#BAE6FD",
+    "#BF3806",
+    "#BFF2DE",
+    "#C2410C",
+    "#CCE5F9",
+    "#D7440E",
+    "#DCE1E5",
+    "#DCF9EE",
+    "#E4E7EB",
+    "#EDF5FD",
+    "#F0F9FF",
+    "#F3F5F7",
+    "#FED7AA",
+    "#FFD6C7",
+    "#FFD9CC",
+    "#FFF2ED",
+    "#FFF7ED"
+  ],
   "src/core/badge.tsx": [
     "#1D4ED8"
   ],
@@ -28,6 +57,14 @@
   ],
   "src/core/segmented-control.tsx": [
     "#EEF0F2"
+  ],
+  "src/core/select-menu.tsx": [
+    "#202428",
+    "#2878D0",
+    "#737B84",
+    "#B5BFC7",
+    "#DCE1E5",
+    "#F3F5F7"
   ],
   "src/product/layout.tsx": [
     "#1E2227",

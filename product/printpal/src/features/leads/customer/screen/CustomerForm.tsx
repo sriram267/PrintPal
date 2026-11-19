@@ -1,12 +1,10 @@
 import type * as React from "react"
 import type { SiteRecord } from "../../shared/types"
 import type { ProductRecord, MaterialRecord, FinishRecord } from "../../../settings/shared/types"
-import { Label, Input, Button, Textarea, Checkbox } from "@printpal/ui"
+import { Label, Input, Button, Textarea, Checkbox, BadgeGroup, Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@printpal/ui"
 import { AlertCircle, Trash2, ChevronDown, Search, X, MapPin, Loader2, Compass, Plus } from "lucide-react"
 import { DatePicker } from "@/components/ui/date-picker"
-import { BadgeGroup } from "@/components/ui/badge-group"
 import { SearchableActionSelect } from "../../../../shared/SearchableActionSelect"
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
 import { ImageUpload } from "@/components/ui/image-upload"
 export interface GeoapifySuggestion {
   id: string

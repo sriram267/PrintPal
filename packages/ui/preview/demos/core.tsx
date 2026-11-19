@@ -6,7 +6,9 @@ import { Spinner } from "../../src/core/spinner";
 import { Input } from "../../src/core/input";
 import { Textarea } from "../../src/core/textarea";
 import { Field, FieldRow, Label } from "../../src/core/field";
-import { Select } from "../../src/core/select";
+import { SelectField } from "../../src/core/select";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectSeparator, SelectTrigger, SelectValue } from "../../src/core/select-menu";
+import { BadgeGroup, BadgeGroupCounter, BadgeGroupLabel } from "../../src/core/badge-group";
 import { Checkbox } from "../../src/core/checkbox";
 import { RadioGroup } from "../../src/core/radio-group";
 import { Switch } from "../../src/core/switch";
@@ -159,7 +161,7 @@ export const core: Entry[] = [
             <Input placeholder="29ABCDE1234F1Z5" />
           </Field>
           <Field label="City">
-            <Select options={CITIES} placeholder="Pick a city" />
+            <SelectField options={CITIES} placeholder="Pick a city" />
           </Field>
         </FieldRow>
       </Demo>
@@ -170,8 +172,8 @@ export const core: Entry[] = [
 </FieldRow>`,
   },
   {
-    id: "select",
-    name: "Select",
+    id: "select-field",
+    name: "Select field",
     group: "Core",
     usedIn: ["App"],
     description: "Pick one option from a short list. For long lists or ones you type into, use Search select.",
@@ -180,17 +182,69 @@ export const core: Entry[] = [
       return (
         <Demo>
           <div className="w-60">
-            <Select options={CITIES} value={v} onValueChange={setV} />
+            <SelectField options={CITIES} value={v} onValueChange={setV} />
           </div>
           <div className="w-60">
-            <Select options={CITIES} placeholder="Payment terms" invalid />
+            <SelectField options={CITIES} placeholder="Payment terms" invalid />
           </div>
         </Demo>
       );
     },
-    code: `<Select options={[{ value: "che", label: "Chennai" }]} value={city} onValueChange={setCity} />`,
+    code: `<SelectField options={[{ value: "che", label: "Chennai" }]} value={city} onValueChange={setCity} />`,
   },
   {
+    id: "select",
+    name: "Select",
+    group: "Core",
+    usedIn: ["App"],
+    description: "The app's drop-down: a trigger, a list and items. Use it when you want to design the list yourself (groups, labels, dividers).",
+    Demo: () => (
+      <Demo>
+        <div className="w-60">
+          <Select defaultValue="che">
+            <SelectTrigger>
+              <SelectValue placeholder="Pick a city" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>South</SelectLabel>
+                <SelectItem value="che">Chennai</SelectItem>
+                <SelectItem value="cbe">Coimbatore</SelectItem>
+              </SelectGroup>
+              <SelectSeparator />
+              <SelectGroup>
+                <SelectLabel>West</SelectLabel>
+                <SelectItem value="mum">Mumbai</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
+      </Demo>
+    ),
+    code: `<Select value={city} onValueChange={setCity}>
+  <SelectTrigger><SelectValue placeholder="Pick a city" /></SelectTrigger>
+  <SelectContent><SelectItem value="che">Chennai</SelectItem></SelectContent>
+</Select>`,
+  },
+  {
+    id: "badge-group",
+    name: "Badge group",
+    group: "Core",
+    usedIn: ["App"],
+    description: "A pill with a label and a small count, such as “Sites 2”. Six colours.",
+    Demo: () => (
+      <Demo>
+        <BadgeGroup variant="green" label="Active" counter={12} />
+        <BadgeGroup variant="primary" label="Follow-up" counter={3} />
+        <BadgeGroup variant="secondary" label="Quoted" counter={5} />
+        <BadgeGroup variant="outline">
+          <BadgeGroupLabel>Drafts</BadgeGroupLabel>
+          <BadgeGroupCounter variant="outline">2</BadgeGroupCounter>
+        </BadgeGroup>
+      </Demo>
+    ),
+    code: `<BadgeGroup variant="secondary" label="Quoted" counter={5} />`,
+  },  {
     id: "checkbox",
     name: "Checkbox",
     group: "Core",

@@ -1,6 +1,7 @@
+/** A pill with a label and a count. Looks are the finished product's, copied exactly. */
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
-import { cn } from "@/shared/utils"
+import { cn } from "../lib/cn"
 
 const badgeGroupVariants = cva(
   "inline-flex items-center rounded-full border text-[12px]/4 font-medium transition-colors select-none",

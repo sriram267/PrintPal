@@ -25,7 +25,7 @@ export interface SelectProps {
 }
 
 /** Pick one option from a short list. Looks exactly like Input when closed. */
-export const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
+export const SelectField = React.forwardRef<HTMLButtonElement, SelectProps>(
   ({ options, value, defaultValue, onValueChange, placeholder = "Select…", disabled, invalid, id, className, ...aria }, ref) => (
     <SelectPrimitive.Root value={value} defaultValue={defaultValue} onValueChange={onValueChange} disabled={disabled}>
       <SelectPrimitive.Trigger
@@ -70,4 +70,4 @@ export const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
     </SelectPrimitive.Root>
   ),
 );
-Select.displayName = "Select";
+SelectField.displayName = "SelectField";
