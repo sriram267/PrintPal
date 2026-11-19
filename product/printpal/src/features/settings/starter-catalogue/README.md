@@ -15,7 +15,8 @@ The 33 products, 30 materials and 23 finishes every new shop starts with, and th
 
 ## Moving in progress
 
-This folder is new (restructure phase A1). Until the code is moved here, it still lives in:
-`server/seedData.json`, `server/catalogueCopy.mjs`, `src/modules/leads/seedCatalog.ts`
+**Already here (A2):** `db/seedData.json` (the catalogue), `db/catalogueCopy.mjs` (copies it into a new shop), `db/seedDefaultCatalogue.mjs` (loads it at start-up).
+
+**Still to move (A3):** the screen — it still lives in `src/modules/leads/seedCatalog.ts` (the screen's copy of the catalogue).
 
 See `docs/RESTRUCTURE_PLAN.md` for the plan.

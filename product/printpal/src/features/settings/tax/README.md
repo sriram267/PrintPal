@@ -17,7 +17,8 @@ The GST / tax slabs your shop uses (CGST, SGST, IGST).
 
 ## Moving in progress
 
-This folder is new (restructure phase A1). Until the code is moved here, it still lives in:
-`src/modules/settings/features/tax/`, tax page and Add / Edit tax pop-up in `LeadsApp.tsx`
+**Already here (A2):** (no server part — taxes are not saved yet).
+
+**Still to move (A3):** the screen — it still lives in `src/modules/settings/features/tax/`, tax page and Add / Edit tax pop-up in `LeadsApp.tsx`.
 
 See `docs/RESTRUCTURE_PLAN.md` for the plan.

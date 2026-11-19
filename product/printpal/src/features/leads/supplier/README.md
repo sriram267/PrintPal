@@ -15,7 +15,8 @@ Suppliers and vendors: the supplier list, the supplier drawer (details, address,
 
 ## Moving in progress
 
-This folder is new (restructure phase A1). Until the code is moved here, it still lives in:
-`src/modules/leads/LeadsApp.tsx` (supplier list, row, drawer), `server/server.mjs` (`/api/suppliers`), `server/repository.mjs`
+**Already here (A2):** `api/suppliers.routes.mjs`, `db/suppliers.db.mjs`, `db/suppliers.schema.mjs`.
+
+**Still to move (A3):** the screen — it still lives in `src/modules/leads/LeadsApp.tsx` (supplier list, row, drawer).
 
 See `docs/RESTRUCTURE_PLAN.md` for the plan.

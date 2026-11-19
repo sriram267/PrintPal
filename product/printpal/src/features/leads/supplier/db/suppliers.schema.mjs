@@ -1,0 +1,45 @@
+/* Table definitions. Created at start-up by src/shared/server/schema.mjs, in a fixed order. Moved unchanged from server/server.mjs (A2). */
+
+/** The suppliers table. */
+export const SUPPLIERS_TABLE = `
+    CREATE TABLE IF NOT EXISTS suppliers (
+      id VARCHAR(255) PRIMARY KEY,
+      tenant_id VARCHAR(255) NOT NULL,
+      supplier_name VARCHAR(255) NOT NULL,
+      contact_person VARCHAR(255),
+      phone VARCHAR(20) NOT NULL,
+      email VARCHAR(255),
+      category VARCHAR(255) NOT NULL DEFAULT 'General Fabrication',
+      gstin VARCHAR(30),
+      address TEXT,
+      city VARCHAR(100),
+      state VARCHAR(100),
+      pincode VARCHAR(20),
+      payment_terms VARCHAR(50) DEFAULT 'ADVANCE',
+      notes TEXT,
+      is_whatsapp_same BOOLEAN DEFAULT TRUE,
+      whatsapp_number VARCHAR(20),
+      serving_regions TEXT,
+      is_billing_same_as_warehouse BOOLEAN DEFAULT TRUE,
+      billing_address TEXT,
+      delivery_lead_time VARCHAR(100),
+      min_order_qty VARCHAR(100),
+      is_shipping_same_as_billing BOOLEAN DEFAULT TRUE,
+      shipping_address TEXT,
+      address_line1 TEXT,
+      address_line2 TEXT,
+      billing_address_line1 TEXT,
+      billing_address_line2 TEXT,
+      billing_city VARCHAR(100),
+      billing_state VARCHAR(100),
+      billing_pincode VARCHAR(20),
+      shipping_address_line1 TEXT,
+      shipping_address_line2 TEXT,
+      shipping_city VARCHAR(100),
+      shipping_state VARCHAR(100),
+      shipping_pincode VARCHAR(20),
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      deleted_at TIMESTAMPTZ
+    );
+`;

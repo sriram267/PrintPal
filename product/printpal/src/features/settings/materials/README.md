@@ -15,7 +15,8 @@ Sheets and substrates: thickness, sheet size, supplier, notes, and whether each 
 
 ## Moving in progress
 
-This folder is new (restructure phase A1). Until the code is moved here, it still lives in:
-`src/modules/leads/LeadsApp.tsx` (materials page, row, material pop-up), `server/server.mjs` (`/api/materials`)
+**Already here (A2):** `api/materials.routes.mjs`, `db/materials.db.mjs`, `db/materials.schema.mjs`.
+
+**Still to move (A3):** the screen — it still lives in `src/modules/leads/LeadsApp.tsx` (materials page, row, material pop-up).
 
 See `docs/RESTRUCTURE_PLAN.md` for the plan.

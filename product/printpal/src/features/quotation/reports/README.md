@@ -15,7 +15,8 @@ All quotations per customer, newest version on top: revise (renegotiate), delete
 
 ## Moving in progress
 
-This folder is new (restructure phase A1). Until the code is moved here, it still lives in:
-`src/modules/leads/QuotationReportsView.tsx`, `getNextQuoteVersion` in `LeadsApp.tsx`, `server/server.mjs` (`/api/quotations` list, get, finalize, delete)
+**Already here (A2):** `api/quotations.routes.mjs` (list, open, finalize, delete) — it reads quotations through `create-quote/db/`.
+
+**Still to move (A3):** the screen — it still lives in `src/modules/leads/QuotationReportsView.tsx`, `getNextQuoteVersion` in `LeadsApp.tsx`.
 
 See `docs/RESTRUCTURE_PLAN.md` for the plan.

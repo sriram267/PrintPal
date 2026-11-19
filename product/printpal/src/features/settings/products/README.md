@@ -15,7 +15,8 @@ Your catalogue of signage products, and which materials and finishes each produc
 
 ## Moving in progress
 
-This folder is new (restructure phase A1). Until the code is moved here, it still lives in:
-`src/modules/leads/LeadsApp.tsx` (products page, row, product pop-up, quick-add), `server/server.mjs` (`/api/products`)
+**Already here (A2):** `api/products.routes.mjs`, `db/products.db.mjs`, `db/products.schema.mjs`.
+
+**Still to move (A3):** the screen — it still lives in `src/modules/leads/LeadsApp.tsx` (products page, row, product pop-up, quick-add).
 
 See `docs/RESTRUCTURE_PLAN.md` for the plan.

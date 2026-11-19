@@ -15,7 +15,8 @@ Everything about customers: the customer list, the New / Edit customer drawer (b
 
 ## Moving in progress
 
-This folder is new (restructure phase A1). Until the code is moved here, it still lives in:
-`src/modules/leads/LeadsApp.tsx` (customer list, row, drawer, multi-site pop-up), `server/server.mjs` (`/api/customers`), `server/repository.mjs`
+**Already here (A2):** `api/customers.routes.mjs`, `db/customers.db.mjs`, `db/customers.schema.mjs` (customers + sites tables).
+
+**Still to move (A3):** the screen — it still lives in `src/modules/leads/LeadsApp.tsx` (customer list, row, drawer, multi-site pop-up).
 
 See `docs/RESTRUCTURE_PLAN.md` for the plan.

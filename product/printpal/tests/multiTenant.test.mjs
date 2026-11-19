@@ -3,9 +3,9 @@ import assert from "node:assert/strict";
 import { PGlite } from "@electric-sql/pglite";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { createTenantRepository } from "../server/repository.mjs";
-import { copyCatalogueForTenant } from "../server/catalogueCopy.mjs";
-import { DEFAULT_TENANT_ID } from "../server/tenantContext.mjs";
+import { createTenantRepository } from "../src/shared/server/repository.mjs";
+import { copyCatalogueForTenant } from "../src/features/settings/starter-catalogue/db/catalogueCopy.mjs";
+import { DEFAULT_TENANT_ID } from "../src/shared/server/tenantContext.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

@@ -15,7 +15,8 @@ The on / off switch that shows or hides the Supplier tab in Leads.
 
 ## Moving in progress
 
-This folder is new (restructure phase A1). Until the code is moved here, it still lives in:
-`src/modules/settings/features/supplier-toggle/`, supplier page in `LeadsApp.tsx`
+**Already here (A2):** (no server part — the switch is kept in the browser).
+
+**Still to move (A3):** the screen — it still lives in `src/modules/settings/features/supplier-toggle/`, supplier page in `LeadsApp.tsx`.
 
 See `docs/RESTRUCTURE_PLAN.md` for the plan.

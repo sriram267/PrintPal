@@ -15,7 +15,8 @@ Finishes like powder coating or lamination, with colour codes (RAL / Pantone) an
 
 ## Moving in progress
 
-This folder is new (restructure phase A1). Until the code is moved here, it still lives in:
-`src/modules/leads/LeadsApp.tsx` (finishes page, row, finish pop-up), `server/server.mjs` (`/api/finishes`)
+**Already here (A2):** `api/finishes.routes.mjs`, `db/finishes.db.mjs`, `db/finishes.schema.mjs`.
+
+**Still to move (A3):** the screen — it still lives in `src/modules/leads/LeadsApp.tsx` (finishes page, row, finish pop-up).
 
 See `docs/RESTRUCTURE_PLAN.md` for the plan.

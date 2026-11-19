@@ -15,7 +15,8 @@ The A4 quotation / invoice sheet: your logo, GSTIN and signature, the lines, tot
 
 ## Moving in progress
 
-This folder is new (restructure phase A1). Until the code is moved here, it still lives in:
-`src/modules/leads/QuotePDFPreview.tsx`
+**Already here (A2):** (no server part).
+
+**Still to move (A3):** the screen — it still lives in `src/modules/leads/QuotePDFPreview.tsx`.
 
 See `docs/RESTRUCTURE_PLAN.md` for the plan.

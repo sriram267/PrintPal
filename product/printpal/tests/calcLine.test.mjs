@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { calcLine, convertDimension } from '../server/calcLine.mjs';
+import { calcLine, convertDimension } from '../src/features/quotation/shared/calcLine.mjs';
 
 test('1. sq_ft, 8 x 2, qty 1, rate 2600, disc 0 -> area 16, total 41600.00', () => {
   const res = calcLine({

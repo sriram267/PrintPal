@@ -421,13 +421,13 @@ async function seedData() {
   }
 
   // Also update seedData.json so it reflects these canonical 3 items
-  const seedPath = path.resolve(__dirname, "../server/seedData.json");
+  const seedPath = path.resolve(__dirname, "../src/features/settings/starter-catalogue/db/seedData.json");
   if (fs.existsSync(seedPath)) {
     const existing = JSON.parse(fs.readFileSync(seedPath, "utf-8"));
     existing.customers = customers;
     existing.enquiries = enquiries;
     fs.writeFileSync(seedPath, JSON.stringify(existing, null, 2), "utf-8");
-    console.log("\nUpdated server/seedData.json with the 3 realistic records.");
+    console.log("\nUpdated src/features/settings/starter-catalogue/db/seedData.json with the 3 realistic records.");
   }
 
   console.log("\n>>> ALL 3 CUSTOMERS, 3 ENQUIRIES, 3 QUOTATIONS CREATED! <<<");

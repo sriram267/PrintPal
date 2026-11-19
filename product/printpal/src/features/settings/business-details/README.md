@@ -15,7 +15,8 @@ Your shop's details: logo, legal name, addresses, GSTIN / PAN, contact info and 
 
 ## Moving in progress
 
-This folder is new (restructure phase A1). Until the code is moved here, it still lives in:
-`src/modules/settings/features/business-details/`, `server/server.mjs` (`/api/business-details`)
+**Already here (A2):** `api/businessDetails.routes.mjs`, `db/businessDetails.db.mjs`, `db/businessDetails.schema.mjs`.
+
+**Still to move (A3):** the screen — it still lives in `src/modules/settings/features/business-details/`.
 
 See `docs/RESTRUCTURE_PLAN.md` for the plan.

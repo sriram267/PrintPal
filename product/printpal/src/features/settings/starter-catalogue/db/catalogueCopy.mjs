@@ -1,4 +1,4 @@
-import { assertTenantId, DEFAULT_TENANT_ID } from "./tenantContext.mjs";
+import { assertTenantId, DEFAULT_TENANT_ID } from "../../../../shared/server/tenantContext.mjs";
 
 /**
  * Catalogue Copy-on-Signup Foundation (Phase 2.E)

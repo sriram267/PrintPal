@@ -1,5 +1,5 @@
 import type { CustomerRecord, EnquiryRecord, SupplierRecord, ProductRecord, MaterialRecord, FinishRecord } from "./types";
-import seedCatalog from "../../../server/seedData.json";
+import seedCatalog from "../../features/settings/starter-catalogue/db/seedData.json";
 
 const STORAGE_CUSTOMERS_KEY = "printpal_customers_v1";
 const STORAGE_ENQUIRIES_KEY = "printpal_enquiries_v1";

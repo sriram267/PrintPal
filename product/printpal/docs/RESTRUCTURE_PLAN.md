@@ -2,7 +2,10 @@
 
 Status: **A0, A1 and Track B (B0–B5) done (2026-11-19).** Folders and READMEs exist in `src/features/`, `src/app/`,
 `src/shared/`; `npm run check:structure` runs before every build. The UI library lives in `packages/ui`
-(`npm run dev` there opens the preview page; see `packages/ui/README.md`). Next: A2 (server split).
+(`npm run dev` there opens the preview page; see `packages/ui/README.md`).
+**A2 done:** the server is split into each feature's `api/` and `db/`; `server/server.mjs` only starts up and plugs features in;
+shared server pieces are in `src/shared/server/`. Old and new were booted side by side and are identical (routes, responses,
+schema, indexes, constraints, security policies, seed). Next: A3 (screens).
 
 ## The goal in one paragraph
 
@@ -58,7 +61,7 @@ packages/ui/                  the PrintPal UI component library (Track B), with 
 |---|---|---|
 | A0 ✅ | Map every file to its feature; record the test baseline | You approve this map |
 | A1 ✅ | Create the folders, the plain READMEs, and a check that fails if a file is in the wrong place | You can find any feature by name |
-| A2 | Move the server code: `server.mjs` + `repository.mjs` split into each feature's `api/` and `db/`. Same web addresses | All tests pass, same answers from the server |
+| A2 ✅ | Move the server code: `server.mjs` + `repository.mjs` split into each feature's `api/` and `db/`. Same web addresses | All tests pass, same answers from the server |
 | A3 | Split `LeadsApp.tsx` into each feature's `screen/`, one feature at a time | Each screen identical to before (screenshots compared) |
 | A4 | Move types, checks and formatters next to their feature; delete the dead files listed below | No loose files left |
 

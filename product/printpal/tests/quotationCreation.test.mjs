@@ -53,7 +53,7 @@ test('Quotation Creation Resilience & Local-First Fallback', () => {
 });
 
 test('Backend Quotations Endpoint Safety & Error Handling', () => {
-  const serverPath = path.join(ROOT, 'server', 'server.mjs');
+  const serverPath = path.join(ROOT, 'src', 'features', 'quotation', 'create-quote', 'api', 'quotations.create.routes.mjs');
   const serverContent = fs.readFileSync(serverPath, 'utf8');
 
   // 1. A quote must belong to a customer: the server refuses one without (it used to invent a customer id)
@@ -65,7 +65,7 @@ test('Backend Quotations Endpoint Safety & Error Handling', () => {
 
   // 2. Verify try-catch around repo.quotations.save
   assert.ok(
-    serverContent.includes('try {\n    await repo.quotations.save('),
+    /try \{\s*await repo\.quotations\.save\(/.test(serverContent),
     'Backend must wrap repo.quotations.save in try-catch'
   );
   assert.ok(

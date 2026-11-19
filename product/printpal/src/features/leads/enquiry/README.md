@@ -15,7 +15,8 @@ Quick enquiries before someone becomes a customer: the enquiry list, the enquiry
 
 ## Moving in progress
 
-This folder is new (restructure phase A1). Until the code is moved here, it still lives in:
-`src/modules/leads/LeadsApp.tsx` (enquiry list, row, form), `server/server.mjs` (`/api/enquiries`), `server/repository.mjs`
+**Already here (A2):** `api/enquiries.routes.mjs`, `db/enquiries.db.mjs`, `db/enquiries.schema.mjs`.
+
+**Still to move (A3):** the screen — it still lives in `src/modules/leads/LeadsApp.tsx` (enquiry list, row, form).
 
 See `docs/RESTRUCTURE_PLAN.md` for the plan.

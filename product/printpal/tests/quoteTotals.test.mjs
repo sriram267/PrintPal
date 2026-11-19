@@ -3,7 +3,7 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
-import { computeQuoteTotals as server, validateQuoteMoney } from "../server/quoteTotals.mjs";
+import { computeQuoteTotals as server, validateQuoteMoney } from "../src/features/quotation/shared/quoteTotals.mjs";
 import { computeQuoteTotals as client, formatQuoteDate } from "../src/modules/quotation/quoteTotals.ts";
 
 console.log("=== Quote totals, validation and PDF print rules ===");
@@ -63,7 +63,7 @@ assert.equal(formatQuoteDate(undefined), "");
 console.log("  ✓ ISO timestamps become '16 Nov 2026'");
 
 // 5. The server uses the shared calculation, and Reports rebuilds the breakdown from it
-const server_ = read("server/server.mjs");
+const server_ = read("src/features/quotation/create-quote/api/quotations.create.routes.mjs");
 assert.ok(server_.includes("computeQuoteTotals(") && server_.includes("validateQuoteMoney("), "server uses the shared totals + validation");
 assert.ok(!/totalBase \+ totalBase \* \(Number\(gstRate\)/.test(server_), "old GST formula (that ignored the discount) is gone");
 const reports = read("src/modules/leads/QuotationReportsView.tsx");

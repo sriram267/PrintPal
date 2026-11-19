@@ -15,7 +15,8 @@ Making a quotation: pick a customer, price every site and service, add charges, 
 
 ## Moving in progress
 
-This folder is new (restructure phase A1). Until the code is moved here, it still lives in:
-`src/modules/leads/QuotationView.tsx`, `server/server.mjs` (`POST /api/quotations`, `/api/methods`)
+**Already here (A2):** `api/quotations.create.routes.mjs` (save a quote, pricing methods), `db/quotations.db.mjs` (also used by Reports), `db/methods.db.mjs`, the quotations / quote_lines / methods tables.
+
+**Still to move (A3):** the screen — it still lives in `src/modules/leads/QuotationView.tsx`.
 
 See `docs/RESTRUCTURE_PLAN.md` for the plan.
