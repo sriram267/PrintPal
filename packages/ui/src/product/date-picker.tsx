@@ -16,7 +16,7 @@ import { cn } from "../lib/cn";
 import { fieldBase } from "../core/input";
 import { Popover, PopoverContent, PopoverTrigger } from "../core/popover";
 
-export interface CalendarProps {
+export interface MonthCalendarProps {
   value?: Date;
   onChange: (date: Date) => void;
   /** Days that can't be picked. */
@@ -27,7 +27,7 @@ export interface CalendarProps {
 const DAYS = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 
 /** A month grid. Arrow keys move between days, Enter picks. */
-export function Calendar({ value, onChange, isDisabled, className }: CalendarProps) {
+export function MonthCalendar({ value, onChange, isDisabled, className }: MonthCalendarProps) {
   const [month, setMonth] = React.useState(() => startOfMonth(value ?? new Date()));
   const [focus, setFocus] = React.useState<Date>(() => value ?? new Date());
   const gridRef = React.useRef<HTMLDivElement | null>(null);
@@ -104,7 +104,7 @@ export function Calendar({ value, onChange, isDisabled, className }: CalendarPro
   );
 }
 
-export interface DatePickerProps {
+export interface DateFieldProps {
   value?: Date;
   onChange: (date: Date) => void;
   placeholder?: string;
@@ -118,7 +118,7 @@ export interface DatePickerProps {
 }
 
 /** A field that opens a calendar (follow-up dates, quote dates). Shows "20 Nov 2026". */
-export function DatePicker({ value, onChange, placeholder = "Pick a date", disabled, invalid, isDisabled, id, className, ...aria }: DatePickerProps) {
+export function DateField({ value, onChange, placeholder = "Pick a date", disabled, invalid, isDisabled, id, className, ...aria }: DateFieldProps) {
   const [open, setOpen] = React.useState(false);
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -136,7 +136,7 @@ export function DatePicker({ value, onChange, placeholder = "Pick a date", disab
         </button>
       </PopoverTrigger>
       <PopoverContent align="start" sideOffset={6} className="w-auto overflow-visible rounded-md border-line p-3 text-ink shadow-pop animate-scale-in">
-        <Calendar
+        <MonthCalendar
           value={value}
           isDisabled={isDisabled}
           onChange={(d) => {

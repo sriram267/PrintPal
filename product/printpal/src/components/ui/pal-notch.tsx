@@ -10,13 +10,7 @@ import {
   Plus,
   Edit3,
 } from "lucide-react"
-import {
-  ModalIconBadge,
-  ModalTitle,
-  ModalDescription,
-  ModalButton,
-} from "./modal-system"
-import { PalMascot, type PalTone } from "@printpal/ui"
+import { PalMascot, type PalTone, ModalIconBadge, ModalTitle, ModalDescription, ModalButton } from "@printpal/ui"
 import { GREETING_MS, MASCOT_PX, rigFrom, runPalGreeting } from "@printpal/ui/greeting-engine"
 import "@printpal/ui/pal.css"
 

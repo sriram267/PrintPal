@@ -2,7 +2,11 @@ import * as React from "react";
 import { Building2, FileText, Layers, Package, Receipt, Settings, Sparkles, Trash2, UserRound, Users } from "lucide-react";
 import { NotchDocumentBar, NotchPill, NotchToast } from "../../src/product/notch";
 import { EmptyState, PageHeader, SectionCard, SettingsNav, TopBar, UserPill } from "../../src/product/layout";
-import { DatePicker } from "../../src/product/date-picker";
+import { DateField, MonthCalendar } from "../../src/product/date-picker";
+import { DatePicker } from "../../src/product/date-input";
+import { Calendar } from "../../src/product/calendar-grid";
+import { ImageUpload } from "../../src/product/image-upload";
+import { Modal, ModalBody, ModalButton, ModalContent, ModalDescription, ModalFooter, ModalHeader, ModalIconBadge, ModalTitle } from "../../src/core/modal-system";
 import { FileChip, FileDropzone } from "../../src/product/file-dropzone";
 import { SearchSelect } from "../../src/product/search-select";
 import { Sheet } from "../../src/product/sheet";
@@ -178,31 +182,124 @@ export const product: Entry[] = [
 </SectionCard>`,
   },
   {
-    id: "date-picker",
-    name: "Date picker",
+    id: "date-field",
+    name: "Date field",
     group: "Product",
     usedIn: ["App"],
-    description: "A field that opens a calendar. Arrow keys move between days.",
+    description: "A field that opens a calendar, for new screens. Arrow keys move between days. Shows a month grid (Month calendar) in a pop-up.",
     Demo: () => {
       const [d, setD] = React.useState<Date | undefined>(new Date(2026, 10, 20));
       return (
         <Demo>
           <div className="w-60">
             <Field label="Follow-up date">
-              <DatePicker value={d} onChange={setD} />
+              <DateField value={d} onChange={setD} />
             </Field>
           </div>
           <div className="w-60">
             <Field label="Quote date">
-              <DatePicker onChange={() => {}} />
+              <DateField onChange={() => {}} />
             </Field>
           </div>
         </Demo>
       );
     },
-    code: `<Field label="Follow-up date"><DatePicker value={date} onChange={setDate} /></Field>`,
+    code: `<Field label="Follow-up date"><DateField value={date} onChange={setDate} /></Field>`,
   },
   {
+    id: "month-calendar",
+    name: "Month calendar",
+    group: "Product",
+    usedIn: ["App"],
+    description: "The month grid on its own, for new screens.",
+    Demo: () => (
+      <Demo>
+        <div className="rounded-xl border border-line bg-white p-3">
+          <MonthCalendar onChange={() => {}} />
+        </div>
+      </Demo>
+    ),
+    code: `<MonthCalendar value={date} onChange={setDate} />`,
+  },
+  {
+    id: "date-picker",
+    name: "Date picker (current app)",
+    group: "Product",
+    usedIn: ["App"],
+    description: "The date field the app uses today: a field that opens a month calendar.",
+    Demo: () => {
+      const [d, setD] = React.useState<Date | undefined>(new Date(2026, 10, 20));
+      return (
+        <Demo>
+          <div className="w-60">
+            <DatePicker date={d} onDateChange={(x) => setD(x)} />
+          </div>
+          <div className="rounded-xl border border-line bg-white p-3">
+            <Calendar mode="single" selected={d} onSelect={setD} />
+          </div>
+        </Demo>
+      );
+    },
+    code: `<DatePicker date={date} onDateChange={(d) => setDate(d)} />
+<Calendar mode="single" selected={date} onSelect={setDate} />`,
+  },
+  {
+    id: "image-upload",
+    name: "Image upload",
+    group: "Product",
+    usedIn: ["App"],
+    description: "An upload area with a grid of thumbnails, for logos, photos and documents.",
+    Demo: () => (
+      <Demo>
+        <div className="w-full max-w-md">
+          <ImageUpload title="Business logo" helperText="PNG or JPG, up to 2 MB" maxFiles={3} />
+        </div>
+      </Demo>
+    ),
+    code: `<ImageUpload title="Business logo" maxFiles={3} onChange={setImages} />`,
+  },
+  {
+    id: "modal-system",
+    name: "Modal",
+    group: "Product",
+    usedIn: ["App"],
+    description: "The app's pop-up: an icon, a title, a short line, the form, and the buttons.",
+    Demo: () => {
+      const [open, setOpen] = React.useState(false);
+      return (
+        <Demo>
+          <Button variant="outline" onClick={() => setOpen(true)}>
+            Open a modal
+          </Button>
+          <Modal open={open} onOpenChange={setOpen}>
+            <ModalContent size="md">
+              <ModalHeader>
+                <ModalIconBadge variant="brand" shape="square" className="mb-3">
+                  +
+                </ModalIconBadge>
+                <ModalTitle>Add Tax</ModalTitle>
+                <ModalDescription>Taxes show up on every quotation.</ModalDescription>
+              </ModalHeader>
+              <ModalBody>
+                <Field label="Tax name">
+                  <Input placeholder="GST 18%" />
+                </Field>
+              </ModalBody>
+              <ModalFooter>
+                <ModalButton variant="secondary" onClick={() => setOpen(false)}>
+                  Cancel
+                </ModalButton>
+                <ModalButton onClick={() => setOpen(false)}>Save</ModalButton>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
+        </Demo>
+      );
+    },
+    code: `<Modal open={open} onOpenChange={setOpen}>
+  <ModalContent size="md"><ModalHeader>…</ModalHeader><ModalBody>…</ModalBody><ModalFooter>…</ModalFooter></ModalContent>
+</Modal>`,
+  },  {
     id: "search-select",
     name: "Search select",
     group: "Product",

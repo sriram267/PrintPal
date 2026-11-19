@@ -1,7 +1,8 @@
+/** The app's pop-up (modal) building blocks. Looks are the finished product's, copied exactly. */
 import * as React from "react"
 import * as DialogPrimitive from "@radix-ui/react-dialog"
 import { X } from "lucide-react"
-import { cn } from "@/shared/utils"
+import { cn } from "../lib/cn"
 
 export const Modal = DialogPrimitive.Root
 export const ModalTrigger = DialogPrimitive.Trigger

@@ -1,6 +1,7 @@
+/** Upload area with a thumbnail grid (logos, photos, documents). Looks are the finished product's, copied exactly. */
 import * as React from "react"
 import { Image as ImageIcon, Plus, Trash2, FileText } from "lucide-react"
-import { cn } from "@/shared/utils"
+import { cn } from "../lib/cn"
 
 export interface ImageUploadItem {
   id: string

@@ -1,7 +1,8 @@
+/** The month calendar used by the date picker. Looks are the finished product's, copied exactly. */
 import * as React from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
-import { cn } from "@/shared/utils"
-import { buttonVariants } from "@printpal/ui"
+import { cn } from "../lib/cn"
+import { buttonVariants } from "../core/button"
 export interface CalendarProps {
   mode?: "single"
   selected?: Date | string

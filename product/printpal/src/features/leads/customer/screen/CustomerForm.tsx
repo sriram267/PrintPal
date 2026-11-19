@@ -1,11 +1,9 @@
 import type * as React from "react"
 import type { SiteRecord } from "../../shared/types"
 import type { ProductRecord, MaterialRecord, FinishRecord } from "../../../settings/shared/types"
-import { Label, Input, Button, Textarea, Checkbox, BadgeGroup, Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@printpal/ui"
+import { Label, Input, Button, Textarea, Checkbox, BadgeGroup, Select, SelectTrigger, SelectValue, SelectContent, SelectItem, DatePicker, ImageUpload } from "@printpal/ui"
 import { AlertCircle, Trash2, ChevronDown, Search, X, MapPin, Loader2, Compass, Plus } from "lucide-react"
-import { DatePicker } from "@/components/ui/date-picker"
 import { SearchableActionSelect } from "../../../../shared/SearchableActionSelect"
-import { ImageUpload } from "@/components/ui/image-upload"
 export interface GeoapifySuggestion {
   id: string
   name: string
@@ -477,7 +475,7 @@ export function renderCustomerForm({ highlightedAnchorKey, formErrors, formBasic
                                   onClick={() => handleOpenLiveView(site)}
                                   title="Open Google Maps 360° Street View in a new tab"
                                 >
-                                  <Compass className="h-3.5 w-3.5 text-secondary" />
+                                  <Compass className="h-3.5 w-3.5 text-[hsl(var(--secondary))]" />
                                   <span>Live View</span>
                                 </Button>
                               )}

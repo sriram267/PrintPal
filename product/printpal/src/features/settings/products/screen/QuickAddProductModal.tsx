@@ -1,8 +1,7 @@
 import type * as React from "react"
 import type { MaterialRecord, FinishRecord } from "../../shared/types"
-import { Modal, ModalContent, ModalHeader, ModalIconBadge, ModalTitle, ModalDescription, ModalBody, ModalFooter, ModalButton } from "@ui/modal-system"
+import { Label, Input, Textarea, Checkbox, Modal, ModalContent, ModalHeader, ModalIconBadge, ModalTitle, ModalDescription, ModalBody, ModalFooter, ModalButton } from "@printpal/ui"
 import { Package, AlertCircle } from "lucide-react"
-import { Label, Input, Textarea, Checkbox } from "@printpal/ui"
 
 export function renderQuickAddProductModal({ isQuickProductModalOpen, setIsQuickProductModalOpen, setQuickProductName, setQuickProductDesc, setQuickProductSelectedMats, setQuickProductSelectedFins, setQuickTargetService, setQuickProductError, quickProductError, quickProductName, quickProductDesc, quickProductSelectedMats, materials, quickProductSelectedFins, finishes, handleSaveQuickProduct }: { isQuickProductModalOpen: boolean; setIsQuickProductModalOpen: React.Dispatch<React.SetStateAction<boolean>>; setQuickProductName: React.Dispatch<React.SetStateAction<string>>; setQuickProductDesc: React.Dispatch<React.SetStateAction<string>>; setQuickProductSelectedMats: React.Dispatch<React.SetStateAction<string[]>>; setQuickProductSelectedFins: React.Dispatch<React.SetStateAction<string[]>>; setQuickTargetService: React.Dispatch<React.SetStateAction<{ siteIdx: number; srvIdx: number}  | null>>; setQuickProductError: React.Dispatch<React.SetStateAction<string | null>>; quickProductError: string | null; quickProductName: string; quickProductDesc: string; quickProductSelectedMats: string[]; materials: MaterialRecord[]; quickProductSelectedFins: string[]; finishes: FinishRecord[]; handleSaveQuickProduct: () => Promise<void> }): React.ReactNode {
   return <Modal

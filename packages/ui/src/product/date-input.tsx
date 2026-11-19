@@ -1,9 +1,11 @@
+/** The date field with a calendar pop-up. Looks are the finished product's, copied exactly. */
 import * as React from "react"
 import { Calendar as CalendarIcon } from "lucide-react"
 import { format } from "date-fns"
-import { cn } from "@/shared/utils"
-import { Button, Popover, PopoverContent, PopoverTrigger } from "@printpal/ui"
-import { Calendar } from "@/components/ui/calendar"
+import { cn } from "../lib/cn"
+import { Button } from "../core/button"
+import { Popover, PopoverContent, PopoverTrigger } from "../core/popover"
+import { Calendar } from "./calendar-grid"
 
 export interface DatePickerProps {
   date?: Date | string

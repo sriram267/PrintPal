@@ -51,6 +51,33 @@
   "src/core/misc.tsx": [
     "#EEF0F2"
   ],
+  "src/core/modal-system.tsx": [
+    "#0C111D",
+    "#101828",
+    "#12B76A",
+    "#344054",
+    "#475467",
+    "#667085",
+    "#6941C6",
+    "#7F56D9",
+    "#98A2B3",
+    "#B42318",
+    "#D0D5DD",
+    "#D1FADF",
+    "#D92D20",
+    "#E9D7FE",
+    "#EAECF0",
+    "#ECFDF3",
+    "#F04438",
+    "#F2F4F7",
+    "#F4EBFF",
+    "#F79009",
+    "#F9FAFB",
+    "#FECDCA",
+    "#FEDF89",
+    "#FEE4E2",
+    "#FEF0C7"
+  ],
   "src/core/popover.tsx": [
     "#202428",
     "#DCE1E5"
@@ -65,6 +92,32 @@
     "#B5BFC7",
     "#DCE1E5",
     "#F3F5F7"
+  ],
+  "src/product/calendar-grid.tsx": [
+    "#202428",
+    "#2878D0",
+    "#737B84",
+    "#DCE1E5",
+    "#F3F5F7"
+  ],
+  "src/product/date-input.tsx": [
+    "#202428",
+    "#2878D0",
+    "#737B84",
+    "#DCE1E5"
+  ],
+  "src/product/image-upload.tsx": [
+    "#1E293B",
+    "#1E60A8",
+    "#202428",
+    "#22C55E",
+    "#2878D0",
+    "#38BDF8",
+    "#737B84",
+    "#94A3B8",
+    "#DCE1E5",
+    "#EF4444",
+    "#EFF5FB"
   ],
   "src/product/layout.tsx": [
     "#1E2227",

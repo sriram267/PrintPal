@@ -37,7 +37,11 @@ export { PalGreeting } from "./pal/PalGreeting";
 /* Product */
 export { NotchShell, NotchPill, NotchToast, NotchDocumentBar, type NotchToastVariant } from "./product/notch";
 export { PageHeader, TopBar, UserPill, SettingsNav, EmptyState, SectionCard, type NavItem, type SettingsNavGroup } from "./product/layout";
-export { Calendar, DatePicker } from "./product/date-picker";
+export { MonthCalendar, DateField } from "./product/date-picker";
+export { Calendar } from "./product/calendar-grid";
+export { DatePicker } from "./product/date-input";
+export { ImageUpload, type ImageUploadItem } from "./product/image-upload";
+export { Modal, ModalContent, ModalHeader, ModalIconBadge, ModalTitle, ModalDescription, ModalBody, ModalFooter, ModalButton } from "./core/modal-system";
 export { FileDropzone, FileChip } from "./product/file-dropzone";
 export { SearchSelect, type SearchSelectOption } from "./product/search-select";
 export { Sheet } from "./product/sheet";

@@ -6,8 +6,7 @@ import {
   Search,
   X,
 } from "lucide-react";
-import { Button, Input, Label, Textarea, Card, CardContent, CardDescription, CardHeader, CardTitle, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@printpal/ui"
-import { ImageUpload, type ImageUploadItem } from "@/components/ui/image-upload";
+import { Button, Input, Label, Textarea, Card, CardContent, CardDescription, CardHeader, CardTitle, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, ImageUpload, type ImageUploadItem } from "@printpal/ui"
 import type { BusinessDetailsRecord } from "./businessDetails.types";
 import { validateBusinessDetails } from "./businessDetails.validation";
 
