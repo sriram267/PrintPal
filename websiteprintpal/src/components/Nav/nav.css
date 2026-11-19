@@ -98,21 +98,56 @@
 .nav.is-open .nav-burger span:first-child { top: 18.5px; transform: rotate(45deg); }
 .nav.is-open .nav-burger span:last-child { top: 18.5px; transform: rotate(-45deg); }
 
+/* The menu floats over the page (it never pushes the content down) with a scrim behind it */
+/* (the header's backdrop-filter makes it the containing block, so the scrim hangs below the bar) */
+.nav-scrim {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 100vh;
+  z-index: -1;
+  background: rgba(20, 22, 26, 0.28);
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+  animation: scrimIn 0.25s ease both;
+}
 .nav-sheet {
-  padding: 4px 20px 20px;
-  border-top: 1px solid #ebedf0;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  max-height: calc(100vh - var(--nav-h));
+  max-height: calc(100dvh - var(--nav-h));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 4px 20px calc(20px + env(safe-area-inset-bottom, 0px));
+  border-bottom: 1px solid #ebedf0;
+  border-radius: 0 0 18px 18px;
   background: #fff;
+  box-shadow: 0 24px 48px -16px rgba(16, 18, 20, 0.28);
   animation: sheetIn 0.25s var(--ease-out) both;
 }
 .nav-sheet[hidden] {
   display: none;
 }
 .nav-sheet-link {
-  display: block;
-  padding: 14px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 52px;
   border-bottom: 1px solid #f0f1f3;
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 500;
+  letter-spacing: -0.015em;
+}
+.nav-sheet-link::after {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-top: 1.5px solid #a3a9b0;
+  border-right: 1.5px solid #a3a9b0;
+  transform: rotate(45deg);
 }
 .nav-sheet-actions {
   display: grid;
@@ -121,7 +156,11 @@
   margin-top: 16px;
 }
 .nav-sheet-actions .btn-attio {
-  height: 42px;
+  height: 46px;
+}
+@keyframes scrimIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 @keyframes sheetIn {
   from { opacity: 0; transform: translateY(-6px); }

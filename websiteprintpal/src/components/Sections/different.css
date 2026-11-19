@@ -124,3 +124,26 @@
     text-transform: uppercase;
   }
 }
+
+@media (max-width: 640px) {
+  .df {
+    padding: 60px 0 56px;
+  }
+  .df-sub {
+    margin-top: 14px;
+    font-size: 15.5px;
+  }
+  .df-table {
+    margin-top: 30px;
+  }
+  .df-row {
+    gap: 10px;
+    padding: 20px 0;
+  }
+  .df-row h3 {
+    font-size: 17px;
+  }
+  .df-row p {
+    font-size: 15px;
+  }
+}

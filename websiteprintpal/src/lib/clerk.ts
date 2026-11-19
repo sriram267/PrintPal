@@ -1,5 +1,5 @@
 import type { ComponentProps } from "react";
-import type { ClerkProvider } from "@clerk/clerk-react";
+import type { ClerkProvider } from "@clerk/react";
 
 /**
  * Clerk setup for the marketing site.
@@ -19,12 +19,13 @@ type Appearance = ComponentProps<typeof ClerkProvider>["appearance"];
 /** Clerk components styled to match the site (Inter, dark buttons, 10px radius). */
 export const clerkAppearance: Appearance = {
   variables: {
+    // Clerk 6 (Core 3) names: colorForeground / colorMutedForeground / colorInput / colorInputForeground
     colorPrimary: "#1d1f22",
-    colorText: "#1c1d1f",
-    colorTextSecondary: "#6b7178",
+    colorForeground: "#1c1d1f",
+    colorMutedForeground: "#6b7178",
     colorBackground: "#ffffff",
-    colorInputBackground: "#ffffff",
-    colorInputText: "#1c1d1f",
+    colorInput: "#ffffff",
+    colorInputForeground: "#1c1d1f",
     fontFamily: '"Inter Variable", Inter, system-ui, -apple-system, "Segoe UI", sans-serif',
     borderRadius: "10px",
   },

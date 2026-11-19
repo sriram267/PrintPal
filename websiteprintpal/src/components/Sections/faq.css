@@ -118,3 +118,22 @@
     transition: none;
   }
 }
+
+@media (max-width: 640px) {
+  .fq {
+    padding: 56px 0 52px;
+  }
+  .fq-grid {
+    gap: 20px;
+  }
+  .fq-item button {
+    gap: 16px;
+    padding: 18px 2px;
+    font-size: 16.5px;
+  }
+  .fq-answer p {
+    padding: 0 6px 20px 2px;
+    font-size: 15.5px;
+    line-height: 1.55;
+  }
+}

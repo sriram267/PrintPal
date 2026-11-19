@@ -35,6 +35,15 @@ input {
   color: inherit;
 }
 
+/* Touch: no 300ms tap delay or double-tap zoom on controls, and no grey flash on tap */
+a,
+button,
+summary,
+[role="button"] {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
 img,
 svg {
   display: block;

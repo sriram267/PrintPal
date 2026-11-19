@@ -35,6 +35,7 @@ export function Nav() {
 
   return (
     <header className={`nav ${open ? "is-open" : ""}`}>
+      {open && <div className="nav-scrim" onClick={() => setOpen(false)} aria-hidden="true" />}
       <div className="nav-inner">
         <div className="nav-left">
           <a href="#top" className="nav-logo" aria-label="PrintPal home">

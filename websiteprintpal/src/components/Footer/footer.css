@@ -94,3 +94,39 @@
     gap: 6px;
   }
 }
+
+@media (max-width: 720px) {
+  .ft {
+    padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  }
+  .ft .sx-inner {
+    padding-top: 32px;
+  }
+  .ft-top {
+    gap: 28px;
+    padding-bottom: 28px;
+  }
+  /* the two link columns sit side by side instead of stacking */
+  .ft-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    width: 100%;
+  }
+  .ft-cols > div {
+    min-width: 0;
+    gap: 0;
+  }
+  .ft-cols h4 {
+    margin-bottom: 6px;
+  }
+  /* a 36px-tall tap target for every link, with no extra gap between them */
+  .ft-cols a,
+  .ft-cols button {
+    display: inline-flex;
+    align-items: center;
+    min-height: 36px;
+    padding: 0;
+    text-align: left;
+  }
+}

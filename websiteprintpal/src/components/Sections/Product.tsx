@@ -1,16 +1,20 @@
-import { useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { CHARGES, SITES, lineTotal, rupees, rupees2, summary } from "../../lib/sampleQuote";
 import { IconPlus } from "../Hero/icons";
 import { IconCalendar, IconCheck, IconGlobe, IconPin } from "./moreIcons";
-import { useReveal } from "./useReveal";
 import "./sections.css";
 import "./product.css";
 
 /* Everything listed here exists in the product today. Names and numbers in the visuals are samples. */
 
-type Tab = "leads" | "quotation";
+type StepId = "leads" | "quotation" | "invoicing";
 
-const FEATURES: Record<Tab, { title: string; text: string }[]> = {
+interface Feature {
+  title: string;
+  text: string;
+}
+
+const FEATURES: Record<StepId, Feature[]> = {
   leads: [
     {
       title: "Enquiry first, customer when it's real",
@@ -51,12 +55,54 @@ const FEATURES: Record<Tab, { title: string; text: string }[]> = {
       text: "Your logo, GSTIN and signature from Business Details, on a clean quotation you can download.",
     },
     {
-      title: "Every quote saved, every revision tracked",
-      text: "Find past quotes in Billing Reports, preview the PDF, and revise a quote into a new version.",
+      title: "All their sites, one quote",
+      text: "Every site and service a customer asks for goes into a single quotation, with the total for the whole job.",
+    },
+  ],
+  invoicing: [
+    {
+      title: "Revise without starting over",
+      text: "When the customer negotiates, create the next version. It copies the last one, so only what changed needs editing.",
+    },
+    {
+      title: "One customer, one place",
+      text: "Every quote for a customer sits under their name, newest on top. Older versions are marked Renegotiated for you.",
+    },
+    {
+      title: "One tick to invoice",
+      text: "When the customer agrees, tick the latest version. It becomes the invoice, with the numbers they already approved.",
+    },
+    {
+      title: "Locked once it's final",
+      text: "A finalized invoice can't be edited or deleted by accident. Untick it if you need to reopen it.",
+    },
+    {
+      title: "The PDF changes with it",
+      text: "The same PDF now says Invoice, with your logo and GSTIN, ready to send again for payment.",
     },
   ],
 };
 
+const STEPS: { id: StepId; label: string; lead: string; rest: string }[] = [
+  {
+    id: "leads",
+    label: "Leads",
+    lead: "Capture every enquiry.",
+    rest: " Turn the real ones into customers, with sites and GST details saved once.",
+  },
+  {
+    id: "quotation",
+    label: "Quotation",
+    lead: "Price every site in one quote.",
+    rest: " Add charges and GST, then download a PDF with your name on it.",
+  },
+  {
+    id: "invoicing",
+    label: "Invoicing",
+    lead: "Revise until it's agreed.",
+    rest: " Then one tick turns the final quotation into the invoice.",
+  },
+];
 
 const METHODS = [
   ["Square Feet", "per sq ft"],
@@ -235,71 +281,226 @@ function QuotationVisual() {
   );
 }
 
-export function Product() {
-  const ref = useReveal<HTMLElement>();
-  const [tab, setTab] = useState<Tab>("leads");
-  const tabsRef = useRef<HTMLDivElement | null>(null);
+/* A redraw of the product's Quotation Reports page: customers as accordions, versions newest first,
+   a derived status chip on each, and a checkbox on the latest one that finalizes it as the invoice. */
+function InvoicingVisual() {
+  const final = summary().grandTotal;
+  const versions = [
+    { no: "Q-001-V3", status: "Invoice", total: final, date: "15 Nov" },
+    { no: "Q-001-V2", status: "Renegotiated", total: Math.round(final * 1.06), date: "14 Nov" },
+    { no: "Q-001-V1", status: "Renegotiated", total: Math.round(final * 1.13), date: "12 Nov" },
+  ];
+  const chip = (s: string) => `pv-st pv-st-${s.toLowerCase()}`;
+  const chevron = (open: boolean) => (
+    <svg className={`pv-chev ${open ? "is-open" : ""}`} width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="m9 6 6 6-6 6" />
+    </svg>
+  );
+  return (
+    <div className="pv pv-reports" aria-hidden="true">
+      <div className="pv-win pv-rep">
+        <div className="pv-rep-top">
+          <div>
+            <b>Quotation Reports</b>
+            <small>View and manage all your quotations in one place</small>
+          </div>
+          <span className="pv-rep-btn">Create Quotation</span>
+        </div>
 
-  const onKey = (e: React.KeyboardEvent) => {
-    if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
-    e.preventDefault();
-    const next: Tab = tab === "leads" ? "quotation" : "leads";
-    setTab(next);
-    tabsRef.current?.querySelector<HTMLButtonElement>(`[data-tab="${next}"]`)?.focus();
+        <div className="pv-rep-card">
+          <div className="pv-rep-row pv-rep-head">
+            <span>Customer / Quote</span>
+            <span>Status</span>
+            <span className="r">Grand total</span>
+            <span>Date</span>
+          </div>
+
+          <div className="pv-rep-row pv-rep-group">
+            <span className="pv-rep-name">
+              {chevron(true)}
+              <b>Meridian Interiors</b>
+              <em>3 versions</em>
+            </span>
+            <span><i className={chip("Invoice")}>Invoice</i></span>
+            <span className="r">{rupees2(final)}</span>
+            <span>15 Nov</span>
+          </div>
+
+          {versions.map((v, i) => (
+            <div className={`pv-rep-row pv-rep-ver ${i === 0 ? "is-final" : ""}`} key={v.no}>
+              <span className="pv-rep-name">
+                {i === 0 ? (
+                  <span className="pv-box is-on"><IconCheck size={11} strokeWidth={2.6} /></span>
+                ) : (
+                  <span className="pv-box-gap" />
+                )}
+                <code>{v.no}</code>
+              </span>
+              <span><i className={chip(v.status)}>{v.status}</i></span>
+              <span className="r">{rupees2(v.total)}</span>
+              <span>{v.date}</span>
+            </div>
+          ))}
+
+          <div className="pv-rep-row pv-rep-group">
+            <span className="pv-rep-name">
+              {chevron(false)}
+              <b>Kavya Retail</b>
+              <em>2 versions</em>
+            </span>
+            <span><i className={chip("Open")}>Open</i></span>
+            <span className="r">{rupees2(Math.round(final * 0.42))}</span>
+            <span>14 Nov</span>
+          </div>
+          <div className="pv-rep-row pv-rep-group">
+            <span className="pv-rep-name">
+              {chevron(false)}
+              <b>Lakshmi Textiles</b>
+              <em>1 version</em>
+            </span>
+            <span><i className={chip("Open")}>Open</i></span>
+            <span className="r">{rupees2(Math.round(final * 0.27))}</span>
+            <span>13 Nov</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const VISUALS: Record<StepId, () => JSX.Element> = {
+  leads: LeadsVisual,
+  quotation: QuotationVisual,
+  invoicing: InvoicingVisual,
+};
+
+const DESKTOP = "(min-width: 1001px)";
+
+export function Product() {
+  const trackRef = useRef<HTMLDivElement | null>(null);
+  const stageRef = useRef<HTMLDivElement | null>(null);
+  const [active, setActive] = useState(0);
+
+  /* Scrolling drives the switch: the stage stays pinned while you scroll through the three steps. */
+  useEffect(() => {
+    const track = trackRef.current;
+    const stage = stageRef.current;
+    if (!track || !stage) return;
+    const mq = window.matchMedia(DESKTOP);
+    let raf = 0;
+
+    const update = () => {
+      raf = 0;
+      if (!mq.matches) return;
+      const top = parseFloat(getComputedStyle(stage).top) || 0;
+      const distance = track.offsetHeight - stage.offsetHeight;
+      if (distance <= 0) return;
+      const scrolled = top - track.getBoundingClientRect().top;
+      const p = Math.min(0.9999, Math.max(0, scrolled / distance));
+      setActive(Math.floor(p * STEPS.length));
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
+
+  /* Clicking a step scrolls to the middle of its stretch of the track.
+     On tablets and phones there is no pinned stage: the steps are tabs, and a click just switches the tab. */
+  const go = useCallback((i: number) => {
+    const track = trackRef.current;
+    const stage = stageRef.current;
+    if (!track || !stage) return;
+    if (!window.matchMedia(DESKTOP).matches) {
+      setActive(i);
+      return;
+    }
+    const top = parseFloat(getComputedStyle(stage).top) || 0;
+    const distance = track.offsetHeight - stage.offsetHeight;
+    const y = window.scrollY + track.getBoundingClientRect().top - top + ((i + 0.5) / STEPS.length) * distance;
+    const calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.scrollTo({ top: y, behavior: calm ? "auto" : "smooth" });
+  }, []);
+
+  /* Tabs on small screens: swipe sideways to move between the three areas. */
+  const swipe = useRef<{ x: number; y: number } | null>(null);
+  const onTouchStart = (e: React.TouchEvent) => {
+    swipe.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+  };
+  const onTouchEnd = (e: React.TouchEvent) => {
+    const s = swipe.current;
+    swipe.current = null;
+    if (!s || window.matchMedia(DESKTOP).matches) return;
+    const dx = e.changedTouches[0].clientX - s.x;
+    const dy = e.changedTouches[0].clientY - s.y;
+    if (Math.abs(dx) < 56 || Math.abs(dx) < Math.abs(dy) * 1.6) return;
+    setActive((a) => Math.min(STEPS.length - 1, Math.max(0, a + (dx < 0 ? 1 : -1))));
   };
 
   return (
-    <section className="sx pr" id="product" ref={ref}>
+    <section className="sx pr" id="product">
       <div className="sx-inner">
-        <span className="sx-chip reveal">Product</span>
-        <h2 className="sx-h2 reveal" style={{ "--d": "60ms" } as React.CSSProperties}>
-          Everything a sign shop needs to quote, <span>in two places that talk to each other.</span>
+        <span className="sx-chip">Product</span>
+        <h2 className="sx-h2">
+          Everything a sign shop needs to quote and bill, <span>in one place, from first enquiry to final invoice.</span>
         </h2>
+      </div>
 
-        <div className="pr-tabs reveal" style={{ "--d": "140ms" } as React.CSSProperties} role="tablist" aria-label="Product areas" ref={tabsRef} onKeyDown={onKey}>
-          {(["leads", "quotation"] as const).map((t) => (
-            <button
-              key={t}
-              type="button"
-              role="tab"
-              data-tab={t}
-              id={`tab-${t}`}
-              aria-selected={tab === t}
-              aria-controls={`panel-${t}`}
-              tabIndex={tab === t ? 0 : -1}
-              className={tab === t ? "is-on" : ""}
-              onClick={() => setTab(t)}
-            >
-              {t === "leads" ? "Leads" : "Quotation"}
-            </button>
-          ))}
+      <div className="pr-track sx-inner" ref={trackRef}>
+        <div className="pr-stage" ref={stageRef}>
+          <nav className="pr-rail" aria-label="Product areas">
+            {STEPS.map((s, i) => (
+              <button
+                key={s.id}
+                type="button"
+                className={`pr-rail-item ${active === i ? "is-on" : ""}`}
+                aria-current={active === i ? "step" : undefined}
+                onClick={() => go(i)}
+              >
+                {s.label}
+              </button>
+            ))}
+          </nav>
+
+          <div className="pr-content" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+            {STEPS.map((s, i) => {
+              const Visual = VISUALS[s.id];
+              return (
+                <div
+                  key={s.id}
+                  id={`step-${s.id}`}
+                  className={`pr-panel ${active === i ? "is-on" : ""}`}
+                >
+                  <h3 className="pr-statement">
+                    {s.lead}
+                    <span>{s.rest}</span>
+                  </h3>
+                  <div className="pr-body">
+                    <ul className="pr-list">
+                      {FEATURES[s.id].map((f) => (
+                        <li key={f.title}>
+                          <h4>{f.title}</h4>
+                          <p>{f.text}</p>
+                        </li>
+                      ))}
+                    </ul>
+                    <div className={`pr-visual is-${s.id}`}>
+                      <Visual />
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
-
-        <div className="pr-stage reveal" style={{ "--d": "220ms" } as React.CSSProperties}>
-          {(["leads", "quotation"] as const).map((t) => (
-            <div
-              key={t}
-              role="tabpanel"
-              id={`panel-${t}`}
-              aria-labelledby={`tab-${t}`}
-              className={`pr-panel ${tab === t ? "is-on" : ""}`}
-              hidden={false}
-              aria-hidden={tab !== t}
-            >
-              <ul className="pr-list">
-                {FEATURES[t].map((f) => (
-                  <li key={f.title}>
-                    <h3>{f.title}</h3>
-                    <p>{f.text}</p>
-                  </li>
-                ))}
-              </ul>
-              <div className={`pr-visual is-${t}`}>{t === "leads" ? <LeadsVisual /> : <QuotationVisual />}</div>
-            </div>
-          ))}
-        </div>
-
-
       </div>
     </section>
   );

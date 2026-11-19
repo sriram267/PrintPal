@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { QuoteScreen } from "./QuoteScreen";
+import { PhoneQuote } from "./PhoneQuote";
 import { CncRouter, FIGURE_SIZE, PORTS, WideFormatPrinter } from "./Machines";
 import { openWaitlist } from "../WaitlistDialog";
 import { IconChevronRight } from "../Hero/icons";
@@ -36,6 +37,8 @@ const START_FIT = 0.78;
 const START_MAX = 0.92;
 const PIN_MIN_W = 1100;
 const PIN_MIN_H = 620;
+/** Phones: the 1270px screen can't be read at this width, so a compact quote card takes its place. */
+const PHONE_MAX_W = 640;
 
 type Pt = { x: number; y: number };
 type Layout = {
@@ -67,6 +70,7 @@ export function HeroScene() {
   const [pinned, setPinned] = useState(true);
   const pinnedRef = useRef(true);
   pinnedRef.current = pinned;
+  const [phone, setPhone] = useState(false);
   const [winW, setWinW] = useState(WIN_W_MIN);
   const [layout, setLayout] = useState<Layout | null>(null);
   const [running, setRunning] = useState(false);
@@ -75,8 +79,10 @@ export function HeroScene() {
 
   /* Pinned (desktop) vs stacked (tablet / phone / reduced motion). */
   useLayoutEffect(() => {
-    const check = () =>
+    const check = () => {
       setPinned(window.innerWidth >= PIN_MIN_W && window.innerHeight >= PIN_MIN_H && !reducedMotion());
+      setPhone(window.innerWidth <= PHONE_MAX_W);
+    };
     check();
     window.addEventListener("resize", check);
     return () => window.removeEventListener("resize", check);
@@ -276,7 +282,7 @@ export function HeroScene() {
     const io = new IntersectionObserver((entries) => setRunning(entries.some((e) => e.isIntersecting)), { rootMargin: "0px 0px -10% 0px" });
     targets.forEach((t) => io.observe(t));
     return () => io.disconnect();
-  }, [pinned]);
+  }, [pinned, phone]);
 
   const seeHow = () => {
     document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -285,7 +291,9 @@ export function HeroScene() {
   const copy = (
     <div className="hs-copy" ref={copyRef}>
       <a className="hs-pill" href="#waitlist" onClick={(e) => { e.preventDefault(); openWaitlist(); }}>
-        <span>Free during the pilot · Now inviting sign shops</span>
+        <span>
+          Free during the pilot<span className="hs-pill-more"> · Now inviting sign shops</span>
+        </span>
         <IconChevronRight size={14} />
       </a>
       <h1 className="hs-title">
@@ -310,16 +318,36 @@ export function HeroScene() {
 
   const machine = (kind: "cnc" | "printer", style?: React.CSSProperties) => {
     const isCnc = kind === "cnc";
+    // phones show the short name: the full label doesn't fit under a half-width machine
+    const label = isCnc
+      ? phone ? "CNC router" : "CNC router · fabrication lines"
+      : phone ? "Wide-format printer" : "Wide-format printer · print lines";
     return (
       <div ref={isCnc ? cncRef : printerRef} className={`hs-machine ${isCnc ? "is-cnc" : "is-printer"}`} style={style}>
         {isCnc ? <CncRouter running={running} /> : <WideFormatPrinter running={running} />}
         <span className="hs-machine-label">
           <i className={isCnc ? "is-orange" : "is-blue"} />
-          {isCnc ? "CNC router · fabrication lines" : "Wide-format printer · print lines"}
+          {label}
         </span>
       </div>
     );
   };
+
+  if (!pinned && phone) {
+    return (
+      <section className="hs is-stacked is-phone" id="top" ref={sceneRef}>
+        <div className="hs-stacked-copy">{copy}</div>
+        <div className="hs-stacked-stage">
+          <div className="hs-band is-static" ref={bandRef} />
+          <div className="hs-stacked-machines">
+            {machine("printer")}
+            {machine("cnc")}
+          </div>
+          <PhoneQuote />
+        </div>
+      </section>
+    );
+  }
 
   if (!pinned) {
     return (

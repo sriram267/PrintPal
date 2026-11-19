@@ -1,6 +1,6 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { ClerkProvider } from "@clerk/clerk-react";
+import { ClerkProvider } from "@clerk/react";
 import "@fontsource-variable/inter";
 import "./styles/tokens.css";
 import "./styles/global.css";

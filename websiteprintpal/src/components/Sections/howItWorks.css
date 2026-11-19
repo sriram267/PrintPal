@@ -241,3 +241,35 @@
     padding: 26px 18px;
   }
 }
+
+/* phone: shorter, tighter steps. The tag chips repeat the sentence above them, so they go. */
+@media (max-width: 640px) {
+  .tl {
+    padding: 56px 0 44px;
+  }
+  .tl-list {
+    margin-top: 26px;
+  }
+  .tl-step,
+  .tl-step.is-flip {
+    column-gap: 16px;
+    padding: 14px 0 20px;
+  }
+  .tl-text h3 {
+    font-size: 18.5px;
+  }
+  .tl-text p {
+    margin-top: 8px;
+    font-size: 15px;
+    line-height: 1.55;
+  }
+  .tl-tags {
+    display: none;
+  }
+  .tl-card,
+  .tl-step.is-flip .tl-card {
+    margin-top: 16px;
+    padding: 18px 12px;
+    border-radius: 16px;
+  }
+}

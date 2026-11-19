@@ -181,3 +181,56 @@
     padding: 20px 20px 6px;
   }
 }
+
+/* phone: "Without" is just the headline of each pain; "With" keeps its one-line explanation. Tags go. */
+@media (max-width: 640px) {
+  .cx {
+    padding: 64px 0 52px;
+  }
+  .cx-title {
+    margin-top: 18px;
+  }
+  .cx-sub {
+    margin-top: 14px;
+  }
+  .cx-grid {
+    margin-top: 36px;
+    row-gap: 12px;
+  }
+  .cx-panel {
+    padding: 16px 16px 4px;
+    border-radius: 20px;
+  }
+  .cx-panel-head {
+    gap: 12px;
+    padding-bottom: 14px;
+    font-size: 17px;
+  }
+  .cx-ico {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+  }
+  .cx-row {
+    gap: 12px;
+    padding: 16px 0;
+  }
+  .cx-row h3 {
+    font-size: 15.5px;
+  }
+  .cx-row p {
+    margin-top: 3px;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .cx-tag {
+    display: none;
+  }
+  .is-without .cx-row {
+    align-items: center;
+    padding: 12px 0;
+  }
+  .is-without .cx-row p {
+    display: none;
+  }
+}

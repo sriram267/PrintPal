@@ -171,3 +171,103 @@
     align-items: flex-start;
   }
 }
+
+/* the toggle only exists where the cards stack (tablet and phone) */
+.wf-tabs {
+  display: none;
+}
+@media (max-width: 900px) {
+  .wf-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+    margin-top: 28px;
+    padding: 4px;
+    border-radius: 13px;
+    background: #eaecef;
+    box-shadow: inset 0 0 0 1px rgba(16, 18, 20, 0.04);
+  }
+  .wf-tab {
+    height: 40px;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: #5b6168;
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: -0.015em;
+    cursor: pointer;
+    transition: color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .wf-tab.is-on {
+    background: #fff;
+    color: #1c1d1f;
+    box-shadow: 0 0 0 1px rgba(16, 18, 20, 0.06), 0 1px 3px rgba(16, 18, 20, 0.1);
+  }
+  .wf-tab.is-orange.is-on {
+    color: #c2410c;
+  }
+  .wf-tab.is-blue.is-on {
+    color: #2878d0;
+  }
+  .wf-grid {
+    margin-top: 14px;
+  }
+  .wf-card:not(.is-on) {
+    display: none;
+  }
+  .wf-card.is-on {
+    animation: wfIn 0.4s var(--ease-out) both;
+  }
+  .wf-art {
+    height: 300px;
+  }
+}
+@keyframes wfIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (max-width: 640px) {
+  .wf {
+    padding-top: 56px;
+    padding-bottom: 48px;
+  }
+  .wf-tabs {
+    margin-top: 22px;
+  }
+  /* the machine sets the height, so nothing is cropped */
+  .wf-art {
+    height: auto;
+    padding: 18px 16px 10px;
+  }
+  .wf-art .machine {
+    width: min(100%, 270px);
+  }
+  .wf-body {
+    gap: 12px;
+  }
+  .wf-lead {
+    margin: -2px 0 2px;
+    font-size: 15px;
+  }
+  .wf-points {
+    gap: 9px;
+  }
+  .wf-points li {
+    font-size: 14.5px;
+  }
+  .wf-products {
+    padding-top: 14px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wf-card.is-on {
+    animation: none;
+  }
+}

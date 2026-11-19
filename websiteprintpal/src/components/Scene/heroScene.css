@@ -241,6 +241,9 @@
   margin: 28px auto 0;
 }
 .hs-stacked-machines .hs-machine {
+  min-width: 0;
+}
+.hs-stacked-machines .hs-machine {
   position: relative;
   opacity: 1;
   padding-bottom: 44px;
@@ -250,20 +253,79 @@
   bottom: 0;
 }
 
-@media (max-width: 640px) {
+/* Tablet: the two machines are big; keep them side by side but a little smaller */
+@media (max-width: 900px) {
   .hs-stacked-machines {
-    grid-template-columns: 1fr;
+    max-width: 640px;
+    gap: 8px;
+  }
+}
+
+/* Phone: copy first, then a short strip with the two machines, then one legible quote card.
+   (The full screen is replaced by PhoneQuote; see HeroScene.) */
+@media (max-width: 640px) {
+  .hs-copy {
+    padding-top: 36px;
+  }
+  .hs.is-stacked .hs-stacked-copy .hs-copy {
+    padding-bottom: 28px;
   }
   .hs-title {
-    font-size: clamp(34px, 9.4vw, 44px);
+    margin-top: 22px;
+    font-size: clamp(33px, 9.2vw, 42px);
+  }
+  .hs-sub {
+    margin-top: 16px;
+    font-size: 16px;
   }
   .hs-pill {
+    height: 28px;
+    padding: 0 8px 0 11px;
     font-size: 12.5px;
   }
+  /* the main action goes first, and both are easy to reach with a thumb */
   .hs-actions {
-    flex-direction: column;
+    flex-direction: column-reverse;
     width: 100%;
-    max-width: 320px;
+    max-width: 340px;
+    margin-top: 24px;
+  }
+  .hs-actions .btn-attio {
+    height: 46px;
+    font-size: 15.5px;
+  }
+  .hs.is-stacked {
+    padding-bottom: 40px;
+  }
+  .hs-band.is-static {
+    inset: 6% 0 0;
+  }
+
+  .hs-stacked-machines {
+    gap: 4px;
+    margin-top: 0;
+  }
+  .hs-stacked-machines .hs-machine {
+    padding-bottom: 38px;
+  }
+  .hs-stacked-machines .hs-machine-label {
+    padding: 5px 10px 5px 8px;
+    font-size: 12px;
+  }
+  .hs-stacked-machines + .pq {
+    margin-top: 4px;
+  }
+}
+@media (max-width: 360px) {
+  .hs-stacked-machines .hs-machine-label {
+    font-size: 11px;
+    gap: 6px;
+  }
+}
+/* very narrow phones: the pill keeps just its first half so it stays on one line */
+@media (max-width: 380px) {
+  .hs-pill-more {
+    display: none;
   }
 }
 

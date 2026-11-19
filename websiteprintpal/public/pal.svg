@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="400" height="400">
+  <!-- PrintPal mascot: one soft squircle, two capsule eyes, two floating hands. Original artwork. -->
+  <defs>
+    <linearGradient id="pal-body" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FF8650"/>
+      <stop offset="0.55" stop-color="#E4531A"/>
+      <stop offset="1" stop-color="#C2400C"/>
+    </linearGradient>
+    <linearGradient id="pal-hand" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FF915D"/>
+      <stop offset="1" stop-color="#D24813"/>
+    </linearGradient>
+    <radialGradient id="pal-gloss" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.34"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- floating hands -->
+  <g transform="rotate(-12 8.5 60)"><ellipse cx="8.5" cy="60" rx="5.8" ry="8.2" fill="url(#pal-hand)"/></g>
+  <g transform="rotate(12 91.5 60)"><ellipse cx="91.5" cy="60" rx="5.8" ry="8.2" fill="url(#pal-hand)"/></g>
+
+  <!-- body -->
+  <path d="M50 19 C70.8 19 81 29.2 81 50 C81 70.8 70.8 81 50 81 C29.2 81 19 70.8 19 50 C19 29.2 29.2 19 50 19 Z" fill="url(#pal-body)"/>
+  <ellipse cx="46" cy="27" rx="19" ry="6.5" fill="url(#pal-gloss)"/>
+
+  <!-- eyes -->
+  <rect x="35.2" y="37" width="7" height="15" rx="3.5" fill="#1B1E22"/>
+  <rect x="57.8" y="37" width="7" height="15" rx="3.5" fill="#1B1E22"/>
+  <circle cx="37.7" cy="41" r="1.3" fill="#fff" opacity="0.85"/>
+  <circle cx="60.3" cy="41" r="1.3" fill="#fff" opacity="0.85"/>
+</svg>

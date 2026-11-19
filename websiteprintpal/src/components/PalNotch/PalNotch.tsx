@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from "react";
-import { GREETING_MS, runMochiGreeting } from "./mochi";
+import { useEffect, useState } from "react";
+import { PalMascot } from "./PalMascot";
+import "./palMascot.css";
 import "./palNotch.css";
 
 type NotchState = "hidden" | "idle" | "greeting";
@@ -9,46 +10,50 @@ interface PalNotchProps {
   label?: string;
 }
 
+/** How long the greeting stays open before the notch settles back to idle. */
+const GREETING_MS = 4200;
+
 const prefersReducedMotion = () =>
   typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+/* Lives for one page load. A refresh resets it, a remount (hot reload, re-render of the app shell) does not,
+   so the greeting plays at the start of a page load and after that only when the notch is clicked. */
+let greetedThisLoad = false;
+
 /**
- * The Pal notch, as in the product: a black pill docked to the top-centre of the
- * viewport (216 × 34 idle, 440 × 104 greeting).
- * On page load it drops in, plays the Mochi greeting once, then settles to idle.
- * Clicking it replays the greeting.
+ * The Pal notch: a black pill docked to the top-centre of the viewport
+ * (216 × 34 idle, 440 × 104 greeting).
+ * On page load it drops in, says hi once, then settles to idle. Clicking it says hi again.
  */
 export function PalNotch({ label = "Pilot open" }: PalNotchProps) {
-  const [state, setState] = useState<NotchState>("hidden");
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [state, setState] = useState<NotchState>(greetedThisLoad ? "idle" : "hidden");
 
-  // Entrance: drop in, then greet once.
+  // Entrance: drop in, then greet once per page load.
   useEffect(() => {
     if (prefersReducedMotion()) {
       setState("idle");
       return;
     }
+    if (greetedThisLoad) return;
     const t1 = window.setTimeout(() => setState("idle"), 250);
-    const t2 = window.setTimeout(() => setState("greeting"), 900);
+    const t2 = window.setTimeout(() => {
+      greetedThisLoad = true;
+      setState("greeting");
+    }, 900);
     return () => {
       window.clearTimeout(t1);
       window.clearTimeout(t2);
     };
   }, []);
 
-  // Run the canvas while greeting. The timeout is a safety net: if animation frames are paused
-  // (background tab, power saving), the notch still returns to idle instead of staying open and empty.
+  // The greeting closes itself.
   useEffect(() => {
-    if (state !== "greeting" || !canvasRef.current) return;
-    const stop = runMochiGreeting(canvasRef.current, () => setState("idle"));
-    const fallback = window.setTimeout(() => setState("idle"), GREETING_MS + 600);
-    return () => {
-      stop();
-      window.clearTimeout(fallback);
-    };
+    if (state !== "greeting") return;
+    const t = window.setTimeout(() => setState("idle"), GREETING_MS);
+    return () => window.clearTimeout(t);
   }, [state]);
 
-  // Escape closes the greeting, as in the product.
+  // Escape closes the greeting.
   useEffect(() => {
     if (state !== "greeting") return;
     const onKey = (e: KeyboardEvent) => {
@@ -79,15 +84,16 @@ export function PalNotch({ label = "Pilot open" }: PalNotchProps) {
         <span className={`pal-surface ${shape}`}>
           {state === "greeting" ? (
             <span className="pal-greeting">
-              <canvas ref={canvasRef} className="pal-greeting-canvas" aria-hidden="true" />
+              <PalMascot size={72} mode="greet" className="pal-greeting-mascot" />
+              <span className="pal-greeting-text">
+                <strong>Hi, I&rsquo;m Pal.</strong>
+                <span>Your print and signage shop helper.</span>
+              </span>
             </span>
           ) : (
             <>
               <span className="pal-idle-left">
-                <span className="pal-dot" aria-hidden="true">
-                  <span className="pal-dot-ping" />
-                  <span className="pal-dot-core" />
-                </span>
+                <PalMascot size={28} className="pal-idle-mascot" />
                 <span className="pal-name">PAL</span>
                 <span className="pal-label">{label}</span>
               </span>

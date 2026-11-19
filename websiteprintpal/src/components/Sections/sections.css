@@ -208,4 +208,19 @@
   .sx-inner {
     padding: 0 16px;
   }
+  .sx-h2 {
+    margin-top: 14px;
+    font-size: clamp(25px, 7vw, 30px);
+    line-height: 1.14;
+    letter-spacing: -0.034em;
+  }
+  .sx-chip {
+    height: 24px;
+    font-size: 13px;
+  }
+  /* mini product UI: a touch smaller so the visuals sit comfortably in a phone column */
+  .mini {
+    padding: 11px;
+    font-size: 11px;
+  }
 }

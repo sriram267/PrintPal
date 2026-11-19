@@ -155,9 +155,9 @@ const STEPS = [
     visual: <ServiceVisual />,
   },
   {
-    title: "Price it and send the PDF",
-    text: "Choose how each line is priced, add installation and transport, apply GST, and download a PDF with your logo and GSTIN.",
-    tags: ["6 ways to price", "CGST + SGST", "PDF download"],
+    title: "Price it, send it, invoice it",
+    text: "Choose how each line is priced, add installation and transport, apply GST, and download a PDF with your logo and GSTIN. Once the customer agrees, one tick turns the final version into the invoice.",
+    tags: ["6 ways to price", "CGST + SGST", "Quote to invoice"],
     visual: <QuoteVisual />,
   },
 ];

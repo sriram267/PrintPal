@@ -1,4 +1,4 @@
-import { Waitlist } from "@clerk/clerk-react";
+import { Waitlist } from "@clerk/react";
 import { APP_URL } from "../lib/links";
 import { HAS_CLERK } from "../lib/clerk";
 

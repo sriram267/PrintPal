@@ -1,4 +1,4 @@
-import { IconInfo } from "../Hero/icons";
+import { useState } from "react";
 import { CncRouter, WideFormatPrinter } from "../Scene/Machines";
 import { IconCheck } from "./moreIcons";
 import { useInView } from "./useInView";
@@ -35,10 +35,14 @@ const CARDS = [
   },
 ] as const;
 
-function Card({ card, delay }: { card: (typeof CARDS)[number]; delay: number }) {
+function Card({ card, delay, on }: { card: (typeof CARDS)[number]; delay: number; on: boolean }) {
   const [ref, seen] = useInView<HTMLElement>("0px 0px -8% 0px");
   return (
-    <article className={`wf-card is-${card.tone} reveal`} ref={ref} style={{ "--d": `${delay}ms` } as React.CSSProperties}>
+    <article
+      className={`wf-card is-${card.tone} reveal ${on ? "is-on" : ""}`}
+      ref={ref}
+      style={{ "--d": `${delay}ms` } as React.CSSProperties}
+    >
       <div className="wf-art">{card.id === "sign" ? <CncRouter running={seen} /> : <WideFormatPrinter running={seen} />}</div>
       <div className="wf-body">
         <h3>{card.title}</h3>
@@ -61,8 +65,12 @@ function Card({ card, delay }: { card: (typeof CARDS)[number]; delay: number }) 
   );
 }
 
+const TAB_LABELS = ["Sign shops", "Printers"] as const;
+
 export function WhoItsFor() {
   const ref = useReveal<HTMLElement>();
+  // On tablets and phones the two cards are a toggle (one shown at a time); on desktop both always show.
+  const [on, setOn] = useState(0);
   return (
     <section className="sx wf" id="who" ref={ref}>
       <div className="sx-inner">
@@ -71,16 +79,26 @@ export function WhoItsFor() {
           Made for shops that make and print signs. <span>Fabricators and large-format printers across India.</span>
         </h2>
 
-        <div className="wf-grid">
+        <div className="wf-tabs reveal" role="tablist" aria-label="Who PrintPal is for" style={{ "--d": "120ms" } as React.CSSProperties}>
           {CARDS.map((c, i) => (
-            <Card key={c.id} card={c} delay={140 + i * 100} />
+            <button
+              key={c.id}
+              type="button"
+              role="tab"
+              aria-selected={on === i}
+              className={`wf-tab is-${c.tone} ${on === i ? "is-on" : ""}`}
+              onClick={() => setOn(i)}
+            >
+              {TAB_LABELS[i]}
+            </button>
           ))}
         </div>
 
-        <p className="wf-note reveal" style={{ "--d": "340ms" } as React.CSSProperties}>
-          <IconInfo size={15} />
-          PrintPal isn't built for offset or commercial printing.
-        </p>
+        <div className="wf-grid">
+          {CARDS.map((c, i) => (
+            <Card key={c.id} card={c} delay={140 + i * 100} on={on === i} />
+          ))}
+        </div>
       </div>
     </section>
   );

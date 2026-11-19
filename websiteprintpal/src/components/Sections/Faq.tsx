@@ -18,8 +18,8 @@ const FAQS = [
     a: "Yes. Quotes show GST with the CGST and SGST split, and the PDF carries your GSTIN. You can set your tax slabs in Settings.",
   },
   {
-    q: "How do I send a quote to my customer?",
-    a: "Download the quotation as a PDF and send it however you already do, on WhatsApp or by email.",
+    q: "How do I send a quote or an invoice to my customer?",
+    a: "Download the PDF and send it however you already do, on WhatsApp or by email. If the customer negotiates, create the next version. When they agree, tick the latest one and it becomes the invoice, with the same PDF now titled Invoice.",
   },
   {
     q: "Do I need to install anything?",

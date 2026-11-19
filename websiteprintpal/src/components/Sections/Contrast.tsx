@@ -34,7 +34,7 @@ const ROWS = [
   },
   {
     without: { icon: <IconSearch size={20} />, title: "Old quotes are hard to find", text: "Scrolling through old chats to see what you quoted last time.", tag: "Scroll to find" },
-    withIt: { icon: <IconFileCheck />, title: "Every quote saved", text: "Find any quote in Billing Reports, preview the PDF and revise it into a new version.", tag: "Revise to a new version" },
+    withIt: { icon: <IconFileCheck />, title: "Every quote saved", text: "Find any quote in Quotation Reports, preview the PDF, revise it into a new version, and finalize the agreed one as the invoice.", tag: "Quote to invoice" },
   },
 ] as const;
 

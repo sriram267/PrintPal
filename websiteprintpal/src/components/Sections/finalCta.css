@@ -66,3 +66,26 @@
 .fc-form .waitlist-done {
   justify-content: center;
 }
+
+@media (max-width: 640px) {
+  .fc {
+    padding: 56px 0 40px;
+  }
+  .fc-panel {
+    padding: 44px 18px 40px;
+  }
+  .fc-title {
+    margin-top: 18px;
+  }
+  .fc-sub {
+    margin-top: 12px;
+    font-size: 16px;
+  }
+  .fc-form {
+    margin-top: 24px;
+  }
+  /* Clerk's card has roomy padding; trim it so the email field gets the width */
+  .fc-form .cl-card {
+    padding: 22px 16px 18px;
+  }
+}
