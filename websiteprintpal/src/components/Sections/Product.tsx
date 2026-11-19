@@ -7,7 +7,7 @@ import "./product.css";
 
 /* Everything listed here exists in the product today. Names and numbers in the visuals are samples. */
 
-type StepId = "leads" | "quotation" | "invoicing";
+type StepId = "leads" | "quotation" | "invoicing" | "catalogue";
 
 interface Feature {
   title: string;
@@ -81,6 +81,30 @@ const FEATURES: Record<StepId, Feature[]> = {
       text: "The same PDF now says Invoice, with your logo and GSTIN, ready to send again for payment.",
     },
   ],
+  /* Settings → Products & Finishes in the app. Counts are the pre-loaded seed catalogue (33 / 30 / 23).
+     There is NO stock tracking (quantities, stock in/out, low-stock alerts): don't claim it. */
+  catalogue: [
+    {
+      title: "Ready on day one",
+      text: "33 signage products, 30 materials and 23 finishes come pre-loaded, from flex banners and ACP boards to channel letters.",
+    },
+    {
+      title: "Make it yours",
+      text: "Add, edit or remove any product, material or finish, and call them what your shop calls them.",
+    },
+    {
+      title: "Products know their materials",
+      text: "Link each product to the materials and finishes it can be made with, so the right options sit together.",
+    },
+    {
+      title: "The details your team asks for",
+      text: "Thickness, sheet size, supplier and notes for each material, and whether it suits indoor, outdoor or coastal sites.",
+    },
+    {
+      title: "Finishes, spelled out",
+      text: "Keep the colour code, like RAL or Pantone, and the finish details on record, so the job comes out right.",
+    },
+  ],
 };
 
 const STEPS: { id: StepId; label: string; lead: string; rest: string }[] = [
@@ -101,6 +125,12 @@ const STEPS: { id: StepId; label: string; lead: string; rest: string }[] = [
     label: "Invoicing",
     lead: "Revise until it's agreed.",
     rest: " Then one tick turns the final quotation into the invoice.",
+  },
+  {
+    id: "catalogue",
+    label: "Catalogue",
+    lead: "Your products, materials and finishes.",
+    rest: " Pre-loaded for sign shops, and yours to change.",
   },
 ];
 
@@ -368,10 +398,67 @@ function InvoicingVisual() {
   );
 }
 
+/* A redraw of the product's Settings → Materials page. Names, sizes and site suitability are from the
+   pre-loaded catalogue; the small card shows a product linked to its materials and finishes. */
+const CAT_MATERIALS: { name: string; spec: string; use: ("Indoor" | "Outdoor" | "Coastal")[] }[] = [
+  { name: "Acrylic Sheet", spec: "3 / 5 mm · 8 × 4 ft sheet", use: ["Indoor", "Outdoor", "Coastal"] },
+  { name: "ACP (Aluminium Composite Panel)", spec: "3 / 4 mm · 8 × 4 ft sheet", use: ["Indoor", "Outdoor"] },
+  { name: "SS 316", spec: "8 × 4 ft sheet", use: ["Indoor", "Outdoor", "Coastal"] },
+  { name: "Aluminium Sheet", spec: "8 × 4 ft sheet", use: ["Indoor", "Outdoor", "Coastal"] },
+  { name: "Brass", spec: "8 × 4 ft sheet", use: ["Indoor"] },
+];
+
+function CatalogueVisual() {
+  return (
+    <div className="pv pv-catalogue" aria-hidden="true">
+      <div className="pv-win pv-cat">
+        <div className="pv-cat-tabs">
+          <span>Products <em>33</em></span>
+          <span className="is-on">Materials <em>30</em></span>
+          <span>Finishes <em>23</em></span>
+        </div>
+        <div className="pv-rep-top">
+          <div>
+            <b>Materials</b>
+            <small>Sheets and substrates used in your signage</small>
+          </div>
+          <span className="pv-rep-btn">Add new Material</span>
+        </div>
+        <div className="pv-cat-list">
+          {CAT_MATERIALS.map((m) => (
+            <div className="pv-cat-row" key={m.name}>
+              <div className="pv-cat-name">
+                <b>{m.name}</b>
+                <small>{m.spec}</small>
+              </div>
+              <div className="pv-cat-use">
+                {m.use.map((u) => (
+                  <i key={u} className={`pv-use pv-use-${u.toLowerCase()}`}>{u}</i>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="pv-cat-card mini">
+        <div className="mini-label">Product</div>
+        <b className="pv-cat-prod">Flex Banner</b>
+        <small className="pv-cat-meta">Priced per sq ft</small>
+        <div className="pv-cat-links">
+          <span><IconCheck size={11} strokeWidth={2.6} /> 4 materials</span>
+          <span><IconCheck size={11} strokeWidth={2.6} /> 3 finishes</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const VISUALS: Record<StepId, () => JSX.Element> = {
   leads: LeadsVisual,
   quotation: QuotationVisual,
   invoicing: InvoicingVisual,
+  catalogue: CatalogueVisual,
 };
 
 const DESKTOP = "(min-width: 1001px)";
