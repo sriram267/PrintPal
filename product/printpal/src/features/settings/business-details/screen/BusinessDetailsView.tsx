@@ -6,14 +6,7 @@ import {
   Search,
   X,
 } from "lucide-react";
-import { Button, Input, Label, Textarea } from "@printpal/ui"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@ui/card";
+import { Button, Input, Label, Textarea, Card, CardContent, CardDescription, CardHeader, CardTitle } from "@printpal/ui"
 import {
   Select,
   SelectContent,

@@ -22,6 +22,10 @@
   "src/core/misc.tsx": [
     "#EEF0F2"
   ],
+  "src/core/popover.tsx": [
+    "#202428",
+    "#DCE1E5"
+  ],
   "src/core/segmented-control.tsx": [
     "#EEF0F2"
   ],

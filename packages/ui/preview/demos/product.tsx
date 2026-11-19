@@ -10,7 +10,7 @@ import { Button } from "../../src/core/button";
 import { IconButton } from "../../src/core/icon-button";
 import { Input } from "../../src/core/input";
 import { Field, FieldRow } from "../../src/core/field";
-import { Card } from "../../src/core/card";
+import { Panel } from "../../src/core/card";
 import { Badge } from "../../src/core/badge";
 import { SegmentedControl } from "../../src/core/segmented-control";
 import { PalMascot } from "../../src/pal/PalMascot";
@@ -287,7 +287,7 @@ export const product: Entry[] = [
             }
           >
             <div className="mx-auto flex max-w-5xl gap-5">
-              <Card className="w-[300px] shrink-0">
+              <Panel className="w-[300px] shrink-0">
                 <div className="mb-4 text-base font-semibold">Basic details</div>
                 <div className="space-y-4">
                   <Field label="Business name" required>
@@ -297,8 +297,8 @@ export const product: Entry[] = [
                     <Input />
                   </Field>
                 </div>
-              </Card>
-              <Card className="flex-1 text-sm text-muted">Sites, billing and shipping go here.</Card>
+              </Panel>
+              <Panel className="flex-1 text-sm text-muted">Sites, billing and shipping go here.</Panel>
             </div>
           </Sheet>
         </Demo>

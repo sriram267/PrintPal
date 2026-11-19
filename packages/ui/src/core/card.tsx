@@ -2,10 +2,44 @@ import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../lib/cn";
 
-const cardVariants = cva("rounded-xl bg-white text-ink", {
+/* ── Card: the finished product's card, copied exactly (the product is built from this) ───────────── */
+
+export const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({ className, ...props }, ref) => (
+  <div ref={ref} className={cn("rounded-xl border bg-[hsl(var(--card))] text-[hsl(var(--card-foreground))] shadow", className)} {...props} />
+));
+Card.displayName = "Card";
+
+export const CardHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({ className, ...props }, ref) => (
+  <div ref={ref} className={cn("flex flex-col space-y-1.5 p-6", className)} {...props} />
+));
+CardHeader.displayName = "CardHeader";
+
+export const CardTitle = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<HTMLHeadingElement>>(({ className, ...props }, ref) => (
+  <h3 ref={ref} className={cn("font-semibold leading-none tracking-tight", className)} {...props} />
+));
+CardTitle.displayName = "CardTitle";
+
+export const CardDescription = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<HTMLParagraphElement>>(({ className, ...props }, ref) => (
+  <p ref={ref} className={cn("text-[14px]/5 text-[hsl(var(--muted-foreground))]", className)} {...props} />
+));
+CardDescription.displayName = "CardDescription";
+
+export const CardContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({ className, ...props }, ref) => (
+  <div ref={ref} className={cn("p-6 pt-0", className)} {...props} />
+));
+CardContent.displayName = "CardContent";
+
+export const CardFooter = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({ className, ...props }, ref) => (
+  <div ref={ref} className={cn("flex items-center p-6 pt-0", className)} {...props} />
+));
+CardFooter.displayName = "CardFooter";
+
+/* ── Panel: a lighter panel with ready-made title row and footer, for new screens ──────────────────── */
+
+const panelVariants = cva("rounded-xl bg-white text-ink", {
   variants: {
     variant: {
-      /** The app's standard card: white, hairline border, no shadow. */
+      /** The app's standard panel: white, hairline border, no shadow. */
       plain: "border border-line",
       /** Slightly lifted: empty states, floating panels. */
       raised: "border border-line shadow-card",
@@ -17,16 +51,16 @@ const cardVariants = cva("rounded-xl bg-white text-ink", {
   defaultVariants: { variant: "plain", padding: "md" },
 });
 
-export interface CardProps extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof cardVariants> {}
+export interface PanelProps extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof panelVariants> {}
 
 /** A white panel that groups related content. */
-export const Card = React.forwardRef<HTMLDivElement, CardProps>(({ className, variant, padding, ...props }, ref) => (
-  <div ref={ref} className={cn(cardVariants({ variant, padding }), className)} {...props} />
+export const Panel = React.forwardRef<HTMLDivElement, PanelProps>(({ className, variant, padding, ...props }, ref) => (
+  <div ref={ref} className={cn(panelVariants({ variant, padding }), className)} {...props} />
 ));
-Card.displayName = "Card";
+Panel.displayName = "Panel";
 
-/** Title row of a card, with optional actions on the right. */
-export function CardHeader({
+/** Title row of a panel, with optional actions on the right. */
+export function PanelHeader({
   title,
   description,
   actions,
@@ -48,7 +82,7 @@ export function CardHeader({
   );
 }
 
-/** Buttons at the bottom of a card or form, right-aligned. */
-export function CardFooter({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+/** Buttons at the bottom of a panel or form, right-aligned. */
+export function PanelFooter({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return <div className={cn("mt-5 flex items-center justify-end gap-2", className)} {...props} />;
 }

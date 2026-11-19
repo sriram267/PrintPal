@@ -83,7 +83,7 @@ export function SearchSelect({
           <ChevronDown className="size-4 shrink-0 text-muted" />
         </button>
       </PopoverTrigger>
-      <PopoverContent className="w-[var(--radix-popover-trigger-width)] min-w-64 p-1">
+      <PopoverContent align="start" sideOffset={6} className="z-50 w-[var(--radix-popover-trigger-width)] min-w-64 overflow-visible rounded-md border-line p-1 text-ink shadow-pop animate-scale-in">
         <div className="relative mb-1">
           <Search className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted" />
           <input

@@ -135,7 +135,7 @@ export function DatePicker({ value, onChange, placeholder = "Pick a date", disab
           {value ? <span>{format(value, "dd MMM yyyy")}</span> : <span className="text-faint">{placeholder}</span>}
         </button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-3">
+      <PopoverContent align="start" sideOffset={6} className="w-auto overflow-visible rounded-md border-line p-3 text-ink shadow-pop animate-scale-in">
         <Calendar
           value={value}
           isDisabled={isDisabled}

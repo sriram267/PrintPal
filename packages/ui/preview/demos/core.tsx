@@ -11,11 +11,11 @@ import { Checkbox } from "../../src/core/checkbox";
 import { RadioGroup } from "../../src/core/radio-group";
 import { Switch } from "../../src/core/switch";
 import { Badge, Chip, StatusBadge, Tag } from "../../src/core/badge";
-import { Card, CardFooter, CardHeader } from "../../src/core/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Panel, PanelFooter, PanelHeader } from "../../src/core/card";
 import { SegmentedControl } from "../../src/core/segmented-control";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../src/core/tabs";
 import { Tooltip } from "../../src/core/tooltip";
-import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from "../../src/core/popover";
+import { Popover, PopoverAnchor, PopoverClose, PopoverContent, PopoverTrigger } from "../../src/core/popover";
 import { ConfirmDialog, Dialog, DialogClose, DialogContent, DialogTrigger } from "../../src/core/dialog";
 import { DropdownMenu } from "../../src/core/dropdown-menu";
 import { DataTable } from "../../src/core/table";
@@ -300,34 +300,66 @@ export const core: Entry[] = [
     id: "card",
     name: "Card",
     group: "Core",
-    usedIn: ["App", "Website"],
-    description: "A white panel that groups things. Plain in the app, raised for empty states, soft for website pictures.",
+    usedIn: ["App"],
+    description: "The app's card with a title, a line of help and a body. Business details uses it for every section.",
     Demo: () => (
-      <Demo className="items-start bg-surface" stage="grid grid-cols-1 gap-4 md:grid-cols-3">
-        <Card>
-          <CardHeader title="Basic details" description="Who you're quoting" />
-          <p className="text-sm text-ink-3">Plain: the app's standard card.</p>
-        </Card>
-        <Card variant="raised">
-          <CardHeader title="Raised" />
-          <p className="text-sm text-ink-3">For things that float a little.</p>
-        </Card>
-        <Card variant="soft">
-          <CardHeader title="Soft" />
-          <p className="text-sm text-ink-3">Website mock screens.</p>
-          <CardFooter>
+      <Demo className="items-start bg-surface" stage="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <Card className="rounded-[12px] border-line bg-white shadow-none">
+          <CardHeader className="border-b border-[#F1F5F9] pb-4">
+            <CardTitle className="text-[15px] font-semibold text-ink">Business details</CardTitle>
+            <CardDescription className="text-[12px] text-muted">Shown on every quotation</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3 pt-5">
+            <p className="text-sm text-ink-3">The card body.</p>
+          </CardContent>
+          <CardFooter className="justify-end gap-2">
             <Button size="sm" variant="outline">
               Cancel
             </Button>
-            <Button size="sm">Save</Button>
+            <Button size="sm" variant="orange">
+              Save
+            </Button>
           </CardFooter>
         </Card>
       </Demo>
     ),
-    code: `<Card>
-  <CardHeader title="Basic details" actions={<Button size="sm">Edit</Button>} />
-  …
+    code: `<Card className="rounded-[12px] border-line bg-white shadow-none">
+  <CardHeader><CardTitle>Business details</CardTitle><CardDescription>…</CardDescription></CardHeader>
+  <CardContent>…</CardContent>
 </Card>`,
+  },
+  {
+    id: "panel",
+    name: "Panel",
+    group: "Core",
+    usedIn: ["App", "Website"],
+    description: "A white panel with a ready-made title row and footer, for new screens. Plain in the app, raised for empty states, soft for website pictures.",
+    Demo: () => (
+      <Demo className="items-start bg-surface" stage="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <Panel>
+          <PanelHeader title="Basic details" description="Who you're quoting" />
+          <p className="text-sm text-ink-3">Plain: the app's standard panel.</p>
+        </Panel>
+        <Panel variant="raised">
+          <PanelHeader title="Raised" />
+          <p className="text-sm text-ink-3">For things that float a little.</p>
+        </Panel>
+        <Panel variant="soft">
+          <PanelHeader title="Soft" />
+          <p className="text-sm text-ink-3">Website mock screens.</p>
+          <PanelFooter>
+            <Button size="sm" variant="outline">
+              Cancel
+            </Button>
+            <Button size="sm">Save</Button>
+          </PanelFooter>
+        </Panel>
+      </Demo>
+    ),
+    code: `<Panel>
+  <PanelHeader title="Basic details" actions={<Button size="sm">Edit</Button>} />
+  …
+</Panel>`,
   },
   {
     id: "segmented-control",
@@ -413,6 +445,15 @@ export const core: Entry[] = [
               </Button>
             </PopoverClose>
           </PopoverContent>
+        </Popover>
+        <Popover>
+          <PopoverAnchor asChild>
+            <div className="rounded-md border border-line bg-white px-3 py-2 text-sm text-ink-3">The panel opens under this box</div>
+          </PopoverAnchor>
+          <PopoverTrigger asChild>
+            <Button variant="outline">Open under the box</Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-56 text-sm">Anchored to the box, opened by the button.</PopoverContent>
         </Popover>
       </Demo>
     ),

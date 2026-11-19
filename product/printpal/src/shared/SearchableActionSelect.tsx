@@ -1,5 +1,5 @@
 import * as React from "react"
-import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover"
+import { Popover, PopoverTrigger, PopoverContent } from "@printpal/ui"
 import { ChevronDown, Search, X, Check, Plus } from "lucide-react"
 
 /* ═══════════════════════════════════════════════════════════════════
