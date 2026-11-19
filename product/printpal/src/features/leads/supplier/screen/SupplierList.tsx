@@ -112,3 +112,27 @@ export const SupplierRow = React.memo(function SupplierRow({
     </div>
   )
 })
+
+export function renderSupplierRows({ suppliers, handleEditSupplier, handleDeleteSupplier }: { suppliers: SupplierRecord[]; handleEditSupplier: (supp: SupplierRecord) => void; handleDeleteSupplier: (id: string, name: string) => void }): React.ReactNode {
+  return suppliers.length === 0 ? (
+    <div className="printpal-empty-state-canvas">
+      <div className="printpal-empty-state-card">
+        <div className="printpal-empty-illustration-wrap">
+          <SupplierEmptyIllustration />
+        </div>
+        <h3 className="printpal-empty-title">No suppliers created yet</h3>
+        <p className="printpal-empty-description">
+          Register raw material vendors, track supplier contacts, and catalog fabrication substrates for acrylic, ACP, and LED sign components.
+        </p>
+      </div>
+    </div>
+  ) : (
+    suppliers.map((supp) => (
+      <SupplierRow
+        key={supp.id}
+        supp={supp}
+        onEdit={handleEditSupplier}
+        onDelete={handleDeleteSupplier} />
+    ))
+  )
+}

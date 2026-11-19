@@ -132,3 +132,28 @@ export const EnquiryRow = React.memo(function EnquiryRow({
     </div>
   )
 })
+
+export function renderEnquiryRows({ enquiries, handleEditEnquiry, handleDeleteEnquiry }: { enquiries: EnquiryRecord[]; handleEditEnquiry: (enq: EnquiryRecord) => void; handleDeleteEnquiry: (id: string, name: string) => void }): React.ReactNode {
+  return enquiries.length === 0 ? (
+    /* Apple-Grade Empty State for Enquiries (Minimal Vector Illustration, No Button) */
+    <div className="printpal-empty-state-canvas">
+      <div className="printpal-empty-state-card">
+        <div className="printpal-empty-illustration-wrap">
+          <EnquiryEmptyIllustration />
+        </div>
+        <h3 className="printpal-empty-title">No enquiries created yet</h3>
+        <p className="printpal-empty-description">
+          Quick-capture incoming workshop leads from WhatsApp, phone inquiries, or walk-ins to qualify leads and estimate projects.
+        </p>
+      </div>
+    </div>
+  ) : (
+    enquiries.map((enq) => (
+      <EnquiryRow
+        key={enq.id}
+        enq={enq}
+        onEdit={handleEditEnquiry}
+        onDelete={handleDeleteEnquiry} />
+    ))
+  )
+}

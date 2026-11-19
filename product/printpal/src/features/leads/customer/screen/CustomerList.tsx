@@ -115,3 +115,30 @@ export const CustomerRow = React.memo(function CustomerRow({
     </div>
   )
 })
+
+export function renderCustomerRows({ customers, handleEditCustomer, handleDeleteCustomer, handleViewSites }: { customers: CustomerRecord[]; handleEditCustomer: (cust: CustomerRecord) => void; handleDeleteCustomer: (id: string, name: string) => void; handleViewSites: (cust: CustomerRecord) => void }): React.ReactNode {
+  return customers.length === 0 ? (
+    /* Apple-Grade Empty State for Customers (Minimal Vector Illustration, No Button) */
+    <div className="printpal-empty-state-canvas">
+      <div className="printpal-empty-state-card">
+        <div className="printpal-empty-illustration-wrap">
+          <CustomerEmptyIllustration />
+        </div>
+        <h3 className="printpal-empty-title">No customers created yet</h3>
+        <p className="printpal-empty-description">
+          Register your first commercial client, link multiple fabrication & installation sites, and track dimensional signage specifications.
+        </p>
+      </div>
+    </div>
+  ) : (
+    /* Desktop - 2: Populated Table Rows with 14px font size */
+    customers.map((cust) => (
+      <CustomerRow
+        key={cust.id}
+        cust={cust}
+        onEdit={handleEditCustomer}
+        onDelete={handleDeleteCustomer}
+        onViewSites={handleViewSites} />
+    ))
+  )
+}
