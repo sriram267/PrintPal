@@ -10,7 +10,7 @@ export function SupplierToggleCard({ isEnabled, onToggle }: SupplierToggleCardPr
     <div className="w-full bg-white rounded-xl p-6 shadow-sm border border-[#DCE1E5]">
       <div className="flex items-start justify-between gap-4">
         <div className="flex gap-4">
-          <div className="h-11 w-11 rounded-lg bg-[#FFF4ED] text-[#D7440E] flex items-center justify-center shrink-0">
+          <div className="h-11 w-11 rounded-[8px] bg-[#FFF4ED] text-[#D7440E] flex items-center justify-center shrink-0">
             <Building className="h-5 w-5" />
           </div>
           <div>

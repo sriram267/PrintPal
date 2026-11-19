@@ -114,7 +114,7 @@ export function renderTopNav({ setIsModalOpen, activeModule, closeNewCustomerMod
               className="fixed inset-0 z-40"
               onClick={() => setIsUserMenuOpen(false)} />
             <div
-              className="absolute right-0 top-full mt-2 w-72 rounded-2xl bg-white border border-[#E4E7EC] shadow-2xl p-4 z-50 animate-in fade-in slide-in-from-top-2 duration-150"
+              className="absolute right-0 top-full mt-2 w-72 rounded-[16px] bg-white border border-[#E4E7EC] shadow-2xl p-4 z-50 animate-in fade-in slide-in-from-top-2 duration-150"
               style={{ boxShadow: "0 20px 45px -10px rgba(0, 0, 0, 0.15)" }}
             >
               <div className="flex items-center gap-3 pb-3 border-b border-[#F2F4F7]">
@@ -124,15 +124,15 @@ export function renderTopNav({ setIsModalOpen, activeModule, closeNewCustomerMod
                     alt="Profile"
                     className="w-10 h-10 rounded-full object-cover border border-[#E4E7EC] flex-shrink-0" />
                 ) : (
-                  <div className="w-10 h-10 rounded-full bg-[#FA772C] text-white font-semibold flex items-center justify-center text-sm flex-shrink-0">
+                  <div className="w-10 h-10 rounded-full bg-[#FA772C] text-white font-semibold flex items-center justify-center text-[14px]/5 flex-shrink-0">
                     {(user?.firstName?.[0] || "P").toUpperCase()}
                   </div>
                 )}
                 <div className="flex-1 min-w-0">
-                  <div className="text-sm font-semibold text-[#101828] truncate">
+                  <div className="text-[14px]/5 font-semibold text-[#101828] truncate">
                     {user?.fullName || "Workshop Operator"}
                   </div>
-                  <div className="text-xs text-[#667085] truncate font-mono mt-0.5">
+                  <div className="text-[12px]/4 text-[#667085] truncate font-sans mt-0.5">
                     {user?.primaryEmailAddress?.emailAddress || "Logged in"}
                   </div>
                 </div>
@@ -154,7 +154,7 @@ export function renderTopNav({ setIsModalOpen, activeModule, closeNewCustomerMod
                       await clerk.signOut()
                     }
                   } }
-                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-red-600 hover:bg-red-50 active:bg-red-100 transition-colors cursor-pointer border-none bg-transparent"
+                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-[12px]/4 font-semibold text-red-600 hover:bg-red-50 active:bg-red-100 transition-colors cursor-pointer border-none bg-transparent"
                 >
                   <LogOut className="w-4 h-4 text-red-500" />
                   <span>Sign Out / Logout</span>

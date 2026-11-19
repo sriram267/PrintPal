@@ -32,7 +32,7 @@ export function renderTaxModal({ isTaxModalOpen, setEditingTax, setTaxForm, setT
       <ModalBody>
         <div className="space-y-4">
           <div className="space-y-1.5">
-            <Label className="text-xs font-medium text-[#344054]" htmlFor="quick-tax-name">
+            <Label className="text-[12px]/4 font-medium text-[#344054]" htmlFor="quick-tax-name">
               Tax Name <span className="text-red-500">*</span>
             </Label>
             <Input
@@ -53,7 +53,7 @@ export function renderTaxModal({ isTaxModalOpen, setEditingTax, setTaxForm, setT
             )}
           </div>
           <div className="space-y-1.5">
-            <Label className="text-xs font-medium text-[#344054]" htmlFor="quick-tax-percentage">
+            <Label className="text-[12px]/4 font-medium text-[#344054]" htmlFor="quick-tax-percentage">
               Percentage (%) <span className="text-red-500">*</span>
             </Label>
             <Input

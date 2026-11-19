@@ -46,7 +46,12 @@ function printpalBackendPlugin(): Plugin {
 export default defineConfig({
   plugins: [react(), printpalBackendPlugin()],
   resolve: {
+    // The library has its own node_modules; make sure there is only ever ONE copy of React and the UI parts.
+    dedupe: ["react", "react-dom", "react/jsx-runtime", "clsx", "tailwind-merge", "class-variance-authority", "lucide-react", "date-fns"],
     alias: {
+      "@printpal/ui/tokens.css": resolve(__dirname, "../../packages/ui/src/tokens/tokens.css"),
+      "@printpal/ui/pal.css": resolve(__dirname, "../../packages/ui/src/pal/palMascot.css"),
+      "@printpal/ui": resolve(__dirname, "../../packages/ui/src/index.ts"),
       "@/components": resolve(__dirname, "./src/components"),
       "@ui": resolve(__dirname, "./src/components/ui"),
       "@ui-library": resolve(__dirname, "./src"),
@@ -58,6 +63,7 @@ export default defineConfig({
   server: {
     port: 5173,
     host: true,
+    fs: { allow: [resolve(__dirname, "../..")] }, // lets the dev server read packages/ui
     proxy: {
       "/api": {
         target: "http://127.0.0.1:3001",

@@ -3,7 +3,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/shared/utils"
 
 const badgeGroupVariants = cva(
-  "inline-flex items-center rounded-full border text-xs font-medium transition-colors select-none",
+  "inline-flex items-center rounded-full border text-[12px]/4 font-medium transition-colors select-none",
   {
     variants: {
       variant: {
@@ -16,8 +16,8 @@ const badgeGroupVariants = cva(
       },
       size: {
         sm: "pl-2 pr-0.5 py-0.5 gap-1.5 text-[11px]",
-        default: "pl-2.5 pr-0.5 py-0.5 gap-1.5 text-xs",
-        lg: "pl-3 pr-1 py-1 gap-2 text-sm",
+        default: "pl-2.5 pr-0.5 py-0.5 gap-1.5 text-[12px]/4",
+        lg: "pl-3 pr-1 py-1 gap-2 text-[14px]/5",
       },
     },
     defaultVariants: {
@@ -42,7 +42,7 @@ const badgeGroupCounterVariants = cva(
       size: {
         sm: "px-1.5 py-[1px] text-[10px]",
         default: "px-2 py-[2px] text-[11px]",
-        lg: "px-2.5 py-0.5 text-xs",
+        lg: "px-2.5 py-0.5 text-[12px]/4",
       },
     },
     defaultVariants: {

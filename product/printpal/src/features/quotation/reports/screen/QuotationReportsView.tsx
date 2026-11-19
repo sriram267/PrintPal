@@ -263,7 +263,7 @@ function QuotationGroups({
                       ) : (
                         <span className="inline-block w-[18px] flex-shrink-0" />
                       )}
-                      <span className="font-mono font-semibold text-[#2878D0] truncate">{q.quoteNumber}</span>
+                      <span className="font-sans font-semibold text-[#2878D0] truncate">{q.quoteNumber}</span>
                     </div>
 
                     <div>

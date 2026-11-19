@@ -35,7 +35,7 @@ export function renderQuickAddProductModal({ isQuickProductModalOpen, setIsQuick
       <ModalBody>
         <div className="space-y-4">
           <div className="space-y-1.5">
-            <Label className="text-xs font-medium text-[#344054]" htmlFor="quick-prod-title">
+            <Label className="text-[12px]/4 font-medium text-[#344054]" htmlFor="quick-prod-title">
               Product Name <span className="text-red-500">*</span>
             </Label>
             <Input
@@ -57,7 +57,7 @@ export function renderQuickAddProductModal({ isQuickProductModalOpen, setIsQuick
           </div>
 
           <div className="space-y-1.5">
-            <Label className="text-xs font-medium text-[#344054]" htmlFor="quick-prod-desc">
+            <Label className="text-[12px]/4 font-medium text-[#344054]" htmlFor="quick-prod-desc">
               Product Description
             </Label>
             <Textarea
@@ -70,17 +70,17 @@ export function renderQuickAddProductModal({ isQuickProductModalOpen, setIsQuick
           </div>
 
           <div className="space-y-1.5">
-            <Label className="text-xs font-medium text-[#344054]">
+            <Label className="text-[12px]/4 font-medium text-[#344054]">
               Materials that can be used ({quickProductSelectedMats.length} selected)
             </Label>
-            <div className="max-h-36 overflow-y-auto border border-[#DCE1E5] rounded-md p-2 space-y-1">
+            <div className="max-h-36 overflow-y-auto border border-[#DCE1E5] rounded-[6px] p-2 space-y-1">
               {materials.length === 0 ? (
-                <p className="text-xs text-[#737B84] py-1">No materials created yet.</p>
+                <p className="text-[12px]/4 text-[#737B84] py-1">No materials created yet.</p>
               ) : (
                 materials.map((m) => (
                   <label
                     key={m.id}
-                    className="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-[#F4F7FA] cursor-pointer text-xs text-[#202428] transition-colors select-none"
+                    className="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-[#F4F7FA] cursor-pointer text-[12px]/4 text-[#202428] transition-colors select-none"
                   >
                     <Checkbox
                       checked={quickProductSelectedMats.includes(m.id)}
@@ -99,17 +99,17 @@ export function renderQuickAddProductModal({ isQuickProductModalOpen, setIsQuick
           </div>
 
           <div className="space-y-1.5">
-            <Label className="text-xs font-medium text-[#344054]">
+            <Label className="text-[12px]/4 font-medium text-[#344054]">
               Finishes that can be done ({quickProductSelectedFins.length} selected)
             </Label>
-            <div className="max-h-36 overflow-y-auto border border-[#DCE1E5] rounded-md p-2 space-y-1">
+            <div className="max-h-36 overflow-y-auto border border-[#DCE1E5] rounded-[6px] p-2 space-y-1">
               {finishes.length === 0 ? (
-                <p className="text-xs text-[#737B84] py-1">No finishes created yet.</p>
+                <p className="text-[12px]/4 text-[#737B84] py-1">No finishes created yet.</p>
               ) : (
                 finishes.map((f) => (
                   <label
                     key={f.id}
-                    className="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-[#F4F7FA] cursor-pointer text-xs text-[#202428] transition-colors select-none"
+                    className="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-[#F4F7FA] cursor-pointer text-[12px]/4 text-[#202428] transition-colors select-none"
                   >
                     <Checkbox
                       checked={quickProductSelectedFins.includes(f.id)}

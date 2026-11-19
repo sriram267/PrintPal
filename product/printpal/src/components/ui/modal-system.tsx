@@ -54,7 +54,7 @@ export const ModalContent = React.forwardRef<
       ref={ref}
       className={cn(
         "fixed left-[50%] top-[50%] z-50 w-full translate-x-[-50%] translate-y-[-50%] overflow-hidden",
-        "bg-white rounded-2xl border border-[#EAECF0] shadow-2xl transition-all duration-200 focus:outline-none",
+        "bg-white rounded-[16px] border border-[#EAECF0] shadow-2xl transition-all duration-200 focus:outline-none",
         "data-[state=open]:animate-in data-[state=closed]:animate-out",
         "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
         "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
@@ -67,7 +67,7 @@ export const ModalContent = React.forwardRef<
     >
       {children}
       {showClose && (
-        <DialogPrimitive.Close className="absolute right-4 top-4 z-20 flex h-8 w-8 items-center justify-center rounded-lg text-[#98A2B3] transition-colors hover:bg-[#F2F4F7] hover:text-[#344054] focus:outline-none focus:ring-2 focus:ring-[#7F56D9]">
+        <DialogPrimitive.Close className="absolute right-4 top-4 z-20 flex h-8 w-8 items-center justify-center rounded-[8px] text-[#98A2B3] transition-colors hover:bg-[#F2F4F7] hover:text-[#344054] focus:outline-none focus:ring-2 focus:ring-[#7F56D9]">
           <X className="h-4 w-4" />
           <span className="sr-only">Close</span>
         </DialogPrimitive.Close>
@@ -123,14 +123,14 @@ export function ModalIconBadge({
       className={cn(
         "inline-flex p-1.5 transition-transform",
         styles.outer,
-        isCircle ? "rounded-full" : "rounded-2xl",
+        isCircle ? "rounded-full" : "rounded-[16px]",
         className
       )}
       {...props}
     >
       <div
         className={cn(
-          "flex h-10 w-10 items-center justify-center border shadow-xs text-lg",
+          "flex h-10 w-10 items-center justify-center border shadow-xs text-[18px]/7",
           styles.inner,
           isCircle ? "rounded-full" : "rounded-xl"
         )}
@@ -293,7 +293,7 @@ export const ModalButton = React.forwardRef<HTMLButtonElement, ModalButtonProps>
         ref={ref}
         type="button"
         className={cn(
-          "inline-flex h-10 items-center justify-center rounded-lg px-4 text-sm font-semibold transition-all",
+          "inline-flex h-10 items-center justify-center rounded-[8px] px-4 text-[14px]/5 font-semibold transition-all",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
           variantStyles[variant],
           fullWidth && "w-full",

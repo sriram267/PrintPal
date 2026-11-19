@@ -402,12 +402,12 @@ export function BusinessDetailsView({
                     </div>
                     <div className="printpal-maps-dropdown-list">
                       {!GEOAPIFY_API_KEY ? (
-                        <div className="p-3 text-center text-xs text-[#737B84]">
-                          Enter registered address manually below or configure <code className="bg-gray-100 text-[#2878D0] px-1 py-0.5 rounded font-mono text-[10px]">VITE_GEOAPIFY_API_KEY</code>.
+                        <div className="p-3 text-center text-[12px]/4 text-[#737B84]">
+                          Enter registered address manually below or configure <code className="bg-gray-100 text-[#2878D0] px-1 py-0.5 rounded font-sans text-[10px]">VITE_GEOAPIFY_API_KEY</code>.
                         </div>
                       ) : isSearchingPlaces ? (
-                        <div className="p-4 text-center text-xs text-[#737B84] flex items-center justify-center gap-2">
-                          <Loader2 className="h-4 w-4 animate-spin text-[#2878D0]" />
+                        <div className="p-4 text-center text-[12px]/4 text-[#737B84] flex items-center justify-center gap-2">
+                          <Loader2 className="h-4 w-4 animate-[spin_1s_linear_infinite] text-[#2878D0]" />
                           <span>Searching places...</span>
                         </div>
                       ) : placeSuggestions.length > 0 ? (
@@ -430,11 +430,11 @@ export function BusinessDetailsView({
                           </div>
                         ))
                       ) : addressQuery.trim().length >= 2 ? (
-                        <div className="p-3 text-center text-xs text-[#737B84]">
+                        <div className="p-3 text-center text-[12px]/4 text-[#737B84]">
                           No results found for "{addressQuery}".
                         </div>
                       ) : (
-                        <div className="p-3 text-center text-xs text-[#737B84]">
+                        <div className="p-3 text-center text-[12px]/4 text-[#737B84]">
                           Type 2 or more characters to search locations...
                         </div>
                       )}
@@ -583,7 +583,7 @@ export function BusinessDetailsView({
                 type="text"
                 maxLength={15}
                 placeholder="33AAAAA0000A1Z5"
-                className={`printpal-form-input uppercase font-mono ${errors.gstin ? "printpal-input-error border-red-500 focus-visible:border-red-500" : ""}`}
+                className={`printpal-form-input uppercase font-sans ${errors.gstin ? "printpal-input-error border-red-500 focus-visible:border-red-500" : ""}`}
                 value={form.gstin}
                 onChange={(e) => updateField("gstin", e.target.value.toUpperCase())}
               />
@@ -631,7 +631,7 @@ export function BusinessDetailsView({
                 type="text"
                 maxLength={10}
                 placeholder="ABCDE1234F"
-                className={`printpal-form-input uppercase font-mono ${errors.pan ? "printpal-input-error border-red-500 focus-visible:border-red-500" : ""}`}
+                className={`printpal-form-input uppercase font-sans ${errors.pan ? "printpal-input-error border-red-500 focus-visible:border-red-500" : ""}`}
                 value={form.pan}
                 onChange={(e) => updateField("pan", e.target.value.toUpperCase())}
               />
@@ -771,7 +771,7 @@ export function BusinessDetailsView({
         >
           {isSaving ? (
             <>
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <Loader2 className="h-4 w-4 animate-[spin_1s_linear_infinite]" />
               <span>Saving...</span>
             </>
           ) : (

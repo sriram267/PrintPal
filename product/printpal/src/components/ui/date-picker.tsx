@@ -65,7 +65,7 @@ export function DatePicker({
           variant="outline"
           disabled={disabled}
           className={cn(
-            "printpal-datepicker-btn w-full justify-start text-left font-normal h-9 border-[#DCE1E5] bg-white text-sm text-[#202428] shadow-none hover:bg-white hover:text-[#202428] focus:outline-none focus:border-[#2878D0] focus:ring-0 focus-visible:outline-none focus-visible:border-[#2878D0] focus-visible:ring-0",
+            "printpal-datepicker-btn w-full justify-start text-left font-normal h-9 border-[#DCE1E5] bg-white text-[14px]/5 text-[#202428] shadow-none hover:bg-white hover:text-[#202428] focus:outline-none focus:border-[#2878D0] focus:ring-0 focus-visible:outline-none focus-visible:border-[#2878D0] focus-visible:ring-0",
             !dateObj && "text-[#737B84]",
             open && "border-[#2878D0]",
             className
@@ -80,7 +80,7 @@ export function DatePicker({
         </Button>
       </PopoverTrigger>
       <PopoverContent
-        className="w-auto p-0 border border-[#DCE1E5] bg-white rounded-lg shadow-lg z-[9999]"
+        className="w-auto p-0 border border-[#DCE1E5] bg-white rounded-[8px] shadow-lg z-[9999]"
         align="start"
       >
         <Calendar

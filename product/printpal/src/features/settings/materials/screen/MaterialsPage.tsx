@@ -34,7 +34,7 @@ export function renderMaterialsPage({ openMaterialPrompt, materials, handleEditM
       </div>
       <div className="flex-1 min-h-0 overflow-y-auto printpal-compact-scroll mt-1">
         {materials.length === 0 ? (
-          <div className="p-12 text-center text-xs text-[#94A3B8]">
+          <div className="p-12 text-center text-[12px]/4 text-[#94A3B8]">
             <div className="printpal-empty-illustration-wrap scale-75 mb-2">
               <MaterialEmptyIllustration />
             </div>

@@ -148,7 +148,7 @@ export function renderCustomerForm({ highlightedAnchorKey, formErrors, formBasic
               }))} />
             <Label
               htmlFor="input-whatsapp-same"
-              className="cursor-pointer font-normal text-xs text-[#202428] leading-tight select-none"
+              className="cursor-pointer font-normal text-[12px]/4 text-[#202428] leading-tight select-none"
             >
               WhatsApp number is same as primary contact number
             </Label>
@@ -235,7 +235,7 @@ export function renderCustomerForm({ highlightedAnchorKey, formErrors, formBasic
           <Button
             type="button"
             variant="outline"
-            className="w-full h-9 border-[#D7440E] text-[#D7440E] hover:bg-[#D7440E]/10 hover:text-[#D7440E] hover:border-[#D7440E] font-medium text-[13px] rounded-md transition-colors shadow-none cursor-pointer focus-visible:ring-1 focus-visible:ring-[#D7440E]"
+            className="w-full h-9 border-[#D7440E] text-[#D7440E] hover:bg-[#D7440E]/10 hover:text-[#D7440E] hover:border-[#D7440E] font-medium text-[13px] rounded-[6px] transition-colors shadow-none cursor-pointer focus-visible:ring-1 focus-visible:ring-[#D7440E]"
             onClick={handleSaveAsEnquiry}
           >
             Save as enquiry
@@ -357,7 +357,7 @@ export function renderCustomerForm({ highlightedAnchorKey, formErrors, formBasic
 
                             {/* Google Maps Search Bar + 36px Rounded Live View Button */}
                             <div className="printpal-search-row">
-                              <div className={`printpal-site-search-wrapper relative ${formErrors[`site_${siteIdx}_address`] ? "border border-red-500 rounded-md" : ""}`}>
+                              <div className={`printpal-site-search-wrapper relative ${formErrors[`site_${siteIdx}_address`] ? "border border-red-500 rounded-[6px]" : ""}`}>
                                 <Search className="printpal-search-icon" />
                                 <Input
                                   type="text"
@@ -427,18 +427,18 @@ export function renderCustomerForm({ highlightedAnchorKey, formErrors, formBasic
                                     </div>
                                     <div className="printpal-maps-dropdown-list">
                                       {!GEOAPIFY_API_KEY ? (
-                                        <div className="p-3.5 text-center text-xs text-[#737B84]">
+                                        <div className="p-3.5 text-center text-[12px]/4 text-[#737B84]">
                                           <div className="flex items-center justify-center gap-1.5 font-medium text-[#202428] mb-1">
                                             <AlertCircle className="h-4 w-4 text-amber-500 shrink-0" />
                                             <span>Geoapify API Key Required</span>
                                           </div>
                                           <div className="text-[11px] leading-relaxed text-[#737B84]">
-                                            Add <code className="bg-gray-100 text-[#2878D0] px-1 py-0.5 rounded font-mono text-[10px]">VITE_GEOAPIFY_API_KEY</code> to <code className="bg-gray-100 text-[#202428] px-1 py-0.5 rounded font-mono text-[10px]">product/PrintPal/.env</code> to query live places.
+                                            Add <code className="bg-gray-100 text-[#2878D0] px-1 py-0.5 rounded font-sans text-[10px]">VITE_GEOAPIFY_API_KEY</code> to <code className="bg-gray-100 text-[#202428] px-1 py-0.5 rounded font-sans text-[10px]">product/PrintPal/.env</code> to query live places.
                                           </div>
                                         </div>
                                       ) : isSearchingPlaces ? (
-                                        <div className="p-4 text-center text-xs text-[#737B84] flex items-center justify-center gap-2">
-                                          <Loader2 className="h-4 w-4 animate-spin text-[#2878D0]" />
+                                        <div className="p-4 text-center text-[12px]/4 text-[#737B84] flex items-center justify-center gap-2">
+                                          <Loader2 className="h-4 w-4 animate-[spin_1s_linear_infinite] text-[#2878D0]" />
                                           <span>Searching places...</span>
                                         </div>
                                       ) : geoapifyPredictions.length > 0 ? (
@@ -461,11 +461,11 @@ export function renderCustomerForm({ highlightedAnchorKey, formErrors, formBasic
                                           </div>
                                         ))
                                       ) : (site.address || "").trim().length >= 2 ? (
-                                        <div className="p-3 text-center text-xs text-[#737B84]">
+                                        <div className="p-3 text-center text-[12px]/4 text-[#737B84]">
                                           No results found for "{site.address}".
                                         </div>
                                       ) : (
-                                        <div className="p-3 text-center text-xs text-[#737B84]">
+                                        <div className="p-3 text-center text-[12px]/4 text-[#737B84]">
                                           Type 2 or more characters to search locations...
                                         </div>
                                       )}
@@ -480,7 +480,7 @@ export function renderCustomerForm({ highlightedAnchorKey, formErrors, formBasic
                                   type="button"
                                   variant="outlineSecondary"
                                   size="default"
-                                  className="printpal-btn-live-view px-4 text-[13px] font-medium rounded-md shadow-sm cursor-pointer"
+                                  className="printpal-btn-live-view px-4 text-[13px] font-medium rounded-[6px] shadow-sm cursor-pointer"
                                   onClick={() => handleOpenLiveView(site)}
                                   title="Open Google Maps 360° Street View in a new tab"
                                 >
@@ -734,7 +734,7 @@ export function renderCustomerForm({ highlightedAnchorKey, formErrors, formBasic
                                     {/* Row 1: Sign Style (Left) + Environment / Placement (Right) */}
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                                       <div>
-                                        <Label className="text-xs font-medium text-[#737B84] block mb-1.5">
+                                        <Label className="text-[12px]/4 font-medium text-[#737B84] block mb-1.5">
                                           Sign style <span className="text-red-500">*</span>
                                         </Label>
                                         <SearchableActionSelect
@@ -801,7 +801,7 @@ export function renderCustomerForm({ highlightedAnchorKey, formErrors, formBasic
                                       </div>
 
                                       <div>
-                                        <Label className="text-xs font-medium text-[#737B84] block mb-1.5">
+                                        <Label className="text-[12px]/4 font-medium text-[#737B84] block mb-1.5">
                                           Environment / Placement
                                         </Label>
                                         <div className="flex items-center gap-2">
@@ -832,7 +832,7 @@ export function renderCustomerForm({ highlightedAnchorKey, formErrors, formBasic
 
                                     {/* Row 2: Dimensions & Quantity + Not sure of dimensions yet Checkbox */}
                                     <div className="mb-4">
-                                      <Label className="text-xs font-medium text-[#737B84] block mb-1.5">
+                                      <Label className="text-[12px]/4 font-medium text-[#737B84] block mb-1.5">
                                         Dimensions & Quantity
                                       </Label>
                                       <div className="flex items-center gap-2.5 flex-wrap sm:flex-nowrap">
@@ -862,7 +862,7 @@ export function renderCustomerForm({ highlightedAnchorKey, formErrors, formBasic
                                             className={`h-9 text-center placeholder:text-center text-[13px] border-[#DCE1E5] bg-white text-[#202428] hover:border-[#b5bfc7] focus:border-[#2878D0] focus-visible:ring-1 focus-visible:ring-[#2878D0] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none no-spin-arrows ${formErrors[`site_${siteIdx}_srv_${srvIdx}_width`] ? "border-red-500" : ""} ${srv.notSureOfDimensions ? "opacity-50 cursor-not-allowed bg-[#F8FAFC]" : ""}`} />
                                         </div>
 
-                                        <span className="text-xs font-semibold text-[#737B84] select-none">✕</span>
+                                        <span className="text-[12px]/4 font-semibold text-[#737B84] select-none">✕</span>
 
                                         <div className="flex-1 min-w-[90px]">
                                           <Input
@@ -908,7 +908,7 @@ export function renderCustomerForm({ highlightedAnchorKey, formErrors, formBasic
                                             <SelectTrigger className="w-full h-9 bg-white border-[#DCE1E5] text-[13px] text-[#202428] hover:border-[#b5bfc7] focus:border-[#2878D0] focus:ring-0 focus-visible:ring-1 focus-visible:ring-[#2878D0] data-[state=open]:border-[#2878D0]">
                                               <SelectValue />
                                             </SelectTrigger>
-                                            <SelectContent className="min-w-[80px] bg-white border-[#DCE1E5] shadow-lg rounded-md z-[9999]">
+                                            <SelectContent className="min-w-[80px] bg-white border-[#DCE1E5] shadow-lg rounded-[6px] z-[9999]">
                                               <SelectItem value="ft">ft</SelectItem>
                                               <SelectItem value="in">in</SelectItem>
                                               <SelectItem value="mm">mm</SelectItem>
@@ -917,7 +917,7 @@ export function renderCustomerForm({ highlightedAnchorKey, formErrors, formBasic
                                           </Select>
                                         </div>
 
-                                        <div className={`flex items-center h-9 bg-white border rounded-md overflow-hidden transition-colors w-[100px] ${formErrors[`site_${siteIdx}_srv_${srvIdx}_quantity`] ? "border-red-500" : "border-[#DCE1E5] hover:border-[#b5bfc7] focus-within:border-[#2878D0]"}`}>
+                                        <div className={`flex items-center h-9 bg-white border rounded-[6px] overflow-hidden transition-colors w-[100px] ${formErrors[`site_${siteIdx}_srv_${srvIdx}_quantity`] ? "border-red-500" : "border-[#DCE1E5] hover:border-[#b5bfc7] focus-within:border-[#2878D0]"}`}>
                                           <input
                                             type="number"
                                             min={1}
@@ -964,7 +964,7 @@ export function renderCustomerForm({ highlightedAnchorKey, formErrors, formBasic
                                           } } />
                                         <label
                                           htmlFor={`not-sure-dim-${siteIdx}-${srvIdx}`}
-                                          className="text-xs text-[#737B84] cursor-pointer select-none"
+                                          className="text-[12px]/4 text-[#737B84] cursor-pointer select-none"
                                         >
                                           Not sure of dimensions yet
                                         </label>
@@ -981,7 +981,7 @@ export function renderCustomerForm({ highlightedAnchorKey, formErrors, formBasic
                                     {/* Row 3: Material / Substrate (Left) + Finishing / Mounting (Right) */}
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                                       <div>
-                                        <Label className="text-xs font-medium text-[#737B84] block mb-1.5">
+                                        <Label className="text-[12px]/4 font-medium text-[#737B84] block mb-1.5">
                                           Material / Substrate
                                         </Label>
                                         <SearchableActionSelect
@@ -1008,7 +1008,7 @@ export function renderCustomerForm({ highlightedAnchorKey, formErrors, formBasic
                                       </div>
 
                                       <div>
-                                        <Label className="text-xs font-medium text-[#737B84] block mb-1.5">
+                                        <Label className="text-[12px]/4 font-medium text-[#737B84] block mb-1.5">
                                           Finishing / Mounting
                                         </Label>
                                         <SearchableActionSelect
@@ -1038,7 +1038,7 @@ export function renderCustomerForm({ highlightedAnchorKey, formErrors, formBasic
                                     {/* Row 4: Artwork Status (Front/Left) + Colour / Shade Code (Next/Right) with Approach 2 Logic */}
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                                       <div>
-                                        <Label className="text-xs font-medium text-[#737B84] block mb-1.5">
+                                        <Label className="text-[12px]/4 font-medium text-[#737B84] block mb-1.5">
                                           Artwork Status
                                         </Label>
                                         <Select
@@ -1078,7 +1078,7 @@ export function renderCustomerForm({ highlightedAnchorKey, formErrors, formBasic
                                           <SelectTrigger className="w-full h-9 bg-white border-[#DCE1E5] text-[13px] text-[#202428] data-[placeholder]:text-[#737B84] hover:border-[#b5bfc7] focus:border-[#2878D0] focus:ring-0 focus-visible:ring-1 focus-visible:ring-[#2878D0] data-[state=open]:border-[#2878D0]">
                                             <SelectValue placeholder="Select Artwork Status..." />
                                           </SelectTrigger>
-                                          <SelectContent className="bg-white border-[#DCE1E5] shadow-lg rounded-md z-[9999]">
+                                          <SelectContent className="bg-white border-[#DCE1E5] shadow-lg rounded-[6px] z-[9999]">
                                             <SelectItem value="VECTOR_READY" className="text-[13px]">Ready Vector (.ai / .cdr / .eps)</SelectItem>
                                             <SelectItem value="NEEDS_VECTORIZATION" className="text-[13px]">Needs Vectorization (Photo / Scan)</SelectItem>
                                             <SelectItem value="NEEDS_DESIGN" className="text-[13px]">Needs Artwork (Design from Scratch)</SelectItem>
@@ -1088,7 +1088,7 @@ export function renderCustomerForm({ highlightedAnchorKey, formErrors, formBasic
                                       </div>
 
                                       <div>
-                                        <Label className="text-xs font-medium text-[#737B84] block mb-1.5">
+                                        <Label className="text-[12px]/4 font-medium text-[#737B84] block mb-1.5">
                                           Colour / Shade Code
                                         </Label>
                                         <Input
@@ -1118,7 +1118,7 @@ export function renderCustomerForm({ highlightedAnchorKey, formErrors, formBasic
                                     {(srv.artworkStatus === "VECTOR_READY" || srv.artworkStatus === "NEEDS_VECTORIZATION") && (
                                       <div className="mb-4">
                                         <div className="flex items-center justify-between mb-1.5">
-                                          <Label className="text-xs font-medium text-[#737B84]">
+                                          <Label className="text-[12px]/4 font-medium text-[#737B84]">
                                             Upload Artwork & Reference Files
                                           </Label>
                                           <span className="text-[11px] text-[#737B84]">
@@ -1158,7 +1158,7 @@ export function renderCustomerForm({ highlightedAnchorKey, formErrors, formBasic
 
                                     {/* Row 6: Fabrication Notes */}
                                     <div className="space-y-1.5">
-                                      <Label className="text-xs font-medium text-[#737B84]">Fabrication Notes</Label>
+                                      <Label className="text-[12px]/4 font-medium text-[#737B84]">Fabrication Notes</Label>
                                       <Textarea
                                         value={srv.notes || ""}
                                         placeholder="Add fabrication notes, mounting details, LED specifications..."
@@ -1207,7 +1207,7 @@ export function renderCustomerForm({ highlightedAnchorKey, formErrors, formBasic
                   id="drawer-add-site-btn"
                   variant="outlineSecondary"
                   size="default"
-                  className={`h-9 px-4 text-[13px] font-medium rounded-md shadow-sm cursor-pointer printpal-btn-add-site-outline printpal-anchor-target ${highlightedAnchorKey === "drawer-add-site-btn"
+                  className={`h-9 px-4 text-[13px] font-medium rounded-[6px] shadow-sm cursor-pointer printpal-btn-add-site-outline printpal-anchor-target ${highlightedAnchorKey === "drawer-add-site-btn"
                     ? "printpal-anchor-highlight"
                     : ""}`}
                   onClick={handleAddAnotherSite}

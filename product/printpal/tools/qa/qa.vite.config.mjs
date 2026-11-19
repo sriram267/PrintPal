@@ -10,8 +10,12 @@ export default defineConfig({
   root: APP,
   plugins: [react()],
   resolve: {
+    dedupe: ["react", "react-dom", "react/jsx-runtime", "clsx", "tailwind-merge", "class-variance-authority", "lucide-react", "date-fns"],
     alias: [
       { find: "@clerk/react", replacement: STUB },
+      { find: "@printpal/ui/tokens.css", replacement: `${APP}/../../packages/ui/src/tokens/tokens.css` },
+      { find: "@printpal/ui/pal.css", replacement: `${APP}/../../packages/ui/src/pal/palMascot.css` },
+      { find: "@printpal/ui", replacement: `${APP}/../../packages/ui/src/index.ts` },
       { find: "@/components", replacement: `${APP}/src/components` },
       { find: "@ui-library", replacement: `${APP}/src` },
       { find: "@ui", replacement: `${APP}/src/components/ui` },

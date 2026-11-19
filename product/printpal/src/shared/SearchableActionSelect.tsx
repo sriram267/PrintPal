@@ -75,10 +75,10 @@ export const SearchableActionSelect: React.FC<SearchableActionSelectProps> = ({
       <PopoverContent
         align="start"
         sideOffset={4}
-        className="w-[var(--radix-popover-trigger-width)] min-w-[260px] p-0 bg-white border border-[#DCE1E5] shadow-xl rounded-lg overflow-hidden z-[9999]"
+        className="w-[var(--radix-popover-trigger-width)] min-w-[260px] p-0 bg-white border border-[#DCE1E5] shadow-xl rounded-[8px] overflow-hidden z-[9999]"
       >
         {/* Top Search Field */}
-        <div className="flex items-center gap-2.5 border-b border-[#DCE1E5] px-3 h-[46px] bg-[#F8FAFC] rounded-t-lg w-full box-border overflow-hidden">
+        <div className="flex items-center gap-2.5 border-b border-[#DCE1E5] px-3 h-[46px] bg-[#F8FAFC] rounded-t-[8px] w-full box-border overflow-hidden">
           <Search className="h-4 w-4 text-[#737B84] shrink-0" />
           <input
             type="text"
@@ -112,7 +112,7 @@ export const SearchableActionSelect: React.FC<SearchableActionSelectProps> = ({
                     setOpen(false)
                     setSearch("")
                   }}
-                  className={`flex items-center justify-between px-3 py-2 rounded-md text-[13px] cursor-pointer select-none transition-colors ${isSelected
+                  className={`flex items-center justify-between px-3 py-2 rounded-[6px] text-[13px] cursor-pointer select-none transition-colors ${isSelected
                     ? "bg-[#D7440E]/5 text-[#202428] font-medium"
                     : "text-[#202428] hover:bg-[#F3F5F7]"
                     }`}
@@ -123,7 +123,7 @@ export const SearchableActionSelect: React.FC<SearchableActionSelectProps> = ({
               )
             })
           ) : (
-            <div className="px-3 py-4 text-center text-xs text-[#737B84]">
+            <div className="px-3 py-4 text-center text-[12px]/4 text-[#737B84]">
               {emptyMessage}
             </div>
           )}

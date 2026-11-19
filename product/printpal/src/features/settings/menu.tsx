@@ -68,7 +68,7 @@ export function renderSettingsMenu({ toggleSettingsGroup, expandedSettingsGroups
       <button
         type="button"
         onClick={() => toggleSettingsGroup("businessSetting")}
-        className="w-full flex items-center justify-between py-2 px-2 text-[14px] font-semibold text-[#202428] hover:text-[#E05626] hover:bg-[#FFF5F2] rounded-md transition-colors text-left cursor-pointer"
+        className="w-full flex items-center justify-between py-2 px-2 text-[14px] font-semibold text-[#202428] hover:text-[#E05626] hover:bg-[#FFF5F2] rounded-[6px] transition-colors text-left cursor-pointer"
       >
         <span>Business Setting</span>
         {expandedSettingsGroups.businessSetting ? (
@@ -82,7 +82,7 @@ export function renderSettingsMenu({ toggleSettingsGroup, expandedSettingsGroups
           <button
             type="button"
             onClick={() => setSettingsMenu("businessDetails")}
-            className={`w-full text-left px-3 py-2 text-[13px] rounded-md transition-colors cursor-pointer ${settingsMenu === "businessDetails"
+            className={`w-full text-left px-3 py-2 text-[13px] rounded-[6px] transition-colors cursor-pointer ${settingsMenu === "businessDetails"
               ? "text-[#E05626] font-semibold bg-[#FFF5F2]"
               : "text-[#475569] hover:bg-[#FFF5F2] hover:text-[#E05626]"}`}
           >
@@ -97,7 +97,7 @@ export function renderSettingsMenu({ toggleSettingsGroup, expandedSettingsGroups
       <button
         type="button"
         onClick={() => toggleSettingsGroup("products")}
-        className="w-full flex items-center justify-between py-2 px-2 text-[14px] font-semibold text-[#202428] hover:text-[#E05626] hover:bg-[#FFF5F2] rounded-md transition-colors text-left cursor-pointer"
+        className="w-full flex items-center justify-between py-2 px-2 text-[14px] font-semibold text-[#202428] hover:text-[#E05626] hover:bg-[#FFF5F2] rounded-[6px] transition-colors text-left cursor-pointer"
       >
         <span>Products</span>
         {expandedSettingsGroups.products ? (
@@ -111,7 +111,7 @@ export function renderSettingsMenu({ toggleSettingsGroup, expandedSettingsGroups
           <button
             type="button"
             onClick={() => setSettingsMenu("products")}
-            className={`w-full text-left px-3 py-2 text-[13px] rounded-md transition-colors cursor-pointer ${settingsMenu === "products"
+            className={`w-full text-left px-3 py-2 text-[13px] rounded-[6px] transition-colors cursor-pointer ${settingsMenu === "products"
               ? "text-[#E05626] font-semibold bg-[#FFF5F2]"
               : "text-[#475569] hover:bg-[#FFF5F2] hover:text-[#E05626]"}`}
           >
@@ -120,7 +120,7 @@ export function renderSettingsMenu({ toggleSettingsGroup, expandedSettingsGroups
           <button
             type="button"
             onClick={() => setSettingsMenu("materials")}
-            className={`w-full text-left px-3 py-2 text-[13px] rounded-md transition-colors cursor-pointer ${settingsMenu === "materials"
+            className={`w-full text-left px-3 py-2 text-[13px] rounded-[6px] transition-colors cursor-pointer ${settingsMenu === "materials"
               ? "text-[#E05626] font-semibold bg-[#FFF5F2]"
               : "text-[#475569] hover:bg-[#FFF5F2] hover:text-[#E05626]"}`}
           >
@@ -129,7 +129,7 @@ export function renderSettingsMenu({ toggleSettingsGroup, expandedSettingsGroups
           <button
             type="button"
             onClick={() => setSettingsMenu("finishes")}
-            className={`w-full text-left px-3 py-2 text-[13px] rounded-md transition-colors cursor-pointer ${settingsMenu === "finishes"
+            className={`w-full text-left px-3 py-2 text-[13px] rounded-[6px] transition-colors cursor-pointer ${settingsMenu === "finishes"
               ? "text-[#E05626] font-semibold bg-[#FFF5F2]"
               : "text-[#475569] hover:bg-[#FFF5F2] hover:text-[#E05626]"}`}
           >
@@ -144,7 +144,7 @@ export function renderSettingsMenu({ toggleSettingsGroup, expandedSettingsGroups
       <button
         type="button"
         onClick={() => toggleSettingsGroup("quotation")}
-        className="w-full flex items-center justify-between py-2 px-2 text-[14px] font-semibold text-[#202428] hover:text-[#E05626] hover:bg-[#FFF5F2] rounded-md transition-colors text-left cursor-pointer"
+        className="w-full flex items-center justify-between py-2 px-2 text-[14px] font-semibold text-[#202428] hover:text-[#E05626] hover:bg-[#FFF5F2] rounded-[6px] transition-colors text-left cursor-pointer"
       >
         <span>Quotation</span>
         {expandedSettingsGroups.quotation ? (
@@ -158,7 +158,7 @@ export function renderSettingsMenu({ toggleSettingsGroup, expandedSettingsGroups
           <button
             type="button"
             onClick={() => setSettingsMenu("tax")}
-            className={`w-full text-left px-3 py-2 text-[13px] rounded-md transition-colors cursor-pointer ${settingsMenu === "tax"
+            className={`w-full text-left px-3 py-2 text-[13px] rounded-[6px] transition-colors cursor-pointer ${settingsMenu === "tax"
               ? "text-[#E05626] font-semibold bg-[#FFF5F2]"
               : "text-[#475569] hover:bg-[#FFF5F2] hover:text-[#E05626]"}`}
           >
@@ -173,7 +173,7 @@ export function renderSettingsMenu({ toggleSettingsGroup, expandedSettingsGroups
       <button
         type="button"
         onClick={() => toggleSettingsGroup("supplier")}
-        className="w-full flex items-center justify-between py-2 px-2 text-[14px] font-semibold text-[#202428] hover:text-[#E05626] hover:bg-[#FFF5F2] rounded-md transition-colors text-left cursor-pointer"
+        className="w-full flex items-center justify-between py-2 px-2 text-[14px] font-semibold text-[#202428] hover:text-[#E05626] hover:bg-[#FFF5F2] rounded-[6px] transition-colors text-left cursor-pointer"
       >
         <span>Supplier</span>
         {expandedSettingsGroups.supplier ? (
@@ -187,7 +187,7 @@ export function renderSettingsMenu({ toggleSettingsGroup, expandedSettingsGroups
           <button
             type="button"
             onClick={() => setSettingsMenu("supplier")}
-            className={`w-full text-left px-3 py-2 text-[13px] rounded-md transition-colors cursor-pointer ${settingsMenu === "supplier"
+            className={`w-full text-left px-3 py-2 text-[13px] rounded-[6px] transition-colors cursor-pointer ${settingsMenu === "supplier"
               ? "text-[#E05626] font-semibold bg-[#FFF5F2]"
               : "text-[#475569] hover:bg-[#FFF5F2] hover:text-[#E05626]"}`}
           >

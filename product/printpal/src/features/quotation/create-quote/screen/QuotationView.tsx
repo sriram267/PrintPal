@@ -902,7 +902,7 @@ export function QuotationView({
                   setIsSearchDropdownOpen(true);
                 }
               }}
-              className="pl-9 pr-8 text-[13px] h-9 bg-white border border-[#DCE1E5] rounded-md focus:border-[#2878D0]"
+              className="pl-9 pr-8 text-[13px] h-9 bg-white border border-[#DCE1E5] rounded-[6px] focus:border-[#2878D0]"
             />
             {customerSearchQuery && (
               <button
@@ -922,7 +922,7 @@ export function QuotationView({
             {isSearchDropdownOpen && customerSearchQuery.trim().length > 0 && (
               <div className="absolute top-full left-0 right-0 mt-1.5 bg-white border border-[#DCE1E5] rounded-xl shadow-xl z-50 max-h-72 overflow-y-auto printpal-compact-scroll py-1.5 divide-y divide-[#F1F5F9]">
                 {filteredCustomers.length === 0 ? (
-                  <div className="px-4 py-3 text-xs text-[#737B84] text-center">
+                  <div className="px-4 py-3 text-[12px]/4 text-[#737B84] text-center">
                     No customers found matching "{customerSearchQuery}"
                   </div>
                 ) : (
@@ -937,7 +937,7 @@ export function QuotationView({
                         <span className="text-[13px] font-semibold text-[#202428]">
                           {cust.name}
                         </span>
-                        <span className="text-[11px] text-[#737B84] font-mono">
+                        <span className="text-[11px] text-[#737B84] font-sans">
                           {cust.sites?.length || 0} sites
                         </span>
                       </div>
@@ -960,7 +960,7 @@ export function QuotationView({
             onClick={() => {
               onOpenCustomerDrawer(false, undefined, 'New Customer');
             }}
-            className="border-[#D7440E] text-[#D7440E] hover:bg-[#D7440E]/10 hover:text-[#D7440E] hover:border-[#D7440E] text-[13px] font-medium transition-colors shadow-none cursor-pointer h-9 px-4 rounded-md flex-shrink-0"
+            className="border-[#D7440E] text-[#D7440E] hover:bg-[#D7440E]/10 hover:text-[#D7440E] hover:border-[#D7440E] text-[13px] font-medium transition-colors shadow-none cursor-pointer h-9 px-4 rounded-[6px] flex-shrink-0"
             title="Add a new customer in drawer"
           >
             Add New Customer
@@ -1009,7 +1009,7 @@ export function QuotationView({
           {!selectedCustomer ? (
             /* Empty State: Defaultly when no customer is searched/selected */
             <div className="w-full bg-white rounded-[14px] p-12 shadow-sm border-0 flex flex-col items-center justify-center text-center">
-              <div className="h-14 w-14 rounded-2xl bg-[#F3F5F7] flex items-center justify-center text-[#737B84] mb-4">
+              <div className="h-14 w-14 rounded-[16px] bg-[#F3F5F7] flex items-center justify-center text-[#737B84] mb-4">
                 <Search className="h-7 w-7 text-[#2878D0]" />
               </div>
               <h3 className="text-[17px] font-bold text-[#202428] mb-1.5">No Customer Selected</h3>
@@ -1074,7 +1074,7 @@ export function QuotationView({
                         QUOTE NUMBER
                       </span>
                       <div className="flex items-center gap-1.5 mt-0.5">
-                        <span className="text-[13px] font-bold text-[#202428] font-mono">
+                        <span className="text-[13px] font-bold text-[#202428] font-sans">
                           {quoteNumber}
                         </span>
                       </div>
@@ -1225,12 +1225,12 @@ export function QuotationView({
                                     handleMethodChange(site.id, item.id, val as MethodCode)
                                   }
                                 >
-                                  <SelectTrigger className="w-full h-10 bg-white border-[#DCE1E5] text-[13px] font-medium text-[#202428] rounded-md hover:border-[#b5bfc7] focus:border-[#2878D0] focus:ring-0 focus-visible:ring-1 focus-visible:ring-[#2878D0] data-[state=open]:border-[#2878D0] shadow-none">
+                                  <SelectTrigger className="w-full h-10 bg-white border-[#DCE1E5] text-[13px] font-medium text-[#202428] rounded-[6px] hover:border-[#b5bfc7] focus:border-[#2878D0] focus:ring-0 focus-visible:ring-1 focus-visible:ring-[#2878D0] data-[state=open]:border-[#2878D0] shadow-none">
                                     <SelectValue placeholder="Method">
                                       {method.name}
                                     </SelectValue>
                                   </SelectTrigger>
-                                  <SelectContent className="bg-white border-[#DCE1E5] shadow-lg rounded-md z-[9999]">
+                                  <SelectContent className="bg-white border-[#DCE1E5] shadow-lg rounded-[6px] z-[9999]">
                                     <SelectItem value="sq_ft">Square Feet</SelectItem>
                                     <SelectItem value="run_ft">Running Feet</SelectItem>
                                     <SelectItem value="sq_m">Square Metre</SelectItem>
@@ -1251,7 +1251,7 @@ export function QuotationView({
                                     return (
                                       <div className="flex flex-col">
                                         <div
-                                          className={`flex items-center h-10 bg-white border rounded-md px-2 transition-colors ${
+                                          className={`flex items-center h-10 bg-white border rounded-[6px] px-2 transition-colors ${
                                             hasSizeError
                                               ? 'border-red-500 hover:border-red-600 focus-within:border-red-500 focus-within:ring-1 focus-within:ring-red-500'
                                               : 'border-[#DCE1E5] hover:border-[#b5bfc7] focus-within:border-[#2878D0] focus-within:ring-1 focus-within:ring-[#2878D0]'
@@ -1313,7 +1313,7 @@ export function QuotationView({
                                                 const areaDisplay = Number.isInteger(area) ? area : parseFloat(area.toFixed(2));
                                                 const unitLabel = method.code === 'sq_m' ? 'sq m' : 'sq ft';
                                                 return (
-                                                  <span className="text-[10px] text-[#737B84] font-mono select-none">
+                                                  <span className="text-[10px] text-[#737B84] font-sans select-none">
                                                     {areaDisplay} {unitLabel}
                                                   </span>
                                                 );
@@ -1329,7 +1329,7 @@ export function QuotationView({
                                     return (
                                       <div className="flex flex-col">
                                         <div
-                                          className={`flex items-center h-10 bg-white border rounded-md px-2 transition-colors ${
+                                          className={`flex items-center h-10 bg-white border rounded-[6px] px-2 transition-colors ${
                                             hasSizeError
                                               ? 'border-red-500 hover:border-red-600 focus-within:border-red-500 focus-within:ring-1 focus-within:ring-red-500'
                                               : 'border-[#DCE1E5] hover:border-[#b5bfc7] focus-within:border-[#2878D0] focus-within:ring-1 focus-within:ring-[#2878D0]'
@@ -1395,7 +1395,7 @@ export function QuotationView({
                                       Math.max(1, parseInt(e.target.value) || 1)
                                     )
                                   }
-                                  className={`h-10 text-[13px] text-center font-semibold bg-white border-[#DCE1E5] rounded-md transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none no-spin-arrows ${method.type === 'fixed'
+                                  className={`h-10 text-[13px] text-center font-semibold bg-white border-[#DCE1E5] rounded-[6px] transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none no-spin-arrows ${method.type === 'fixed'
                                     ? 'bg-[#F8FAFC] text-[#94A3B8] cursor-not-allowed'
                                     : 'hover:border-[#b5bfc7] focus:border-[#2878D0]'
                                     }`}
@@ -1435,7 +1435,7 @@ export function QuotationView({
                                             e.target.value === '' ? null : parseFloat(e.target.value)
                                           )
                                         }
-                                        className={`h-10 pl-6 pr-2.5 text-[13px] text-right font-semibold bg-white rounded-md transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none no-spin-arrows ${
+                                        className={`h-10 pl-6 pr-2.5 text-[13px] text-right font-semibold bg-white rounded-[6px] transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none no-spin-arrows ${
                                           hasRateError
                                             ? '!border-red-500 hover:!border-red-600 focus:!border-red-500 focus-visible:!ring-1 focus-visible:!ring-red-500'
                                             : 'border-[#DCE1E5] hover:border-[#b5bfc7] focus:border-[#2878D0] focus-visible:ring-1 focus-visible:ring-[#2878D0]'
@@ -1482,7 +1482,7 @@ export function QuotationView({
                                         parseFloat(e.target.value) || 0
                                       )
                                     }
-                                    className="h-10 pl-2 pr-5 text-[13px] text-center font-semibold bg-white border-[#DCE1E5] hover:border-[#b5bfc7] focus:border-[#2878D0] focus-visible:ring-1 focus-visible:ring-[#2878D0] rounded-md transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none no-spin-arrows"
+                                    className="h-10 pl-2 pr-5 text-[13px] text-center font-semibold bg-white border-[#DCE1E5] hover:border-[#b5bfc7] focus:border-[#2878D0] focus-visible:ring-1 focus-visible:ring-[#2878D0] rounded-[6px] transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none no-spin-arrows"
                                   />
                                   <span className="absolute right-2.5 text-[12px] font-semibold text-[#737B84] pointer-events-none select-none">
                                     %
@@ -1495,7 +1495,7 @@ export function QuotationView({
                               <div className="flex flex-col justify-start">
                                 {item.status === 'ok' && item.total !== null ? (
                                   <div
-                                    className="w-full h-10 px-2.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-md flex items-center justify-end font-bold text-[#202428] text-[13px] font-mono select-none"
+                                    className="w-full h-10 px-2.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-[6px] flex items-center justify-end font-bold text-[#202428] text-[13px] font-sans select-none"
                                     title={`Total for ${item.productTitle}`}
                                   >
                                     ₹{item.total.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
@@ -1596,7 +1596,7 @@ export function QuotationView({
                       section: 'add-site',
                     });
                   }}
-                  className="h-9 px-4 text-[13px] font-medium text-[#2878D0] bg-[#EDF5FD] hover:bg-[#E1EFFD] border border-[#2878D0] rounded-md shadow-xs transition-colors cursor-pointer select-none inline-flex items-center justify-center"
+                  className="h-9 px-4 text-[13px] font-medium text-[#2878D0] bg-[#EDF5FD] hover:bg-[#E1EFFD] border border-[#2878D0] rounded-[6px] shadow-xs transition-colors cursor-pointer select-none inline-flex items-center justify-center"
                 >
                   Add Another Site
                 </button>
@@ -1652,7 +1652,7 @@ export function QuotationView({
                 <span className="text-[#737B84]">
                   Subtotal ({sites.length} {sites.length === 1 ? 'Site' : 'Sites'})
                 </span>
-                <span className="font-bold text-[#202428] font-mono">
+                <span className="font-bold text-[#202428] font-sans">
                   ₹{sitesSubtotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </span>
               </div>
@@ -1664,7 +1664,7 @@ export function QuotationView({
                     <span>Design & 3D Visualizer</span>
                     <Info className="h-3.5 w-3.5 text-[#94A3B8]" />
                   </div>
-                  <span className="font-semibold text-[#202428] font-mono">
+                  <span className="font-semibold text-[#202428] font-sans">
                     ₹{designCharges.toLocaleString('en-IN')}
                   </span>
                 </div>
@@ -1677,7 +1677,7 @@ export function QuotationView({
                     <span>Installation Charges</span>
                     <Info className="h-3.5 w-3.5 text-[#94A3B8]" />
                   </div>
-                  <span className="font-semibold text-[#202428] font-mono">
+                  <span className="font-semibold text-[#202428] font-sans">
                     ₹{installationCharges.toLocaleString('en-IN')}
                   </span>
                 </div>
@@ -1687,7 +1687,7 @@ export function QuotationView({
               {transportCost > 0 && (
                 <div className="flex items-center justify-between">
                   <span className="text-[#737B84]">Transport & Freight</span>
-                  <span className="font-semibold text-[#202428] font-mono">
+                  <span className="font-semibold text-[#202428] font-sans">
                     ₹{Number(transportCost).toLocaleString('en-IN')}
                   </span>
                 </div>
@@ -1702,7 +1702,7 @@ export function QuotationView({
                       -{discountPercent}%
                     </span>
                   </div>
-                  <span className="font-bold font-mono">
+                  <span className="font-bold font-sans">
                     - ₹{discountAmount.toLocaleString('en-IN')}
                   </span>
                 </div>
@@ -1729,7 +1729,7 @@ export function QuotationView({
                       <span>Edit</span>
                     </button>
                   </div>
-                  <span className="font-bold text-[#202428] font-mono">
+                  <span className="font-bold text-[#202428] font-sans">
                     ₹{gstAmount.toLocaleString('en-IN')}
                   </span>
                 </div>

@@ -10,7 +10,7 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 export function renderSupplierForm({ supplierErrors, supplierForm, setSupplierForm, setSupplierErrors, servicesDropdownOpen, setServicesDropdownOpen, selectedServices, servicesSearchQuery, setServicesSearchQuery, filteredServices, toggleService, locationsDropdownOpen, setLocationsDropdownOpen, selectedLocations, locationsSearchQuery, setLocationsSearchQuery, filteredLocations, toggleLocation }: { supplierErrors: Record<string, string>; supplierForm: { supplierName: string; contactPerson: string; phone: string; email: string; isWhatsAppSame: boolean; whatsappNumber: string; category: string; gstin: string; address: string; addressLine1: string; addressLine2: string; city: string; state: string; pincode: string; servingRegions: string; isBillingSameAsWarehouse: boolean; billingAddress: string; billingAddressLine1: string; billingAddressLine2: string; billingCity: string; billingState: string; billingPincode: string; isShippingSameAsBilling: boolean; shippingAddress: string; shippingAddressLine1: string; shippingAddressLine2: string; shippingCity: string; shippingState: string; shippingPincode: string; deliveryLeadTime: string; minOrderQty: string; paymentTerms: string; notes: string} ; setSupplierForm: React.Dispatch<React.SetStateAction<{ supplierName: string; contactPerson: string; phone: string; email: string; isWhatsAppSame: boolean; whatsappNumber: string; category: string; gstin: string; address: string; addressLine1: string; addressLine2: string; city: string; state: string; pincode: string; servingRegions: string; isBillingSameAsWarehouse: boolean; billingAddress: string; billingAddressLine1: string; billingAddressLine2: string; billingCity: string; billingState: string; billingPincode: string; isShippingSameAsBilling: boolean; shippingAddress: string; shippingAddressLine1: string; shippingAddressLine2: string; shippingCity: string; shippingState: string; shippingPincode: string; deliveryLeadTime: string; minOrderQty: string; paymentTerms: string; notes: string} >>; setSupplierErrors: React.Dispatch<React.SetStateAction<Record<string, string>>>; servicesDropdownOpen: boolean; setServicesDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>; selectedServices: string[]; servicesSearchQuery: string; setServicesSearchQuery: React.Dispatch<React.SetStateAction<string>>; filteredServices: string[]; toggleService: (service: string) => void; locationsDropdownOpen: boolean; setLocationsDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>; selectedLocations: string[]; locationsSearchQuery: string; setLocationsSearchQuery: React.Dispatch<React.SetStateAction<string>>; filteredLocations: string[]; toggleLocation: (location: string) => void }): React.ReactNode {
   return <div className="printpal-new-cust-grid-wrapper">
     {Object.keys(supplierErrors).length > 0 && (
-      <div className="flex items-center gap-2 p-3 mb-4 rounded-md bg-red-50 border border-red-200 text-red-700 text-xs font-medium">
+      <div className="flex items-center gap-2 p-3 mb-4 rounded-[6px] bg-red-50 border border-red-200 text-red-700 text-[12px]/4 font-medium">
         <AlertCircle className="h-4 w-4 shrink-0 text-red-500" />
         <span>
           Please resolve the {Object.keys(supplierErrors).length} error{Object.keys(supplierErrors).length > 1 ? "s" : ""} marked below to save the supplier.
@@ -109,7 +109,7 @@ export function renderSupplierForm({ supplierErrors, supplierForm, setSupplierFo
               }))} />
             <Label
               htmlFor="supp-whatsapp-same"
-              className="cursor-pointer font-normal text-xs text-[#202428] leading-tight select-none"
+              className="cursor-pointer font-normal text-[12px]/4 text-[#202428] leading-tight select-none"
             >
               WhatsApp number is same as supplier number
             </Label>
@@ -298,9 +298,9 @@ export function renderSupplierForm({ supplierErrors, supplierForm, setSupplierFo
                       <PopoverContent
                         align="start"
                         sideOffset={4}
-                        className="w-[520px] max-w-[calc(100vw-40px)] p-0 bg-white border border-[#DCE1E5] shadow-xl rounded-lg overflow-hidden z-[9999]"
+                        className="w-[520px] max-w-[calc(100vw-40px)] p-0 bg-white border border-[#DCE1E5] shadow-xl rounded-[8px] overflow-hidden z-[9999]"
                       >
-                        <div className="flex items-center gap-2.5 border-b border-[#DCE1E5] px-3 h-[46px] bg-[#F8FAFC] rounded-t-lg w-full box-border overflow-hidden">
+                        <div className="flex items-center gap-2.5 border-b border-[#DCE1E5] px-3 h-[46px] bg-[#F8FAFC] rounded-t-[8px] w-full box-border overflow-hidden">
                           <Search className="h-4 w-4 text-[#737B84] shrink-0" />
                           <input
                             type="text"
@@ -326,7 +326,7 @@ export function renderSupplierForm({ supplierErrors, supplierForm, setSupplierFo
                               <div
                                 key={service}
                                 onClick={() => toggleService(service)}
-                                className={`flex items-center gap-2.5 px-3 py-2 rounded-md cursor-pointer text-xs select-none transition-colors ${isChecked ? "bg-[#D7440E]/5 text-[#202428] font-medium" : "text-[#202428] hover:bg-[#F3F5F7]"}`}
+                                className={`flex items-center gap-2.5 px-3 py-2 rounded-[6px] cursor-pointer text-[12px]/4 select-none transition-colors ${isChecked ? "bg-[#D7440E]/5 text-[#202428] font-medium" : "text-[#202428] hover:bg-[#F3F5F7]"}`}
                               >
                                 <Checkbox
                                   checked={isChecked}
@@ -341,7 +341,7 @@ export function renderSupplierForm({ supplierErrors, supplierForm, setSupplierFo
                                 toggleService(servicesSearchQuery.trim())
                                 setServicesSearchQuery("")
                               } }
-                              className="flex items-center gap-2 px-3 py-2 rounded-md cursor-pointer text-xs text-[#D7440E] hover:bg-[#D7440E]/10 font-medium"
+                              className="flex items-center gap-2 px-3 py-2 rounded-[6px] cursor-pointer text-[12px]/4 text-[#D7440E] hover:bg-[#D7440E]/10 font-medium"
                             >
                               <Plus className="h-3.5 w-3.5" />
                               <span>Add "{servicesSearchQuery.trim()}" as custom service</span>
@@ -403,9 +403,9 @@ export function renderSupplierForm({ supplierErrors, supplierForm, setSupplierFo
                       <PopoverContent
                         align="start"
                         sideOffset={4}
-                        className="w-[520px] max-w-[calc(100vw-40px)] p-0 bg-white border border-[#DCE1E5] shadow-xl rounded-lg overflow-hidden z-[9999]"
+                        className="w-[520px] max-w-[calc(100vw-40px)] p-0 bg-white border border-[#DCE1E5] shadow-xl rounded-[8px] overflow-hidden z-[9999]"
                       >
-                        <div className="flex items-center gap-2.5 border-b border-[#DCE1E5] px-3 h-[46px] bg-[#F8FAFC] rounded-t-lg w-full box-border overflow-hidden">
+                        <div className="flex items-center gap-2.5 border-b border-[#DCE1E5] px-3 h-[46px] bg-[#F8FAFC] rounded-t-[8px] w-full box-border overflow-hidden">
                           <Search className="h-4 w-4 text-[#737B84] shrink-0" />
                           <input
                             type="text"
@@ -431,7 +431,7 @@ export function renderSupplierForm({ supplierErrors, supplierForm, setSupplierFo
                               <div
                                 key={loc}
                                 onClick={() => toggleLocation(loc)}
-                                className={`flex items-center gap-2.5 px-3 py-2 rounded-md cursor-pointer text-xs select-none transition-colors ${isChecked ? "bg-[#D7440E]/5 text-[#202428] font-medium" : "text-[#202428] hover:bg-[#F3F5F7]"}`}
+                                className={`flex items-center gap-2.5 px-3 py-2 rounded-[6px] cursor-pointer text-[12px]/4 select-none transition-colors ${isChecked ? "bg-[#D7440E]/5 text-[#202428] font-medium" : "text-[#202428] hover:bg-[#F3F5F7]"}`}
                               >
                                 <Checkbox
                                   checked={isChecked}
@@ -446,7 +446,7 @@ export function renderSupplierForm({ supplierErrors, supplierForm, setSupplierFo
                                 toggleLocation(locationsSearchQuery.trim())
                                 setLocationsSearchQuery("")
                               } }
-                              className="flex items-center gap-2 px-3 py-2 rounded-md cursor-pointer text-xs text-[#D7440E] hover:bg-[#D7440E]/10 font-medium"
+                              className="flex items-center gap-2 px-3 py-2 rounded-[6px] cursor-pointer text-[12px]/4 text-[#D7440E] hover:bg-[#D7440E]/10 font-medium"
                             >
                               <Plus className="h-3.5 w-3.5" />
                               <span>Add "{locationsSearchQuery.trim()}" as custom region</span>
@@ -493,7 +493,7 @@ export function renderSupplierForm({ supplierErrors, supplierForm, setSupplierFo
 
               <div className="printpal-site-card-body">
                 <div className="printpal-site-info-fields" style={{ padding: "16px 16px 16px 16px" }}>
-                  <div className="font-semibold text-xs text-[#202428] uppercase tracking-wider mb-3">
+                  <div className="font-semibold text-[12px]/4 text-[#202428] uppercase tracking-wider mb-3">
                     Registered Billing Details
                   </div>
 
@@ -524,7 +524,7 @@ export function renderSupplierForm({ supplierErrors, supplierForm, setSupplierFo
                         <SelectTrigger id="supp-payment-terms" className="w-full h-9 bg-white border-[#DCE1E5] text-[13px] text-[#202428] hover:border-[#b5bfc7] focus:border-[#2878D0] focus:ring-0 focus-visible:ring-1 focus-visible:ring-[#2878D0] data-[state=open]:border-[#2878D0]">
                           <SelectValue placeholder="Select terms..." />
                         </SelectTrigger>
-                        <SelectContent className="bg-white border-[#DCE1E5] shadow-lg rounded-md z-[9999]">
+                        <SelectContent className="bg-white border-[#DCE1E5] shadow-lg rounded-[6px] z-[9999]">
                           <SelectItem value="ADVANCE">100% Advance Payment</SelectItem>
                           <SelectItem value="ADVANCE_50">50% Advance / 50% on Delivery</SelectItem>
                           <SelectItem value="NET_15">Net 15 Days Credit</SelectItem>
@@ -552,7 +552,7 @@ export function renderSupplierForm({ supplierErrors, supplierForm, setSupplierFo
                         }))} />
                       <Label
                         htmlFor="supp-billing-same"
-                        className="cursor-pointer font-normal text-xs text-[#202428] leading-tight select-none"
+                        className="cursor-pointer font-normal text-[12px]/4 text-[#202428] leading-tight select-none"
                       >
                         Billing address is same as supplier dispatch address
                       </Label>
@@ -655,10 +655,10 @@ export function renderSupplierForm({ supplierErrors, supplierForm, setSupplierFo
 
                   {/* Shipping Address (PrintPal Workshop User Address) */}
                   <div className="border-t border-[#DCE1E5] pt-4 mt-2">
-                    <div className="font-semibold text-xs text-[#202428] uppercase tracking-wider mb-2">
+                    <div className="font-semibold text-[12px]/4 text-[#202428] uppercase tracking-wider mb-2">
                       Shipping / Delivery Address
                     </div>
-                    <p className="text-xs text-[#737B84] mb-3">
+                    <p className="text-[12px]/4 text-[#737B84] mb-3">
                       Destination where materials and supplies ordered from this vendor will be received.
                     </p>
 
@@ -681,7 +681,7 @@ export function renderSupplierForm({ supplierErrors, supplierForm, setSupplierFo
                           }))} />
                         <Label
                           htmlFor="supp-shipping-same"
-                          className="cursor-pointer font-normal text-xs text-[#202428] leading-tight select-none"
+                          className="cursor-pointer font-normal text-[12px]/4 text-[#202428] leading-tight select-none"
                         >
                           Shipping address is same as billing address (PrintPal Workshop Hub)
                         </Label>

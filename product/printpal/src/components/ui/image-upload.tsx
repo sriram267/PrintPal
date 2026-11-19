@@ -229,7 +229,7 @@ export function ImageUpload({
           )}
         >
           {/* Stroke-based Image Icon with soft blue pill container matching reference - Static (no enlarge) */}
-          <div className="mb-1.5 rounded-lg bg-[#EFF5FB] p-1.5 text-[#2878D0]">
+          <div className="mb-1.5 rounded-[8px] bg-[#EFF5FB] p-1.5 text-[#2878D0]">
             <ImageIcon className="h-5 w-5 stroke-[1.8]" />
           </div>
 
@@ -252,7 +252,7 @@ export function ImageUpload({
             if (!disabled) handleFiles(e.dataTransfer.files)
           }}
           className={cn(
-            "relative flex flex-wrap items-center gap-3 rounded-2xl border-2 border-dashed p-4 transition-colors duration-200 bg-white",
+            "relative flex flex-wrap items-center gap-3 rounded-[16px] border-2 border-dashed p-4 transition-colors duration-200 bg-white",
             isDragOver
               ? "border-[#2878D0]"
               : "border-[#DCE1E5] hover:border-[#2878D0]"

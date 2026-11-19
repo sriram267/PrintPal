@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea"
 export function renderFinishForm({ finishErrors, finishForm, setFinishForm, setFinishErrors }: { finishErrors: Record<string, string>; finishForm: { name: string; type: string; colorCode: string; application: "Indoor" | "Outdoor" | "Coastal"; notes: string} ; setFinishForm: React.Dispatch<React.SetStateAction<{ name: string; type: string; colorCode: string; application: "Indoor" | "Outdoor" | "Coastal"; notes: string} >>; setFinishErrors: React.Dispatch<React.SetStateAction<Record<string, string>>> }): React.ReactNode {
   return <div className="printpal-new-cust-grid-wrapper">
     {Object.keys(finishErrors).length > 0 && (
-      <div className="flex items-center gap-2 p-3 mb-4 rounded-md bg-red-50 border border-red-200 text-red-700 text-xs font-medium">
+      <div className="flex items-center gap-2 p-3 mb-4 rounded-[6px] bg-red-50 border border-red-200 text-red-700 text-[12px]/4 font-medium">
         <AlertCircle className="h-4 w-4 shrink-0 text-red-500" />
         <span>Please resolve the errors marked below to save the finish.</span>
       </div>

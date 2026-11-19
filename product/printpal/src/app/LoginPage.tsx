@@ -108,7 +108,7 @@ export function LoginPage() {
             {mode === "waitlist" && <Waitlist appearance={cardAppearance} />}
           </div>
 
-          <p className="mt-5 text-center text-xs text-[#6B7280]">
+          <p className="mt-5 text-center text-[12px]/4 text-[#6B7280]">
             {mode === "signin" ? (
               <>
                 New to PrintPal? {link("Sign up", "signup")}
@@ -122,7 +122,7 @@ export function LoginPage() {
         </div>
       </main>
 
-      <footer className="relative z-10 w-full max-w-5xl mx-auto px-6 py-6 text-center text-xs text-[#9CA3AF]">
+      <footer className="relative z-10 w-full max-w-5xl mx-auto px-6 py-6 text-center text-[12px]/4 text-[#9CA3AF]">
         PrintPal Workshop OS
       </footer>
     </div>

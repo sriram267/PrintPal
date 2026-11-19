@@ -117,13 +117,13 @@ export function Calendar({
   return (
     <div
       className={cn(
-        "p-3 rounded-lg border border-[#DCE1E5] bg-white text-[#202428] shadow-md select-none w-[280px]",
+        "p-3 rounded-[8px] border border-[#DCE1E5] bg-white text-[#202428] shadow-md select-none w-[280px]",
         className
       )}
     >
       {/* Header Month / Year & Navigation */}
       <div className="flex items-center justify-between mb-3 px-1">
-        <span className="text-sm font-semibold text-[#202428] tracking-tight">
+        <span className="text-[14px]/5 font-semibold text-[#202428] tracking-tight">
           {MONTH_NAMES[month]} {year}
         </span>
         <div className="flex items-center gap-1">
@@ -182,7 +182,7 @@ export function Calendar({
                 }
               }}
               className={cn(
-                "h-8 w-8 text-xs font-normal rounded-md flex items-center justify-center transition-colors cursor-pointer",
+                "h-8 w-8 text-[12px]/4 font-normal rounded-[6px] flex items-center justify-center transition-colors cursor-pointer",
                 !isCurrentMonth && "text-[#737B84]/40 hover:text-[#202428] hover:bg-[#F3F5F7]",
                 isCurrentMonth && !isSelected && "text-[#202428] hover:bg-[#F3F5F7]",
                 isCurrentToday && !isSelected && "font-semibold text-[#2878D0] bg-[#2878D0]/10",

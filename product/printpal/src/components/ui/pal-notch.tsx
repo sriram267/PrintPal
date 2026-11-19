@@ -1523,7 +1523,7 @@ export function PalNotch({ activeModuleLabel = "Ready" }: PalNotchProps) {
                   disabled={isPromptSubmitting}
                 >
                   {isPromptSubmitting ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <Loader2 className="h-4 w-4 animate-[spin_1s_linear_infinite]" />
                   ) : (
                     activePrompt.submitText || "Save"
                   )}

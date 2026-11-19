@@ -18,8 +18,8 @@ const checkboxVariants = cva(
       },
       size: {
         default: "h-[18px] w-[18px]",
-        sm: "h-4 w-4 rounded-sm",
-        lg: "h-5 w-5 rounded-md",
+        sm: "h-4 w-4 rounded-[4px]",
+        lg: "h-5 w-5 rounded-[6px]",
       },
     },
     defaultVariants: {
