@@ -26,6 +26,7 @@ import {
 import type { MethodCode } from '../../shared/calcLine';
 import { computeQuoteTotals } from '../../shared/quoteTotals';
 import type { BusinessDetailsRecord } from '../../../settings/business-details/screen/businessDetails.types';
+import { newId } from '../../../../shared/newId';
 
 export interface RenegotiatingQuoteData {
   originalQuoteNumber: string;
@@ -745,7 +746,7 @@ export function QuotationView({
 
     setShowValidationErrors(false);
 
-    const safeCustomerId = selectedCustomer.id || `cust-${Date.now()}`;
+    const safeCustomerId = selectedCustomer.id || newId("cust");
     const payload = {
       customerId: safeCustomerId,
       quoteNumber,

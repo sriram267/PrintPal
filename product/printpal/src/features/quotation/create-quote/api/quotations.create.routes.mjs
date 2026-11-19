@@ -2,6 +2,7 @@
    Plugged in by server/server.mjs. Moved unchanged from server/server.mjs (A2). */
 import { calcLine, METHOD_MAP, roundHalfUp } from "../../shared/calcLine.server.mjs";
 import { computeQuoteTotals, validateQuoteMoney, MAX_MONEY } from "../../shared/quoteTotals.server.mjs";
+import { newId } from "../../../../shared/server/newId.mjs";
 
 /** @param {import("fastify").FastifyInstance} server */
 export function registerCreateQuoteRoutes(server, { repo }) {
@@ -51,7 +52,7 @@ export function registerCreateQuoteRoutes(server, { repo }) {
       }
     }
     if (!quoteId) {
-      quoteId = `quote-${Date.now()}`;
+      quoteId = newId("quote");
     }
 
     // A finalized invoice is locked; and no new version while the customer's latest quote is finalized.
@@ -177,6 +178,11 @@ export function registerCreateQuoteRoutes(server, { repo }) {
       );
     } catch (err) {
       req.log?.error(err);
+      if (err.statusCode === 409) {
+        // The quote id belongs to another shop: nothing was changed.
+        reply.status(409);
+        return { error: err.message };
+      }
       reply.status(500);
       return {
         error: `Failed to save quotation to database: ${err.message}`,

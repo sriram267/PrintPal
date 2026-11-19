@@ -14,6 +14,15 @@ formatting helpers. If only one feature uses something, it belongs in that featu
 | `tenantContext.mjs` | Works out which shop a request belongs to |
 | `auth.mjs` | The sign-in check on every request |
 | `account.routes.mjs` | After sign-in: creates the shop, its business details and its starter catalogue |
-| `repository.mjs` | Puts every feature's `db/` code together into one `repo` object |
+| `repository.mjs` | Puts every feature's `db/` code together into one `repo` object; every call runs through `tenantSession.mjs` |
+| `tenantSession.mjs` | Keeps shops apart: runs each shop's database work in its own transaction, as the restricted `app_user` role, with the shop set for that transaction only. Also the "this record belongs to another shop" refusal (409) |
+| `newId.mjs` | New record ids made on the server: `<prefix>-<time>-<random>` |
+
+## Screen helpers
+
+| File | What it does |
+|---|---|
+| `leadsService.ts` | The screens' calls to the server, with the copy kept in the browser |
+| `newId.ts` | New record ids made in the browser: `<prefix>-<time>-<random>` (same format as `server/newId.mjs`) |
 
 Still to move here: `src/core/apiClient.ts`, `src/lib/utils.ts` (screen helpers).

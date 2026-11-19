@@ -1,7 +1,5 @@
 /**
- * Database: The six pricing methods (shared by every shop).
- * Every query is scoped to the signed-in shop (tenant) and runs syncRls first, so row-level security applies.
- * Moved unchanged from server/repository.mjs (restructure A2).
+ * Database: The six pricing methods (shared by every shop, so not scoped to one shop).
  */
 export function createMethodsDb(pg, syncRls) {
   return {

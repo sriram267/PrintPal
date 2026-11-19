@@ -13,6 +13,7 @@ import {
 import type { CustomerRecord, EnquiryRecord, SupplierRecord, ServiceItem, SiteRecord, CustomerDrawerAnchor } from "../features/leads/shared/types"
 import type { ProductRecord, MaterialRecord, FinishRecord } from "../features/settings/shared/types"
 import { leadsService } from "../shared/leadsService"
+import { newId } from "../shared/newId"
 import { validateCustomerForm, validateEnquiryForm } from "../features/leads/shared/validation"
 import "./leads.css"
 import { DEFAULT_MATERIALS, DEFAULT_FINISHES, DEFAULT_PRODUCTS } from "../features/settings/starter-catalogue/screen/seedCatalog"
@@ -1083,7 +1084,7 @@ export function LeadsApp() {
           (c.businessName && c.businessName.trim().toLowerCase() === q.customerName.trim().toLowerCase()) ||
           (q.phone && c.phone && c.phone.replace(/\D/g, "") === q.phone.replace(/\D/g, ""))
       ) || {
-        id: q.customerId || `cust-reneg-${Date.now()}`,
+        id: q.customerId || newId("cust-reneg"),
         name: q.customerName,
         businessName: q.customerName,
         contactPerson: q.contactPerson || q.customerName,
@@ -1263,7 +1264,7 @@ export function LeadsApp() {
         return
       }
       const newMat: MaterialRecord = {
-        id: `mat-${Date.now()}`,
+        id: newId("mat"),
         name: trimmed,
         category: "Custom Substrates",
         createdAt: new Date().toISOString(),
@@ -1340,7 +1341,7 @@ export function LeadsApp() {
         return
       }
       const newFin: FinishRecord = {
-        id: `fin-${Date.now()}`,
+        id: newId("fin"),
         name: trimmed,
         type: "Custom Finish",
         createdAt: new Date().toISOString(),
@@ -1606,7 +1607,7 @@ export function LeadsApp() {
     const combinedShippingAddress = [supplierForm.shippingAddressLine1.trim(), supplierForm.shippingAddressLine2.trim(), supplierForm.shippingCity.trim(), supplierForm.shippingState.trim(), supplierForm.shippingPincode.trim()].filter(Boolean).join(", ") || supplierForm.shippingAddress.trim()
 
     const supplierPayload: SupplierRecord = {
-      id: editingSupplierId || `supp-${Date.now()}`,
+      id: editingSupplierId || newId("supp"),
       supplierName: supplierForm.supplierName.trim(),
       contactPerson: supplierForm.contactPerson.trim() || undefined,
       phone: supplierForm.phone.trim(),
@@ -1736,7 +1737,7 @@ export function LeadsApp() {
     }
 
     const newProd: ProductRecord = {
-      id: editingProductId || `prod-${Date.now()}`,
+      id: editingProductId || newId("prod"),
       title: productForm.title.trim(),
       category: productForm.category,
       description: productForm.description.trim(),
@@ -1803,7 +1804,7 @@ export function LeadsApp() {
     }
     setQuickProductError(null)
     const newProd: ProductRecord = {
-      id: `prod-${Date.now()}`,
+      id: newId("prod"),
       title: trimmed,
       description: quickProductDesc.trim(),
       materialIds: quickProductSelectedMats,
@@ -1894,7 +1895,7 @@ export function LeadsApp() {
     }
 
     const newMat: MaterialRecord = {
-      id: editingMaterialId || `mat-${Date.now()}`,
+      id: editingMaterialId || newId("mat"),
       name: materialForm.name.trim(),
       category: materialForm.category,
       thickness: materialForm.thickness.trim(),
@@ -1971,7 +1972,7 @@ export function LeadsApp() {
     }
 
     const newFin: FinishRecord = {
-      id: editingFinishId || `fin-${Date.now()}`,
+      id: editingFinishId || newId("fin"),
       name: finishForm.name.trim(),
       type: finishForm.type,
       colorCode: finishForm.colorCode.trim(),
@@ -2088,7 +2089,7 @@ export function LeadsApp() {
       "Local Installation Site"
 
     const customerRecord: CustomerRecord = {
-      id: editingCustomerId || `cust-${Date.now()}`,
+      id: editingCustomerId || newId("cust"),
       name: displayName,
       businessName: businessName || displayName,
       contactPerson: contactName || undefined,
@@ -2230,7 +2231,7 @@ export function LeadsApp() {
       "Local Installation Site"
 
     const customerRecord: CustomerRecord = {
-      id: editingCustomerId || `cust-${Date.now()}`,
+      id: editingCustomerId || newId("cust"),
       name: displayName,
       businessName: businessName || displayName,
       contactPerson: contactName || undefined,
@@ -2375,7 +2376,7 @@ export function LeadsApp() {
       ""
 
     const newEnquiry: EnquiryRecord = {
-      id: editingEnquiryId || `enq-${Date.now()}`,
+      id: editingEnquiryId || newId("enq"),
       contactName,
       phone,
       email: formBasicDetails.email.trim() || undefined,

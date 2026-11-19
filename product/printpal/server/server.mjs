@@ -14,6 +14,7 @@ import { initDatabase as initSchema } from "../src/shared/server/schema.mjs";
 import { registerAuth } from "../src/shared/server/auth.mjs";
 import { registerAccountRoutes } from "../src/shared/server/account.routes.mjs";
 import { createTenantRepository } from "../src/shared/server/repository.mjs";
+import { prepareRowRules, rowRulesActive } from "../src/shared/server/tenantSession.mjs";
 import { registerCustomersRoutes } from "../src/features/leads/customer/api/customers.routes.mjs";
 import { registerEnquiriesRoutes } from "../src/features/leads/enquiry/api/enquiries.routes.mjs";
 import { registerSuppliersRoutes } from "../src/features/leads/supplier/api/suppliers.routes.mjs";
@@ -87,7 +88,14 @@ const repo = createTenantRepository(pg);
 
 // ── HEALTH CHECK ──
 server.get("/api/health", async () => {
-  return { status: "ok", timestamp: new Date().toISOString() };
+  return {
+    status: "ok",
+    timestamp: new Date().toISOString(),
+    // Which code is running (Render sets RENDER_GIT_COMMIT) and whether the database row rules are on,
+    // so a deploy can be confirmed from outside.
+    version: (process.env.RENDER_GIT_COMMIT || "local").slice(0, 7),
+    rowRules: rowRulesActive(pg),
+  };
 });
 
 // After sign-in: make sure the shop, its business details and its starter catalogue exist
@@ -111,6 +119,13 @@ const HOST = "0.0.0.0";
 export async function start() {
   try {
     await initDatabase();
+    // Each shop's queries run as the restricted app_user role, so the database itself keeps shops apart.
+    const rowRules = await prepareRowRules(pg);
+    console.log(
+      rowRules
+        ? "[DB] Row rules: ON. Each shop's queries run as app_user."
+        : "[DB] Row rules: OFF. The database login can't switch to app_user; shops are still kept apart by the app's own checks."
+    );
     await server.listen({ port: PORT, host: HOST });
     console.log(`[PrintPal Fastify Engine] Live at http://localhost:${PORT}`);
   } catch (err) {

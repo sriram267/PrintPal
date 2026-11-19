@@ -1,8 +1,11 @@
 /**
  * Database: Catalogue products: list, get, save, delete.
- * Every query is scoped to the signed-in shop (tenant) and runs syncRls first, so row-level security applies.
- * Moved unchanged from server/repository.mjs (restructure A2).
+ * Runs inside the shop's own transaction (src/shared/server/tenantSession.mjs). Every query is scoped to the shop,
+ * and a save never overwrites a row that belongs to another shop.
  */
+import { assertSaved } from "../../../../shared/server/tenantSession.mjs";
+import { newId } from "../../../../shared/server/newId.mjs";
+
 export function createProductsDb(pg, syncRls) {
   return {
     async getAll(tenantId) {
@@ -51,7 +54,7 @@ export function createProductsDb(pg, syncRls) {
 
     async save(tenantId, body) {
       await syncRls(tenantId);
-      const id = body.id || `prod-${Date.now()}`;
+      const id = body.id || newId("prod");
       const title = body.title?.trim() || "Untitled Product";
       const alsoCalled = body.alsoCalled?.trim() || "";
       const category = body.category?.trim() || "Fabricated Signage";
@@ -76,7 +79,7 @@ export function createProductsDb(pg, syncRls) {
       const notes = body.notes?.trim() || "";
       const createdAt = body.createdAt || new Date().toISOString();
 
-      await pg.query(
+      assertSaved(await pg.query(
         `INSERT INTO products (
           id, tenant_id, title, also_called, category, description,
           priced_per, also_priced_by, size_range, lighting,
@@ -85,7 +88,6 @@ export function createProductsDb(pg, syncRls) {
           application, production_type, research_confidence, notes, created_at
         ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25)
         ON CONFLICT (id) DO UPDATE SET
-          tenant_id = EXCLUDED.tenant_id,
           title = EXCLUDED.title,
           also_called = EXCLUDED.also_called,
           category = EXCLUDED.category,
@@ -108,7 +110,9 @@ export function createProductsDb(pg, syncRls) {
           production_type = EXCLUDED.production_type,
           research_confidence = EXCLUDED.research_confidence,
           notes = EXCLUDED.notes,
-          updated_at = NOW()`,
+          updated_at = NOW()
+        WHERE products.tenant_id = EXCLUDED.tenant_id
+        RETURNING id`,
         [
           id, tenantId, title, alsoCalled, category, description,
           pricedPer, alsoPricedBy, sizeRange, lighting,
@@ -116,7 +120,7 @@ export function createProductsDb(pg, syncRls) {
           isActive, width, height, unit, material, finishing,
           application, productionType, researchConfidence, notes, createdAt
         ]
-      );
+      ));
       return { id, success: true };
     },
 

@@ -1,8 +1,11 @@
 /**
  * Database: Enquiries: list, save, delete.
- * Every query is scoped to the signed-in shop (tenant) and runs syncRls first, so row-level security applies.
- * Moved unchanged from server/repository.mjs (restructure A2).
+ * Runs inside the shop's own transaction (src/shared/server/tenantSession.mjs). Every query is scoped to the shop,
+ * and a save never overwrites a row that belongs to another shop.
  */
+import { assertSaved } from "../../../../shared/server/tenantSession.mjs";
+import { newId } from "../../../../shared/server/newId.mjs";
+
 export function createEnquiriesDb(pg, syncRls) {
   return {
     async getAll(tenantId) {
@@ -32,7 +35,7 @@ export function createEnquiriesDb(pg, syncRls) {
 
     async save(tenantId, body) {
       await syncRls(tenantId);
-      const id = body.id || `enq-${Date.now()}`;
+      const id = body.id || newId("enq");
       const contactName = body.contactName?.trim() || "New Lead";
       const phone = body.phone?.trim() || "";
       const email = body.email?.trim() || "";
@@ -47,14 +50,13 @@ export function createEnquiriesDb(pg, syncRls) {
       const followUpDate = body.followUpDate?.trim() || null;
       const createdAt = body.createdAt || new Date().toISOString();
 
-      await pg.query(
+      assertSaved(await pg.query(
         `INSERT INTO enquiries (
           id, tenant_id, contact_name, phone, email, address, source, stage,
           inquiry_note, has_vector_logo, wall_substrate, mounting_height_ft,
           has_power_point, follow_up_date, created_at
         ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
         ON CONFLICT (id) DO UPDATE SET
-          tenant_id = EXCLUDED.tenant_id,
           contact_name = EXCLUDED.contact_name,
           phone = EXCLUDED.phone,
           email = EXCLUDED.email,
@@ -62,13 +64,15 @@ export function createEnquiriesDb(pg, syncRls) {
           stage = EXCLUDED.stage,
           inquiry_note = EXCLUDED.inquiry_note,
           follow_up_date = EXCLUDED.follow_up_date,
-          updated_at = NOW()`,
+          updated_at = NOW()
+        WHERE enquiries.tenant_id = EXCLUDED.tenant_id
+        RETURNING id`,
         [
           id, tenantId, contactName, phone, email, address, source, stage,
           inquiryNote, hasVectorLogo, wallSubstrate, mountingHeightFt,
           hasPowerPoint, followUpDate, createdAt
         ]
-      );
+      ));
       return { id, success: true };
     },
 

@@ -1,7 +1,7 @@
 /**
  * Database: The shop's business details (one row per shop).
- * Every query is scoped to the signed-in shop (tenant) and runs syncRls first, so row-level security applies.
- * Moved unchanged from server/repository.mjs (restructure A2).
+ * Runs inside the shop's own transaction (src/shared/server/tenantSession.mjs). The row is keyed by the shop
+ * itself (ON CONFLICT (tenant_id)), so a save can only ever touch this shop's row.
  */
 export function createBusinessDetailsDb(pg, syncRls) {
   return {

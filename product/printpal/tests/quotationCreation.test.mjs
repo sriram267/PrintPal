@@ -12,9 +12,9 @@ test('Quotation Creation Resilience & Local-First Fallback', () => {
   const quotationViewPath = path.join(ROOT, 'src/features/quotation/create-quote/screen/QuotationView.tsx');
   const content = fs.readFileSync(quotationViewPath, 'utf8');
 
-  // 1. Verify safeCustomerId fallback is present
+  // 1. Verify safeCustomerId fallback is present (a random id that no other shop can share or guess)
   assert.ok(
-    content.includes('const safeCustomerId = selectedCustomer.id || `cust-${Date.now()}`'),
+    content.includes('const safeCustomerId = selectedCustomer.id || newId("cust")'),
     'QuotationView must provide safe customer ID fallback'
   );
 

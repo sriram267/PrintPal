@@ -1,8 +1,11 @@
 /**
  * Database: Customers and their sites: list, save, delete.
- * Every query is scoped to the signed-in shop (tenant) and runs syncRls first, so row-level security applies.
- * Moved unchanged from server/repository.mjs (restructure A2).
+ * Runs inside the shop's own transaction (src/shared/server/tenantSession.mjs). Every query is scoped to the shop,
+ * and a save never overwrites a row that belongs to another shop.
  */
+import { assertSaved } from "../../../../shared/server/tenantSession.mjs";
+import { newId } from "../../../../shared/server/newId.mjs";
+
 export function createCustomersDb(pg, syncRls) {
   return {
     async getAll(tenantId) {
@@ -110,7 +113,7 @@ export function createCustomersDb(pg, syncRls) {
 
     async save(tenantId, body) {
       await syncRls(tenantId);
-      const id = body.id || `cust-${Date.now()}`;
+      const id = body.id || newId("cust");
       const companyName = body.businessName?.trim() || body.name?.trim() || "Untitled Business";
       const contactPerson = body.primaryContactName?.trim() || body.name?.trim() || companyName;
       const phone = body.primaryContactNumber?.trim() || body.phone?.trim() || "";
@@ -127,14 +130,13 @@ export function createCustomersDb(pg, syncRls) {
       const customerType = body.customerType || "RETAIL_BRAND";
       const createdAt = body.createdAt || new Date().toISOString();
 
-      await pg.query(
+      assertSaved(await pg.query(
         `INSERT INTO customers (
           id, tenant_id, company_name, contact_person, phone, email,
           is_whatsapp_same, whatsapp_number, follow_up_date, gstin,
           billing_address, shipping_address, is_shipping_same, state_code, payment_terms, customer_type, created_at
         ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)
         ON CONFLICT (id) DO UPDATE SET
-          tenant_id = EXCLUDED.tenant_id,
           company_name = EXCLUDED.company_name,
           contact_person = EXCLUDED.contact_person,
           phone = EXCLUDED.phone,
@@ -147,24 +149,26 @@ export function createCustomersDb(pg, syncRls) {
           shipping_address = EXCLUDED.shipping_address,
           is_shipping_same = EXCLUDED.is_shipping_same,
           state_code = EXCLUDED.state_code,
-          updated_at = NOW()`,
+          updated_at = NOW()
+        WHERE customers.tenant_id = EXCLUDED.tenant_id
+        RETURNING id`,
         [
           id, tenantId, companyName, contactPerson, phone, email,
           isWhatsAppSame, whatsappNumber, followUpDate, gstin,
           billingAddress, shippingAddress, isShippingSame, stateCode, paymentTerms, customerType, createdAt
         ]
-      );
+      ));
 
       // Save Sites scoped to tenant
       const sitesList = Array.isArray(body.sites) ? body.sites : [];
       for (const s of sitesList) {
-        const siteId = s.id || `site-${Date.now()}-${Math.random().toString(36).substring(7)}`;
+        const siteId = s.id || newId("site");
         const siteName = s.siteName?.trim() || "Site 1";
         const address = s.address?.trim() || billingAddress;
         const servicesJson = JSON.stringify(s.services || []);
         const serviceDetailsJson = JSON.stringify(s.serviceDetails || []);
 
-        await pg.query(
+        assertSaved(await pg.query(
           `INSERT INTO sites (
             id, tenant_id, customer_id, site_name, address, address_line1, address_line2,
             city, state, pincode, target_delivery_date, contact_person, contact_phone, landmark, lat, lng, place_id,
@@ -172,7 +176,6 @@ export function createCustomersDb(pg, syncRls) {
             services, service_details
           ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23)
           ON CONFLICT (id) DO UPDATE SET
-            tenant_id = EXCLUDED.tenant_id,
             customer_id = EXCLUDED.customer_id,
             site_name = EXCLUDED.site_name,
             address = EXCLUDED.address,
@@ -186,7 +189,9 @@ export function createCustomersDb(pg, syncRls) {
             contact_phone = EXCLUDED.contact_phone,
             services = EXCLUDED.services,
             service_details = EXCLUDED.service_details,
-            updated_at = NOW()`,
+            updated_at = NOW()
+          WHERE sites.tenant_id = EXCLUDED.tenant_id
+          RETURNING id`,
           [
             siteId, tenantId, id, siteName, address, s.addressLine1 || "", s.addressLine2 || "",
             s.city || "", s.state || "", s.pincode || "", s.targetDeliveryDate || "",
@@ -195,7 +200,7 @@ export function createCustomersDb(pg, syncRls) {
             s.mountingHeightAglFt || 10, s.wallSubstrate || "CONCRETE", s.powerDistanceM || 2,
             s.hasPowerPoint ?? true, servicesJson, serviceDetailsJson
           ]
-        );
+        ));
       }
 
       return { id, success: true };

@@ -1,8 +1,11 @@
 /**
  * Database: Materials: list, get, save, delete.
- * Every query is scoped to the signed-in shop (tenant) and runs syncRls first, so row-level security applies.
- * Moved unchanged from server/repository.mjs (restructure A2).
+ * Runs inside the shop's own transaction (src/shared/server/tenantSession.mjs). Every query is scoped to the shop,
+ * and a save never overwrites a row that belongs to another shop.
  */
+import { assertSaved } from "../../../../shared/server/tenantSession.mjs";
+import { newId } from "../../../../shared/server/newId.mjs";
+
 export function createMaterialsDb(pg, syncRls) {
   return {
     async getAll(tenantId) {
@@ -44,7 +47,7 @@ export function createMaterialsDb(pg, syncRls) {
 
     async save(tenantId, body) {
       await syncRls(tenantId);
-      const id = body.id || `M${Date.now()}`;
+      const id = body.id || newId("mat");
       const name = body.name?.trim() || "Untitled Material";
       const alsoCalled = body.alsoCalled?.trim() || "";
       const family = body.family?.trim() || "";
@@ -62,14 +65,13 @@ export function createMaterialsDb(pg, syncRls) {
       const notes = body.notes?.trim() || "";
       const createdAt = body.createdAt || new Date().toISOString();
 
-      await pg.query(
+      assertSaved(await pg.query(
         `INSERT INTO materials (
           id, tenant_id, name, also_called, family, category, unit, variants,
           thickness, standard_size, indoor, outdoor, coastal, coastal_basis,
           supplier_name, research_confidence, notes, created_at
         ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)
         ON CONFLICT (id) DO UPDATE SET
-          tenant_id = EXCLUDED.tenant_id,
           name = EXCLUDED.name,
           also_called = EXCLUDED.also_called,
           family = EXCLUDED.family,
@@ -85,13 +87,15 @@ export function createMaterialsDb(pg, syncRls) {
           supplier_name = EXCLUDED.supplier_name,
           research_confidence = EXCLUDED.research_confidence,
           notes = EXCLUDED.notes,
-          updated_at = NOW()`,
+          updated_at = NOW()
+        WHERE materials.tenant_id = EXCLUDED.tenant_id
+        RETURNING id`,
         [
           id, tenantId, name, alsoCalled, family, category, unit, variants,
           thickness, standardSize, indoor, outdoor, coastal, coastalBasis,
           supplierName, researchConfidence, notes, createdAt
         ]
-      );
+      ));
       return { id, success: true };
     },
 

@@ -1,8 +1,11 @@
 /**
  * Database: Suppliers: list, save, delete.
- * Every query is scoped to the signed-in shop (tenant) and runs syncRls first, so row-level security applies.
- * Moved unchanged from server/repository.mjs (restructure A2).
+ * Runs inside the shop's own transaction (src/shared/server/tenantSession.mjs). Every query is scoped to the shop,
+ * and a save never overwrites a row that belongs to another shop.
  */
+import { assertSaved } from "../../../../shared/server/tenantSession.mjs";
+import { newId } from "../../../../shared/server/newId.mjs";
+
 export function createSuppliersDb(pg, syncRls) {
   return {
     async getAll(tenantId) {
@@ -53,7 +56,7 @@ export function createSuppliersDb(pg, syncRls) {
 
     async save(tenantId, body) {
       await syncRls(tenantId);
-      const id = body.id || `supp-${Date.now()}`;
+      const id = body.id || newId("supp");
       const supplierName = body.supplierName?.trim() || "Untitled Supplier";
       const contactPerson = body.contactPerson?.trim() || "";
       const phone = body.phone?.trim() || "";
@@ -89,7 +92,7 @@ export function createSuppliersDb(pg, syncRls) {
       const notes = body.notes?.trim() || "";
       const createdAt = body.createdAt || new Date().toISOString();
 
-      await pg.query(
+      assertSaved(await pg.query(
         `INSERT INTO suppliers (
           id, tenant_id, supplier_name, contact_person, phone, email, category,
           gstin, address, city, state, pincode, payment_terms, notes, created_at,
@@ -100,7 +103,6 @@ export function createSuppliersDb(pg, syncRls) {
           shipping_address_line1, shipping_address_line2, shipping_city, shipping_state, shipping_pincode
         ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36)
         ON CONFLICT (id) DO UPDATE SET
-          tenant_id = EXCLUDED.tenant_id,
           supplier_name = EXCLUDED.supplier_name,
           contact_person = EXCLUDED.contact_person,
           phone = EXCLUDED.phone,
@@ -134,7 +136,9 @@ export function createSuppliersDb(pg, syncRls) {
           shipping_city = EXCLUDED.shipping_city,
           shipping_state = EXCLUDED.shipping_state,
           shipping_pincode = EXCLUDED.shipping_pincode,
-          updated_at = NOW()`,
+          updated_at = NOW()
+        WHERE suppliers.tenant_id = EXCLUDED.tenant_id
+        RETURNING id`,
         [
           id, tenantId, supplierName, contactPerson, phone, email, category,
           gstin, address, city, state, pincode, paymentTerms, notes, createdAt,
@@ -144,7 +148,7 @@ export function createSuppliersDb(pg, syncRls) {
           billingAddressLine1, billingAddressLine2, billingCity, billingState, billingPincode,
           shippingAddressLine1, shippingAddressLine2, shippingCity, shippingState, shippingPincode
         ]
-      );
+      ));
       return { id, success: true };
     },
 

@@ -1,8 +1,10 @@
 /**
  * Database: Quotations and their lines: list, get, save, finalize, delete. Used by Create quote and Quotation reports.
- * Every query is scoped to the signed-in shop (tenant) and runs syncRls first, so row-level security applies.
- * Moved unchanged from server/repository.mjs (restructure A2).
+ * Runs inside the shop's own transaction (src/shared/server/tenantSession.mjs), so a quote and its lines save
+ * together or not at all. Every query is scoped to the shop, and a save never overwrites another shop's quote.
  */
+import { assertSaved } from "../../../../shared/server/tenantSession.mjs";
+
 export function createQuotationsDb(pg, syncRls) {
   return {
     async getAll(tenantId) {
@@ -131,14 +133,13 @@ export function createQuotationsDb(pg, syncRls) {
         notesJson,
       } = fields;
 
-      await pg.query(
+      assertSaved(await pg.query(
         `INSERT INTO quotations (
           id, tenant_id, customer_id, quote_number, quote_date, quote_status,
           subtotal, transport_cost, design_charges, installation_charges,
           discount_percent, gst_rate, grand_total, notes_json, updated_at
         ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, NOW())
         ON CONFLICT (id) DO UPDATE SET
-          tenant_id = EXCLUDED.tenant_id,
           quote_number = EXCLUDED.quote_number,
           quote_status = EXCLUDED.quote_status,
           subtotal = EXCLUDED.subtotal,
@@ -149,13 +150,15 @@ export function createQuotationsDb(pg, syncRls) {
           gst_rate = EXCLUDED.gst_rate,
           grand_total = EXCLUDED.grand_total,
           notes_json = EXCLUDED.notes_json,
-          updated_at = NOW()`,
+          updated_at = NOW()
+        WHERE quotations.tenant_id = EXCLUDED.tenant_id
+        RETURNING id`,
         [
           quoteId, tenantId, customerId, quoteNumber, quoteDate, finalStatus,
           finalSubtotal, transportCost, designCharges, installationCharges,
           discountPercent, gstRate, finalGrandTotal, JSON.stringify(notesJson)
         ]
-      );
+      ));
 
       // Delete lines strictly for this tenant and quote
       await pg.query(
@@ -164,14 +167,13 @@ export function createQuotationsDb(pg, syncRls) {
       );
 
       for (const pl of processedLines) {
-        await pg.query(
+        assertSaved(await pg.query(
           `INSERT INTO quote_lines (
             id, tenant_id, quote_id, site_id, site_name, product_title, material_name, finish_name,
             method_code, method_name, rate_label, width, height, quantity, rate,
             discount_pct, billable_qty, total, sort_order
           ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)
           ON CONFLICT (id) DO UPDATE SET
-            tenant_id = EXCLUDED.tenant_id,
             site_id = EXCLUDED.site_id,
             site_name = EXCLUDED.site_name,
             product_title = EXCLUDED.product_title,
@@ -187,13 +189,15 @@ export function createQuotationsDb(pg, syncRls) {
             discount_pct = EXCLUDED.discount_pct,
             billable_qty = EXCLUDED.billable_qty,
             total = EXCLUDED.total,
-            sort_order = EXCLUDED.sort_order`,
+            sort_order = EXCLUDED.sort_order
+          WHERE quote_lines.tenant_id = EXCLUDED.tenant_id
+          RETURNING id`,
           [
             pl.id, tenantId, quoteId, pl.siteId, pl.siteName, pl.productTitle, pl.materialName, pl.finishName,
             pl.methodCode, pl.methodName, pl.rateLabel, pl.width, pl.height, pl.quantity, pl.rate,
             pl.discountPct, pl.billableQty, pl.total, pl.sortOrder
           ]
-        );
+        ));
       }
 
       return { success: true, quoteId };

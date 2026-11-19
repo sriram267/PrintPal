@@ -1,8 +1,9 @@
 import type { SiteRecord } from "../../shared/types"
+import { newId } from "../../../../shared/newId"
 
 export function createDefaultSite(siteNumber: number): SiteRecord {
   return {
-    id: `site-${Date.now()}-${siteNumber}`,
+    id: newId(`site-${siteNumber}`),
     siteName: "",
     address: "",
     addressLine1: "",

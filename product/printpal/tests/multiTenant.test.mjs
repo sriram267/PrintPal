@@ -1,15 +1,11 @@
 import { describe, it, before, after } from "node:test";
 import assert from "node:assert/strict";
 import { PGlite } from "@electric-sql/pglite";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { initDatabase } from "../src/shared/server/schema.mjs";
 import { createTenantRepository } from "../src/shared/server/repository.mjs";
+import { prepareRowRules, withTenant } from "../src/shared/server/tenantSession.mjs";
 import { copyCatalogueForTenant } from "../src/features/settings/starter-catalogue/db/catalogueCopy.mjs";
 import { DEFAULT_TENANT_ID } from "../src/shared/server/tenantContext.mjs";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const DATA_DIR = path.resolve(__dirname, "../data/pgdata");
 
 describe("PrintPal Multi-Tenancy SaaS Architecture & Data Isolation Test Suite", () => {
   let pg;
@@ -18,8 +14,18 @@ describe("PrintPal Multi-Tenancy SaaS Architecture & Data Isolation Test Suite",
   const tenant2 = "org_test_shop_beta_" + Date.now();
 
   before(async () => {
-    pg = new PGlite(DATA_DIR);
+    // A throwaway in-memory database with the real schema (never the local data/pgdata folder or Neon).
+    pg = new PGlite();
     await pg.waitReady;
+    const [log, warn] = [console.log, console.warn];
+    console.log = console.warn = () => {};
+    try {
+      await initDatabase(pg);
+    } finally {
+      console.log = log;
+      console.warn = warn;
+    }
+    assert.equal(await prepareRowRules(pg), true, "each shop's queries must run as app_user");
     repo = createTenantRepository(pg);
 
     // Ensure tenant 1 and tenant 2 records exist in tenants registry
@@ -38,21 +44,7 @@ describe("PrintPal Multi-Tenancy SaaS Architecture & Data Isolation Test Suite",
   });
 
   after(async () => {
-    // Cleanup tenant1 & tenant2 test data
-    for (const t of [tenant1, tenant2]) {
-      try {
-        await pg.query("DELETE FROM quote_lines WHERE tenant_id = $1", [t]);
-        await pg.query("DELETE FROM quotations WHERE tenant_id = $1", [t]);
-        await pg.query("DELETE FROM sites WHERE tenant_id = $1", [t]);
-        await pg.query("DELETE FROM customers WHERE tenant_id = $1", [t]);
-        await pg.query("DELETE FROM products WHERE tenant_id = $1", [t]);
-        await pg.query("DELETE FROM finishes WHERE tenant_id = $1", [t]);
-        await pg.query("DELETE FROM materials WHERE tenant_id = $1", [t]);
-        await pg.query("DELETE FROM business_details WHERE tenant_id = $1", [t]);
-        await pg.query("DELETE FROM tenants WHERE id = $1", [t]);
-      } catch {}
-    }
-    await pg.close();
+    await pg.close(); // the in-memory database disappears with it
   });
 
   it("1. Baseline: Tenant 2 has zero rows in customers, quotes, materials, products before any action", async () => {
@@ -325,26 +317,19 @@ describe("PrintPal Multi-Tenancy SaaS Architecture & Data Isolation Test Suite",
     );
   });
 
-  it("8. Database-Level RLS Defense-in-Depth: Supervised role query strictly isolated by current_setting", async () => {
-    // Under non-superuser role 'app_user', test RLS enforcement directly in SQL
-    await pg.query("SET ROLE app_user;");
+  it("8. Database-Level RLS Defense-in-Depth: the repository's own path runs as app_user, isolated per shop", async () => {
+    // withTenant is exactly what every repository call uses: no hand-made SET ROLE in this test.
+    const look = (tenant) =>
+      withTenant(pg, tenant, async (tx) => {
+        const who = await tx.query("SELECT current_user AS u");
+        const all = await tx.query("SELECT COUNT(*) AS c FROM customers;"); // no WHERE: only the row rules limit it
+        return { user: who.rows[0].u, customers: Number(all.rows[0].c) };
+      });
+    const seen1 = await look(tenant1);
+    const seen2 = await look(tenant2);
 
-    try {
-      // Set session to tenant2
-      await pg.query("SELECT set_config('app.current_tenant_id', $1, false);", [tenant2]);
-      const resTenant2 = await pg.query("SELECT COUNT(*) AS c FROM customers;");
-      const countTenant2 = Number(resTenant2.rows[0].c);
-
-      // Set session to tenant1
-      await pg.query("SELECT set_config('app.current_tenant_id', $1, false);", [tenant1]);
-      const resTenant1 = await pg.query("SELECT COUNT(*) AS c FROM customers;");
-      const countTenant1 = Number(resTenant1.rows[0].c);
-
-      // Tenant 1 has customers, Tenant 2 has 0 (or strictly its own)
-      assert.ok(countTenant1 > 0, "Tenant 1 must see its own customers under RLS");
-      assert.notEqual(countTenant1, countTenant2, "Tenant 1 and Tenant 2 counts must differ under RLS");
-    } finally {
-      await pg.query("RESET ROLE;");
-    }
+    assert.equal(seen1.user, "app_user", "Queries must run as the restricted app_user role");
+    assert.ok(seen1.customers > 0, "Tenant 1 must see its own customers under RLS");
+    assert.equal(seen2.customers, 0, "Tenant 2 must not see Tenant 1's customers under RLS");
   });
 });
