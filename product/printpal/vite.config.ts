@@ -50,6 +50,7 @@ export default defineConfig({
     dedupe: ["react", "react-dom", "react/jsx-runtime", "clsx", "tailwind-merge", "class-variance-authority", "lucide-react", "date-fns"],
     alias: {
       "@printpal/ui/tokens.css": resolve(__dirname, "../../packages/ui/src/tokens/tokens.css"),
+      "@printpal/ui/greeting-engine": resolve(__dirname, "../../packages/ui/src/pal/greetingEngine.ts"),
       "@printpal/ui/pal.css": resolve(__dirname, "../../packages/ui/src/pal/palMascot.css"),
       "@printpal/ui": resolve(__dirname, "../../packages/ui/src/index.ts"),
       "@/components": resolve(__dirname, "./src/components"),

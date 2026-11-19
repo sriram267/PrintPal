@@ -16,9 +16,9 @@ import {
   ModalDescription,
   ModalButton,
 } from "./modal-system"
-import { PalMascot, type PalTone } from "./pal-mascot"
-import { GREETING_MS, MASCOT_PX, rigFrom, runPalGreeting } from "./pal-greeting"
-import "./pal-mascot.css"
+import { PalMascot, type PalTone } from "@printpal/ui"
+import { GREETING_MS, MASCOT_PX, rigFrom, runPalGreeting } from "@printpal/ui/greeting-engine"
+import "@printpal/ui/pal.css"
 
 export type PalNotchVariant =
   | "success"

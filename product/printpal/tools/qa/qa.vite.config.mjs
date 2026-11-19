@@ -14,6 +14,7 @@ export default defineConfig({
     alias: [
       { find: "@clerk/react", replacement: STUB },
       { find: "@printpal/ui/tokens.css", replacement: `${APP}/../../packages/ui/src/tokens/tokens.css` },
+      { find: "@printpal/ui/greeting-engine", replacement: `${APP}/../../packages/ui/src/pal/greetingEngine.ts` },
       { find: "@printpal/ui/pal.css", replacement: `${APP}/../../packages/ui/src/pal/palMascot.css` },
       { find: "@printpal/ui", replacement: `${APP}/../../packages/ui/src/index.ts` },
       { find: "@/components", replacement: `${APP}/src/components` },
