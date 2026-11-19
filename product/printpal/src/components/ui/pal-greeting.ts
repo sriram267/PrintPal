@@ -259,8 +259,8 @@ export interface PalRig {
   eyeR: SVGGElement;
 }
 
-/** Size of the mascot element at full height: body half-size 31 of 100 maps to HB / 2. */
-export const MASCOT_PX = (100 * (HB / 2)) / 31;
+/** Size of the mascot element: the body (66 of 100 wide) shows about 58px wide at full size. */
+export const MASCOT_PX = (100 * 58) / 66;
 
 export function rigFrom(root: HTMLElement): PalRig | null {
   const q = <T extends Element>(s: string) => root.querySelector(s) as T | null;

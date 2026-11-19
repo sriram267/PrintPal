@@ -12,12 +12,15 @@ interface PalMascotProps {
   className?: string;
 }
 
-/** Soft squircle body, centre (50,50), half-size 31. */
-const BODY = "M50 19 C70.8 19 81 29.2 81 50 C81 70.8 70.8 81 50 81 C29.2 81 19 70.8 19 50 C19 29.2 29.2 19 50 19 Z";
+/** Glossy pillow-dome body, centre (50,51), 66 × 50. */
+const BODY = "M17 50 C17 33 32 26 50 26 C68 26 83 33 83 50 C83 69 71 76 50 76 C29 76 17 69 17 50 Z";
+/** Small mitten hand (tip up, thumb on the inner side), centred on (0,0). */
+const HAND =
+  "M-4.6 7.2 C-8 4.6 -7.6 -2.6 -3.8 -7.4 C-2.4 -9.1 0.2 -8.6 0.4 -6.2 C0.6 -4.2 -0.4 -2.6 0.8 -1.4 C2.2 -2.6 4.6 -2.6 5.6 -0.4 C6.8 3 4.4 7.6 0.4 8.4 C-1.6 8.8 -3.4 8.2 -4.6 7.2 Z";
 
 /**
- * Pal, the PrintPal mascot: a pearl-silver squircle lit from the top left, two slim ink capsule eyes,
- * and two floating hands (a soft ball and a rounded pill). Original artwork, pure vector.
+ * Pal, the PrintPal mascot: a glossy orange pillow-dome, two ink capsule eyes,
+ * two small floating mitten hands. Original artwork, pure vector.
  */
 export function PalMascot({ size, mode = "idle", hands = true, className = "" }: PalMascotProps) {
   const uid = useId().replace(/:/g, "");
@@ -25,7 +28,7 @@ export function PalMascot({ size, mode = "idle", hands = true, className = "" }:
   return (
     <svg
       className={`pm pm-${mode} ${className}`}
-      viewBox={hands ? "0 0 100 100" : "17 17 66 66"}
+      viewBox={hands ? "0 0 100 100" : "14 15 72 72"}
       width={size}
       height={size}
       aria-hidden="true"
@@ -33,48 +36,58 @@ export function PalMascot({ size, mode = "idle", hands = true, className = "" }:
       shapeRendering="geometricPrecision"
     >
       <defs>
-        {/* pearl body, lit from the top left */}
-        <radialGradient id={`${uid}b`} cx="0.36" cy="0.28" r="0.86">
-          <stop offset="0" stopColor="#FFFFFF" />
-          <stop offset="0.42" stopColor="#F2F4F7" />
-          <stop offset="0.78" stopColor="#D8DDE4" />
-          <stop offset="1" stopColor="#B8C0CB" />
-        </radialGradient>
-        {/* hands use the same light, so they read as the same material */}
-        <radialGradient id={`${uid}h`} cx="0.34" cy="0.3" r="0.8">
-          <stop offset="0" stopColor="#FFFFFF" />
-          <stop offset="0.55" stopColor="#E6E9EE" />
-          <stop offset="1" stopColor="#B4BCC7" />
-        </radialGradient>
-        <radialGradient id={`${uid}g`} cx="0.5" cy="0.5" r="0.5">
-          <stop offset="0" stopColor="#FFFFFF" stopOpacity="0.9" />
+        <linearGradient id={`${uid}b`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#F7844A" />
+          <stop offset="0.3" stopColor="#E65A1D" />
+          <stop offset="0.75" stopColor="#D2480F" />
+          <stop offset="1" stopColor="#A9360A" />
+        </linearGradient>
+        <linearGradient id={`${uid}r`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0.66" stopColor="#7A2504" stopOpacity="0" />
+          <stop offset="1" stopColor="#7A2504" stopOpacity="0.45" />
+        </linearGradient>
+        <linearGradient id={`${uid}g`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#FFFFFF" stopOpacity="0.38" />
           <stop offset="1" stopColor="#FFFFFF" stopOpacity="0" />
-        </radialGradient>
+        </linearGradient>
+        <linearGradient id={`${uid}h`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#F57A3E" />
+          <stop offset="1" stopColor="#C9420E" />
+        </linearGradient>
       </defs>
 
       <g className="pm-all">
         {hands && (
           <>
-        {/* left hand: a soft ball */}
-        <g className="pm-hand pm-hand-l">
-          <circle cx="8.5" cy="55" r="6.6" fill={u("h")} />
-        </g>
-        {/* right hand: a rounded pill, tilted */}
-        <g className="pm-hand pm-hand-r">
-          <rect x="81.5" y="62.8" width="17" height="8.4" rx="4.2" transform="rotate(-38 90 67)" fill={u("h")} />
-        </g>
+            <g className="pm-hand pm-hand-l">
+              <path d={HAND} transform="translate(11.5 66) rotate(26) scale(0.86)" fill={u("h")} />
+            </g>
+            <g className="pm-hand pm-hand-r">
+              <path d={HAND} transform="translate(88.5 66) scale(-1 1) rotate(26) scale(0.86)" fill={u("h")} />
+            </g>
           </>
         )}
 
         <g className="pm-body">
           <path d={BODY} fill={u("b")} />
-          <ellipse cx="41" cy="28.5" rx="13" ry="5" fill={u("g")} />
+          <path d={BODY} fill={u("r")} />
+          {/* glossy top band */}
+          <path
+            d="M23 44 C24.5 34 35.5 29.5 50 29.5 C64.5 29.5 75.5 34 77 44 C69 39 60 37.5 50 37.5 C40 37.5 31 39 23 44 Z"
+            fill={u("g")}
+          />
+          {/* warm bounce light along the base */}
+          <path
+            d="M20 58 C26 65 37 68.5 50 68.5 C63 68.5 74 65 80 58 C79 67 68 73.5 50 73.5 C32 73.5 21 67 20 58 Z"
+            fill="#FF8A52"
+            opacity="0.18"
+          />
           <g className="pm-eyes">
             <g className="pm-eye">
-              <rect x="37" y="37" width="5.2" height="14.5" rx="2.6" fill="#15171B" />
+              <rect x="37.4" y="45.5" width="6" height="14.5" rx="3" fill="#23262B" />
             </g>
             <g className="pm-eye">
-              <rect x="57.8" y="37" width="5.2" height="14.5" rx="2.6" fill="#15171B" />
+              <rect x="56.6" y="45.5" width="6" height="14.5" rx="3" fill="#23262B" />
             </g>
           </g>
         </g>

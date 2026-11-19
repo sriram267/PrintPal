@@ -1,26 +1,32 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="400" height="400" shape-rendering="geometricPrecision">
-  <!-- Pal, the PrintPal mascot: pearl-silver squircle, slim ink capsule eyes, floating ball and pill hands. Original artwork. -->
   <defs>
-    <radialGradient id="b" cx="0.36" cy="0.28" r="0.86">
-      <stop offset="0" stop-color="#FFFFFF"/>
-      <stop offset="0.42" stop-color="#F2F4F7"/>
-      <stop offset="0.78" stop-color="#D8DDE4"/>
-      <stop offset="1" stop-color="#B8C0CB"/>
-    </radialGradient>
-    <radialGradient id="h" cx="0.34" cy="0.3" r="0.8">
-      <stop offset="0" stop-color="#FFFFFF"/>
-      <stop offset="0.55" stop-color="#E6E9EE"/>
-      <stop offset="1" stop-color="#B4BCC7"/>
-    </radialGradient>
-    <radialGradient id="g" cx="0.5" cy="0.5" r="0.5">
-      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.9"/>
+    <linearGradient id="b" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F7844A"/>
+      <stop offset="0.3" stop-color="#E65A1D"/>
+      <stop offset="0.75" stop-color="#D2480F"/>
+      <stop offset="1" stop-color="#A9360A"/>
+    </linearGradient>
+    <linearGradient id="gl" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.38"/>
       <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
-    </radialGradient>
+    </linearGradient>
+    <linearGradient id="rim" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0.66" stop-color="#7A2504" stop-opacity="0"/>
+      <stop offset="1" stop-color="#7A2504" stop-opacity="0.45"/>
+    </linearGradient>
+    <linearGradient id="h" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F57A3E"/>
+      <stop offset="1" stop-color="#C9420E"/>
+    </linearGradient>
+    <path id="body" d="M17 50 C17 33 32 26 50 26 C68 26 83 33 83 50 C83 69 71 76 50 76 C29 76 17 69 17 50 Z"/>
+    <path id="hand" d="M-4.6 7.2 C-8 4.6 -7.6 -2.6 -3.8 -7.4 C-2.4 -9.1 0.2 -8.6 0.4 -6.2 C0.6 -4.2 -0.4 -2.6 0.8 -1.4 C2.2 -2.6 4.6 -2.6 5.6 -0.4 C6.8 3 4.4 7.6 0.4 8.4 C-1.6 8.8 -3.4 8.2 -4.6 7.2 Z"/>
   </defs>
-  <circle cx="8.5" cy="55" r="6.6" fill="url(#h)"/>
-  <rect x="81.5" y="62.8" width="17" height="8.4" rx="4.2" transform="rotate(-38 90 67)" fill="url(#h)"/>
-  <path d="M50 19 C70.8 19 81 29.2 81 50 C81 70.8 70.8 81 50 81 C29.2 81 19 70.8 19 50 C19 29.2 29.2 19 50 19 Z" fill="url(#b)"/>
-  <ellipse cx="41" cy="28.5" rx="13" ry="5" fill="url(#g)"/>
-  <rect x="37" y="37" width="5.2" height="14.5" rx="2.6" fill="#15171B"/>
-  <rect x="57.8" y="37" width="5.2" height="14.5" rx="2.6" fill="#15171B"/>
+  <use href="#hand" transform="translate(11.5 66) rotate(26) scale(0.86)" fill="url(#h)"/>
+  <use href="#hand" transform="translate(88.5 66) scale(-1 1) rotate(26) scale(0.86)" fill="url(#h)"/>
+  <use href="#body" fill="url(#b)"/>
+  <use href="#body" fill="url(#rim)"/>
+  <path d="M23 44 C24.5 34 35.5 29.5 50 29.5 C64.5 29.5 75.5 34 77 44 C69 39 60 37.5 50 37.5 C40 37.5 31 39 23 44 Z" fill="url(#gl)"/>
+  <path d="M20 58 C26 65 37 68.5 50 68.5 C63 68.5 74 65 80 58 C79 67 68 73.5 50 73.5 C32 73.5 21 67 20 58 Z" fill="#FF8A52" opacity="0.18"/>
+  <rect x="37.4" y="45.5" width="6" height="14.5" rx="3" fill="#23262B"/>
+  <rect x="56.6" y="45.5" width="6" height="14.5" rx="3" fill="#23262B"/>
 </svg>
