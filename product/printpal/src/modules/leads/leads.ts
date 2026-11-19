@@ -3,7 +3,7 @@
 // Brand Colors: Charcoal Ink (#202428), Slate Grey (#737B84), Border Light (#DCE1E5),
 // Brand Orange (#D7440E), Active Blue (#2878D0), Surface Light (#F3F5F7).
 
-import './leads.css';
+import '../../app/leads.css';
 import type { CustomerRecord, EnquiryRecord, ServiceItem, SiteRecord } from './types';
 
 const STORAGE_CUSTOMERS_KEY = 'printpal_workshop_customers_v3';

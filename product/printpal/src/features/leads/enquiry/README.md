@@ -13,10 +13,10 @@ Quick enquiries before someone becomes a customer: the enquiry list, the enquiry
 | `db/` | How the data is stored in and read from the database |
 | `tests/` | Checks that this feature still works |
 
-## Moving in progress
+## What is here, and what is still elsewhere
 
-**Already here (A2):** `api/enquiries.routes.mjs`, `db/enquiries.db.mjs`, `db/enquiries.schema.mjs`.
+**Here:** `screen/EnquiryList.tsx` (rows, empty state, list body); `api/`, `db/` — the enquiry form is the enquiry mode of `../customer/screen/CustomerForm.tsx`.
 
-**Still to move (A3):** the screen — it still lives in `src/modules/leads/LeadsApp.tsx` (enquiry list, row, form).
+**Still elsewhere (tidied up in A4):** The state it shows and the save / delete handlers are still shared in `src/app/LeadsApp.tsx`; types, form checks and server calls in `src/modules/leads/`.
 
 See `docs/RESTRUCTURE_PLAN.md` for the plan.

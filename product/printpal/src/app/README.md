@@ -1,7 +1,12 @@
 # App — the frame around everything
 
-Sign-in, the top bar and menu, switching between pages, the Pal notch at the top, and global styles.
-No feature logic lives here: each page comes from its folder in `src/features/`.
+| File | What it is |
+|---|---|
+| `main.ts` | Starts the app |
+| `App.tsx` | Sign-in (Clerk): shows the login page or the workspace |
+| `LoginPage.tsx` | The sign-in / sign-up / waitlist page |
+| `LeadsApp.tsx` | The workspace: which page is open, the data every page shows, and the save / delete handlers. Each page's layout comes from its feature folder (`src/features/…/screen/`) |
+| `TopNav.tsx` | The top bar: Leads, Quotation, Quotation Reports, Settings, and the user menu |
+| `style.css`, `leads.css` | Global styles |
 
-Until the code is moved here, it still lives in: `src/main.ts`, `src/App.tsx`, `src/style.css`,
-`src/modules/auth/LoginPage.tsx`, and the top bar / page switching parts of `src/modules/leads/LeadsApp.tsx`.
+Next tidy-up (A4): the data and handlers each page uses move next to that page, so `LeadsApp.tsx` keeps only page switching.

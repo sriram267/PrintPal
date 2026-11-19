@@ -13,10 +13,10 @@ Your shop's details: logo, legal name, addresses, GSTIN / PAN, contact info and 
 | `db/` | How the data is stored in and read from the database |
 | `tests/` | Checks that this feature still works |
 
-## Moving in progress
+## What is here, and what is still elsewhere
 
-**Already here (A2):** `api/businessDetails.routes.mjs`, `db/businessDetails.db.mjs`, `db/businessDetails.schema.mjs`.
+**Here:** `screen/BusinessDetailsView.tsx`, `screen/businessDetails.types.ts`, `screen/businessDetails.validation.ts`; `api/`, `db/`.
 
-**Still to move (A3):** the screen — it still lives in `src/modules/settings/features/business-details/`.
+**Still elsewhere (tidied up in A4):** Nothing.
 
 See `docs/RESTRUCTURE_PLAN.md` for the plan.

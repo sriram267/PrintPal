@@ -13,10 +13,10 @@ Everything about customers: the customer list, the New / Edit customer drawer (b
 | `db/` | How the data is stored in and read from the database |
 | `tests/` | Checks that this feature still works |
 
-## Moving in progress
+## What is here, and what is still elsewhere
 
-**Already here (A2):** `api/customers.routes.mjs`, `db/customers.db.mjs`, `db/customers.schema.mjs` (customers + sites tables).
+**Here:** `screen/CustomerList.tsx` (rows, empty state, list body), `screen/CustomerForm.tsx` (the New / Edit customer drawer — it also has the enquiry mode), `screen/MultiSiteModal.tsx`, `screen/sites.ts`; `api/`, `db/`.
 
-**Still to move (A3):** the screen — it still lives in `src/modules/leads/LeadsApp.tsx` (customer list, row, drawer, multi-site pop-up).
+**Still elsewhere (tidied up in A4):** The state it shows and the save / delete handlers are still shared in `src/app/LeadsApp.tsx`; types in `src/modules/leads/types.ts`, form checks in `src/modules/leads/validation.ts`, server calls in `src/modules/leads/leadsService.ts`.
 
 See `docs/RESTRUCTURE_PLAN.md` for the plan.

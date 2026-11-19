@@ -97,7 +97,7 @@ async function runTests() {
   // 4. Verify Pal Notch UX copy in LeadsApp.tsx
   console.log("Test 4: Verifying Pal Notch notification and UX copy in LeadsApp...");
   const leadsAppSrc = fs.readFileSync(
-    path.resolve("src/modules/leads/LeadsApp.tsx"),
+    path.resolve("src/app/LeadsApp.tsx"),
     "utf-8"
   );
   assert.ok(

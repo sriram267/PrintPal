@@ -13,10 +13,10 @@ Finishes like powder coating or lamination, with colour codes (RAL / Pantone) an
 | `db/` | How the data is stored in and read from the database |
 | `tests/` | Checks that this feature still works |
 
-## Moving in progress
+## What is here, and what is still elsewhere
 
-**Already here (A2):** `api/finishes.routes.mjs`, `db/finishes.db.mjs`, `db/finishes.schema.mjs`.
+**Here:** `screen/FinishesPage.tsx`, `screen/FinishList.tsx`, `screen/FinishForm.tsx`; `api/`, `db/`.
 
-**Still to move (A3):** the screen — it still lives in `src/modules/leads/LeadsApp.tsx` (finishes page, row, finish pop-up).
+**Still elsewhere (tidied up in A4):** The state it shows and the save / delete handlers are still shared in `src/app/LeadsApp.tsx`; types and server calls in `src/modules/leads/`.
 
 See `docs/RESTRUCTURE_PLAN.md` for the plan.

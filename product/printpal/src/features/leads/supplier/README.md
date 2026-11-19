@@ -13,10 +13,10 @@ Suppliers and vendors: the supplier list, the supplier drawer (details, address,
 | `db/` | How the data is stored in and read from the database |
 | `tests/` | Checks that this feature still works |
 
-## Moving in progress
+## What is here, and what is still elsewhere
 
-**Already here (A2):** `api/suppliers.routes.mjs`, `db/suppliers.db.mjs`, `db/suppliers.schema.mjs`.
+**Here:** `screen/SupplierList.tsx`, `screen/SupplierForm.tsx`; `api/`, `db/`.
 
-**Still to move (A3):** the screen — it still lives in `src/modules/leads/LeadsApp.tsx` (supplier list, row, drawer).
+**Still elsewhere (tidied up in A4):** The state it shows and the save / delete handlers are still shared in `src/app/LeadsApp.tsx`; types and server calls in `src/modules/leads/`.
 
 See `docs/RESTRUCTURE_PLAN.md` for the plan.

@@ -5,7 +5,7 @@ import {
   AuthenticateWithRedirectCallback,
   useAuth,
 } from "@clerk/react";
-import { LeadsApp } from "../modules/leads/LeadsApp";
+import { LeadsApp } from "./LeadsApp";
 import { LoginPage } from "./LoginPage";
 import { installAuthFetchInterceptor, registerAuthTokenGetter } from "../shared/apiClient";
 

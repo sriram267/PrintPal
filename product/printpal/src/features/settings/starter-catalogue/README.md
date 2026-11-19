@@ -13,10 +13,10 @@ The 33 products, 30 materials and 23 finishes every new shop starts with, and th
 | `db/` | How the data is stored in and read from the database |
 | `tests/` | Checks that this feature still works |
 
-## Moving in progress
+## What is here, and what is still elsewhere
 
-**Already here (A2):** `db/seedData.json` (the catalogue), `db/catalogueCopy.mjs` (copies it into a new shop), `db/seedDefaultCatalogue.mjs` (loads it at start-up).
+**Here:** `db/seedData.json`, `db/catalogueCopy.mjs`, `db/seedDefaultCatalogue.mjs`.
 
-**Still to move (A3):** the screen — it still lives in `src/modules/leads/seedCatalog.ts` (the screen's copy of the catalogue).
+**Still elsewhere (tidied up in A4):** The screen's own copy of the catalogue, `src/modules/leads/seedCatalog.ts`.
 
 See `docs/RESTRUCTURE_PLAN.md` for the plan.

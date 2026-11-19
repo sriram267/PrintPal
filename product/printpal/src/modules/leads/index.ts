@@ -5,7 +5,7 @@
 export * from './types';
 export * from './leadsService';
 export * from './validation';
-export { LeadsApp } from './LeadsApp';
+export { LeadsApp } from '../../app/LeadsApp';
 export { QuotationView } from '../../features/quotation/create-quote/screen/QuotationView';
 export { QuotationReportsView, BillingReportsView } from '../../features/quotation/reports/screen/QuotationReportsView';
 

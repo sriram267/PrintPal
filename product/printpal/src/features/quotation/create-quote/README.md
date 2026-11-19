@@ -13,10 +13,10 @@ Making a quotation: pick a customer, price every site and service, add charges, 
 | `db/` | How the data is stored in and read from the database |
 | `tests/` | Checks that this feature still works |
 
-## Moving in progress
+## What is here, and what is still elsewhere
 
-**Already here (A2):** `api/quotations.create.routes.mjs` (save a quote, pricing methods), `db/quotations.db.mjs` (also used by Reports), `db/methods.db.mjs`, the quotations / quote_lines / methods tables.
+**Here:** `screen/QuotationView.tsx`; `api/`, `db/`.
 
-**Still to move (A3):** the screen — it still lives in `src/modules/leads/QuotationView.tsx`.
+**Still elsewhere (tidied up in A4):** Types it shares with Leads are in `src/modules/leads/types.ts`.
 
 See `docs/RESTRUCTURE_PLAN.md` for the plan.

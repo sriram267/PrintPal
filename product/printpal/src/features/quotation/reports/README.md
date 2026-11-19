@@ -13,10 +13,10 @@ All quotations per customer, newest version on top: revise (renegotiate), delete
 | `db/` | How the data is stored in and read from the database |
 | `tests/` | Checks that this feature still works |
 
-## Moving in progress
+## What is here, and what is still elsewhere
 
-**Already here (A2):** `api/quotations.routes.mjs` (list, open, finalize, delete) — it reads quotations through `create-quote/db/`.
+**Here:** `screen/QuotationReportsView.tsx`, `screen/quoteVersion.ts`; `api/`.
 
-**Still to move (A3):** the screen — it still lives in `src/modules/leads/QuotationReportsView.tsx`, `getNextQuoteVersion` in `LeadsApp.tsx`.
+**Still elsewhere (tidied up in A4):** Types it shares with Leads are in `src/modules/leads/types.ts`.
 
 See `docs/RESTRUCTURE_PLAN.md` for the plan.

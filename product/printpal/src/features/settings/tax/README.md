@@ -15,10 +15,10 @@ The GST / tax slabs your shop uses (CGST, SGST, IGST).
 | `db/` | How the data is stored in and read from the database |
 | `tests/` | Checks that this feature still works |
 
-## Moving in progress
+## What is here, and what is still elsewhere
 
-**Already here (A2):** (no server part — taxes are not saved yet).
+**Here:** `screen/TaxPage.tsx`, `screen/TaxModal.tsx`, `screen/TaxSettingsCard.tsx`, `screen/taxes.ts` (default slabs); `db/tax.schema.mjs` (a planned table, not created yet).
 
-**Still to move (A3):** the screen — it still lives in `src/modules/settings/features/tax/`, tax page and Add / Edit tax pop-up in `LeadsApp.tsx`.
+**Still elsewhere (tidied up in A4):** The state it shows and the save / delete handlers are still shared in `src/app/LeadsApp.tsx`. Taxes are still not saved anywhere (known gap).
 
 See `docs/RESTRUCTURE_PLAN.md` for the plan.

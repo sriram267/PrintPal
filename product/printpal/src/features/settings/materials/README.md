@@ -13,10 +13,10 @@ Sheets and substrates: thickness, sheet size, supplier, notes, and whether each 
 | `db/` | How the data is stored in and read from the database |
 | `tests/` | Checks that this feature still works |
 
-## Moving in progress
+## What is here, and what is still elsewhere
 
-**Already here (A2):** `api/materials.routes.mjs`, `db/materials.db.mjs`, `db/materials.schema.mjs`.
+**Here:** `screen/MaterialsPage.tsx`, `screen/MaterialList.tsx`, `screen/MaterialForm.tsx`; `api/`, `db/`.
 
-**Still to move (A3):** the screen — it still lives in `src/modules/leads/LeadsApp.tsx` (materials page, row, material pop-up).
+**Still elsewhere (tidied up in A4):** The state it shows and the save / delete handlers are still shared in `src/app/LeadsApp.tsx`; types and server calls in `src/modules/leads/`.
 
 See `docs/RESTRUCTURE_PLAN.md` for the plan.

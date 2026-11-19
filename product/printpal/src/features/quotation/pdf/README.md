@@ -13,10 +13,10 @@ The A4 quotation / invoice sheet: your logo, GSTIN and signature, the lines, tot
 | `db/` | How the data is stored in and read from the database |
 | `tests/` | Checks that this feature still works |
 
-## Moving in progress
+## What is here, and what is still elsewhere
 
-**Already here (A2):** (no server part).
+**Here:** `screen/QuotePDFPreview.tsx` (no server part).
 
-**Still to move (A3):** the screen — it still lives in `src/modules/leads/QuotePDFPreview.tsx`.
+**Still elsewhere (tidied up in A4):** Nothing.
 
 See `docs/RESTRUCTURE_PLAN.md` for the plan.
