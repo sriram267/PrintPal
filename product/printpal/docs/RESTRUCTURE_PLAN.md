@@ -1,6 +1,7 @@
 # PrintPal code structure + UI library — plan and file map
 
-Status: **A0 done (2026-11-19)** — waiting for the map below to be approved before A1.
+Status: **A0 + A1 done (2026-11-19).** Folders and READMEs exist in `src/features/`, `src/app/`, `src/shared/`;
+`npm run check:structure` checks the rules and runs before every build. Next: Track B (B0–B4), then A2.
 
 ## The goal in one paragraph
 
@@ -55,7 +56,7 @@ packages/ui/                  the PrintPal UI component library (Track B), with 
 | Phase | What | Done when |
 |---|---|---|
 | A0 ✅ | Map every file to its feature; record the test baseline | You approve this map |
-| A1 | Create the folders, the plain READMEs, and a check that fails if a file is in the wrong place | You can find any feature by name |
+| A1 ✅ | Create the folders, the plain READMEs, and a check that fails if a file is in the wrong place | You can find any feature by name |
 | A2 | Move the server code: `server.mjs` + `repository.mjs` split into each feature's `api/` and `db/`. Same web addresses | All tests pass, same answers from the server |
 | A3 | Split `LeadsApp.tsx` into each feature's `screen/`, one feature at a time | Each screen identical to before (screenshots compared) |
 | A4 | Move types, checks and formatters next to their feature; delete the dead files listed below | No loose files left |
