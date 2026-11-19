@@ -22,6 +22,7 @@ import {
   ModalButton,
 } from "./modal-system"
 import { PalMascot } from "./pal-mascot"
+import { GREETING_MS, runPalGreeting } from "./pal-greeting"
 import "./pal-mascot.css"
 
 export type PalNotchVariant =
@@ -260,25 +261,28 @@ function VariantIcon({ variant }: { variant: PalNotchVariant }) {
   return <Info size={size} color={color} strokeWidth={stroke} />
 }
 
-// ── Pal greeting: the PrintPal mascot says hi, then the notch closes it ──
-const GREETING_MS = 4200
-
+// ── Pal greeting: the canvas entrance (see pal-greeting.ts) ──
 function PalGreeting({ onComplete }: { onComplete: () => void }) {
+  const canvasRef = React.useRef<HTMLCanvasElement | null>(null)
   const doneRef = React.useRef(onComplete)
   doneRef.current = onComplete
 
   React.useEffect(() => {
-    const t = window.setTimeout(() => doneRef.current(), GREETING_MS)
-    return () => window.clearTimeout(t)
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const finish = () => doneRef.current()
+    const stop = runPalGreeting(canvas, finish)
+    // Safety net: if animation frames pause (background tab), still close.
+    const fallback = window.setTimeout(finish, GREETING_MS + 600)
+    return () => {
+      stop()
+      window.clearTimeout(fallback)
+    }
   }, [])
 
   return (
     <div className="pal-greeting">
-      <PalMascot size={72} mode="greet" className="pal-greeting-mascot" />
-      <div className="pal-greeting-text">
-        <strong>Hi, I&rsquo;m Pal.</strong>
-        <span>Your print and signage shop helper.</span>
-      </div>
+      <canvas ref={canvasRef} className="pal-greeting-canvas" aria-hidden="true" />
     </div>
   )
 }
@@ -926,52 +930,25 @@ export function PalNotch({ activeModuleLabel = "Ready" }: PalNotchProps) {
             cursor: pointer !important;
           }
 
-          /* Pal greeting: mascot + a line of text */
+          /* Pal greeting canvas */
           .pal-greeting {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 20px;
             width: 100%;
             height: 104px;
-            padding: 0 20px;
-            box-sizing: border-box;
             overflow: hidden;
           }
-          .pal-greeting-mascot {
-            width: 72px;
-            height: 72px;
-            flex-shrink: 0;
+          .pal-greeting-canvas {
+            display: block;
+            width: 100%;
+            max-width: 440px;
+            height: 104px;
           }
           .pal-idle-mascot {
             display: block;
             flex-shrink: 0;
             margin-left: -6px;
-          }
-          .pal-greeting-text {
-            display: flex;
-            flex-direction: column;
-            gap: 3px;
-            min-width: 0;
-            text-align: left;
-            animation: palMascotText 0.34s cubic-bezier(.32, 1.22, .42, 1) 0.45s both;
-          }
-          .pal-greeting-text strong {
-            font-size: 15px;
-            font-weight: 700;
-            color: #FFFFFF;
-          }
-          .pal-greeting-text span {
-            font-size: 12.5px;
-            line-height: 1.35;
-            color: #94A3B8;
-          }
-          @keyframes palMascotText {
-            0% { opacity: 0; transform: translateY(-6px); }
-            100% { opacity: 1; transform: translateY(0); }
-          }
-          @media (prefers-reduced-motion: reduce) {
-            .pal-greeting-text { animation: none; }
           }
 
           .pal-island-surface.is-toast,

@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { PalMascot } from "./PalMascot";
+import { GREETING_MS, runPalGreeting } from "./palGreeting";
 import "./palMascot.css";
 import "./palNotch.css";
 
@@ -10,9 +11,6 @@ interface PalNotchProps {
   label?: string;
 }
 
-/** How long the greeting stays open before the notch settles back to idle. */
-const GREETING_MS = 4200;
-
 const prefersReducedMotion = () =>
   typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -21,12 +19,14 @@ const prefersReducedMotion = () =>
 let greetedThisLoad = false;
 
 /**
- * The Pal notch: a black pill docked to the top-centre of the viewport
- * (216 × 34 idle, 440 × 104 greeting).
- * On page load it drops in, says hi once, then settles to idle. Clicking it says hi again.
+ * The Pal notch, as in the product: a black pill docked to the top-centre of the
+ * viewport (216 × 34 idle, 440 × 104 greeting).
+ * On page load it drops in, plays Pal's greeting once, then settles to idle.
+ * Clicking it replays the greeting.
  */
 export function PalNotch({ label = "Pilot open" }: PalNotchProps) {
   const [state, setState] = useState<NotchState>(greetedThisLoad ? "idle" : "hidden");
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   // Entrance: drop in, then greet once per page load.
   useEffect(() => {
@@ -46,11 +46,16 @@ export function PalNotch({ label = "Pilot open" }: PalNotchProps) {
     };
   }, []);
 
-  // The greeting closes itself.
+  // Run the canvas while greeting. The timeout is a safety net: if animation frames are paused
+  // (background tab, power saving), the notch still returns to idle instead of staying open and empty.
   useEffect(() => {
-    if (state !== "greeting") return;
-    const t = window.setTimeout(() => setState("idle"), GREETING_MS);
-    return () => window.clearTimeout(t);
+    if (state !== "greeting" || !canvasRef.current) return;
+    const stop = runPalGreeting(canvasRef.current, () => setState("idle"));
+    const fallback = window.setTimeout(() => setState("idle"), GREETING_MS + 600);
+    return () => {
+      stop();
+      window.clearTimeout(fallback);
+    };
   }, [state]);
 
   // Escape closes the greeting.
@@ -84,11 +89,7 @@ export function PalNotch({ label = "Pilot open" }: PalNotchProps) {
         <span className={`pal-surface ${shape}`}>
           {state === "greeting" ? (
             <span className="pal-greeting">
-              <PalMascot size={72} mode="greet" className="pal-greeting-mascot" />
-              <span className="pal-greeting-text">
-                <strong>Hi, I&rsquo;m Pal.</strong>
-                <span>Your print and signage shop helper.</span>
-              </span>
+              <canvas ref={canvasRef} className="pal-greeting-canvas" aria-hidden="true" />
             </span>
           ) : (
             <>
