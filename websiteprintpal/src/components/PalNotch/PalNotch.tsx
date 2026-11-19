@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { PalMascot } from "./PalMascot";
-import { GREETING_MS, runPalGreeting } from "./palGreeting";
+import { GREETING_MS, MASCOT_PX, rigFrom, runPalGreeting } from "./palGreeting";
 import "./palMascot.css";
 import "./palNotch.css";
 
@@ -27,6 +27,8 @@ let greetedThisLoad = false;
 export function PalNotch({ label = "Pilot open" }: PalNotchProps) {
   const [state, setState] = useState<NotchState>(greetedThisLoad ? "idle" : "hidden");
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const stageRef = useRef<HTMLSpanElement | null>(null);
+  const palRef = useRef<HTMLSpanElement | null>(null);
 
   // Entrance: drop in, then greet once per page load.
   useEffect(() => {
@@ -49,8 +51,8 @@ export function PalNotch({ label = "Pilot open" }: PalNotchProps) {
   // Run the canvas while greeting. The timeout is a safety net: if animation frames are paused
   // (background tab, power saving), the notch still returns to idle instead of staying open and empty.
   useEffect(() => {
-    if (state !== "greeting" || !canvasRef.current) return;
-    const stop = runPalGreeting(canvasRef.current, () => setState("idle"));
+    if (state !== "greeting" || !canvasRef.current || !stageRef.current || !palRef.current) return;
+    const stop = runPalGreeting(canvasRef.current, stageRef.current, rigFrom(palRef.current), () => setState("idle"));
     const fallback = window.setTimeout(() => setState("idle"), GREETING_MS + 600);
     return () => {
       stop();
@@ -90,6 +92,11 @@ export function PalNotch({ label = "Pilot open" }: PalNotchProps) {
           {state === "greeting" ? (
             <span className="pal-greeting">
               <canvas ref={canvasRef} className="pal-greeting-canvas" aria-hidden="true" />
+              <span ref={stageRef} className="pal-stage" aria-hidden="true">
+                <span ref={palRef} className="pal-stage-pal">
+                  <PalMascot size={MASCOT_PX} mode="rig" />
+                </span>
+              </span>
             </span>
           ) : (
             <>

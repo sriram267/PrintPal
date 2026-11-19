@@ -4,8 +4,8 @@
  * The scene engine (notch stretch, warp streaks, particle ring, halo, card, drop/bounce/wave/look/blink
  * kinematics) is adapted from Coucou's greeting engine:
  *   Copyright (c) 2026 Louis Raillé. MIT License (https://github.com/Louis-CFM/coucou/blob/main/LICENSE).
- * The character drawn in it is Pal, PrintPal's own mascot (original artwork). Coucou's "Mochi" character,
- * names and sounds are not used.
+ * The canvas draws only the scene (card, streaks, ring, halo). Pal itself is PrintPal's own vector mascot (PalMascot),
+ * moved frame by frame here so it stays razor sharp. Coucou's "Mochi" character, names and sounds are not used.
  *
  * The same file lives in the product: product/printpal/src/components/ui/pal-greeting.ts. Keep them identical.
  */
@@ -86,26 +86,12 @@ const PARTICLES = (() => {
   return { warps, ring };
 })();
 
-/** Pal's body: the same soft squircle as pal.svg (cubic corners, handle ratio 0.671). */
-function palBodyPath(h: number): Path2D {
-  const k = 0.671 * h;
-  const p = new Path2D();
-  p.moveTo(0, -h);
-  p.bezierCurveTo(k, -h, h, -k, h, 0);
-  p.bezierCurveTo(h, k, k, h, 0, h);
-  p.bezierCurveTo(-k, h, -h, k, -h, 0);
-  p.bezierCurveTo(-h, -k, -k, -h, 0, -h);
-  p.closePath();
-  return p;
-}
-
 interface GreetingPose {
   hb: number;
   x: number;
   y: number;
   sx: number;
   sy: number;
-  eye: "open" | "happy" | "content";
   open: number;
   lookX: number;
   lookY: number;
@@ -181,11 +167,6 @@ function getGreetingPose(t: number): GreetingPose {
   sx += 0.18 * sinkK;
   sy -= 0.14 * sinkK;
 
-  let eye: GreetingPose["eye"] = "open";
-  if (t >= 0.55 && t < 0.8) eye = "happy";
-  if (t >= GT.content0 && t < GT.tuck1) eye = "content";
-  if (t >= GT.down0 && t < GT.down1) eye = "content";
-
   const blink = (tb: number) => {
     const k = seg(t, tb, tb + 0.12);
     return k > 0 && k < 1 ? 1 - Math.sin(Math.PI * k) * 0.94 : 1;
@@ -220,7 +201,6 @@ function getGreetingPose(t: number): GreetingPose {
     y,
     sx,
     sy,
-    eye,
     open,
     lookX,
     lookY,
@@ -245,147 +225,79 @@ function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: numbe
   ctx.closePath();
 }
 
-/** One of Pal's floating bean hands, centred at (hx, hy). */
-function drawPalHand(ctx: CanvasRenderingContext2D, h: number, hx: number, hy: number, k: number, rot: number) {
-  if (k <= 0.01) return;
-  const rx = h * 0.187 * k;
-  const ry = h * 0.265 * k;
-  ctx.save();
-  ctx.translate(hx, hy);
-  ctx.rotate(rot);
-  const g = ctx.createLinearGradient(0, -ry, 0, ry);
-  g.addColorStop(0, "#FF915D");
-  g.addColorStop(1, "#D24813");
-  ctx.fillStyle = g;
-  ctx.beginPath();
-  ctx.ellipse(0, 0, rx, ry, 0, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.restore();
-}
-
-function drawPalHands(ctx: CanvasRenderingContext2D, h: number, p: GreetingPose) {
-  // Left: pops out from behind the body, then floats.
-  const lx = lerp(-h * 0.35, -h * 1.34, p.handL);
-  let ly = lerp(h * 0.85, h * 0.32, p.handL);
-  if (p.wave >= 0) {
-    const rampIn = clamp(p.wave / 0.08, 0, 1);
-    ly += Math.sin(p.wave * 2 * Math.PI * 2.5) * h * 0.06 * rampIn;
-  }
-  drawPalHand(ctx, h, lx, ly, p.handL, -0.21);
-
-  // Right: pops out, lifts and waves, then lowers back.
-  let rx = lerp(h * 0.35, h * 1.34, p.handR);
-  let ry = lerp(h * 0.85, h * 0.32, p.handR);
-  let rot = 0.21;
-  if (p.wave >= 0) {
-    const lift = E.out(clamp(p.wave / 0.18, 0, 1)) * (1 - E.inOut(seg(p.wave, GT.tuck0 - GT.pop1, GT.tuck1 - GT.pop1)));
-    ry -= h * 0.62 * lift;
-    rx += h * 0.06 * lift;
-    rot = 0.21 + lift * (0.25 + Math.sin(p.wave * 2 * Math.PI * 2.5) * 0.42);
-  }
-  drawPalHand(ctx, h, rx, ry, p.handR, rot);
-}
-
-function drawGreetingPal(ctx: CanvasRenderingContext2D, p: GreetingPose) {
+/** Soft halo behind Pal: a faint warm glow that cools to print blue at the end. */
+function drawHalo(ctx: CanvasRenderingContext2D, p: GreetingPose) {
   const h = p.hb / 2;
-  if (h <= 0.4) return;
-
-  // Halo: warm PrintPal orange, cooling to print blue at the end.
-  if (p.halo > 0) {
-    const bl = p.haloBlue;
-    const cr = Math.round(lerp(255, 40, bl));
-    const cg = Math.round(lerp(140, 120, bl));
-    const cb = Math.round(lerp(80, 208, bl));
-    for (const [R, alpha] of [
-      [h * 3.4, 0.26],
-      [h * 5.6, 0.09],
-    ] as const) {
-      const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, R);
-      g.addColorStop(0, `rgba(${cr},${cg},${cb},${alpha * p.halo})`);
-      g.addColorStop(1, `rgba(${cr},${cg},${cb},0)`);
-      ctx.fillStyle = g;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, R, 0, Math.PI * 2);
-      ctx.fill();
-    }
+  if (h <= 0.4 || p.halo <= 0) return;
+  const bl = p.haloBlue;
+  const cr = Math.round(lerp(255, 120, bl));
+  const cg = Math.round(lerp(196, 170, bl));
+  const cb = Math.round(lerp(160, 230, bl));
+  for (const [R, alpha] of [
+    [h * 3.2, 0.2],
+    [h * 5.4, 0.07],
+  ] as const) {
+    const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, R);
+    g.addColorStop(0, `rgba(${cr},${cg},${cb},${alpha * p.halo})`);
+    g.addColorStop(1, `rgba(${cr},${cg},${cb},0)`);
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, R, 0, Math.PI * 2);
+    ctx.fill();
   }
-
-  ctx.save();
-  ctx.translate(p.x, p.y);
-  ctx.scale(p.sx, p.sy);
-
-  drawPalHands(ctx, h, p);
-
-  // Body
-  const body = palBodyPath(h);
-  const bg = ctx.createLinearGradient(0, -h, 0, h);
-  bg.addColorStop(0, "#FF8650");
-  bg.addColorStop(0.55, "#E4531A");
-  bg.addColorStop(1, "#C2400C");
-  ctx.fillStyle = bg;
-  ctx.fill(body);
-
-  ctx.save();
-  ctx.clip(body);
-
-  // Soft top light
-  ctx.save();
-  ctx.translate(-h * 0.13, -h * 0.74);
-  ctx.scale(1, 0.34);
-  const gl = ctx.createRadialGradient(0, 0, 0, 0, 0, h * 0.61);
-  gl.addColorStop(0, "rgba(255,255,255,0.34)");
-  gl.addColorStop(1, "rgba(255,255,255,0)");
-  ctx.fillStyle = gl;
-  ctx.beginPath();
-  ctx.arc(0, 0, h * 0.61, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.restore();
-
-  // Eyes
-  const ew = h * 0.226;
-  const eh = h * 0.484;
-  const lx = p.lookX * h * 0.2;
-  const ly = p.lookY * h * 0.14 - h * 0.177;
-  ctx.fillStyle = "#1B1E22";
-  ctx.strokeStyle = "#1B1E22";
-  for (const sd of [-1, 1]) {
-    ctx.save();
-    ctx.translate(sd * h * 0.365 + lx, ly);
-    if (p.eye === "happy" || p.eye === "content") {
-      ctx.lineWidth = ew * 0.8;
-      ctx.lineCap = "round";
-      ctx.beginPath();
-      if (p.eye === "happy") ctx.arc(0, ew * 0.55, ew * 0.95, Math.PI * 1.15, Math.PI * 1.85);
-      else ctx.arc(0, -ew * 0.45, ew * 0.95, Math.PI * 0.15, Math.PI * 0.85);
-      ctx.stroke();
-    } else {
-      ctx.scale(1, Math.max(0.08, p.open));
-      ctx.beginPath();
-      ctx.roundRect(-ew / 2, -eh / 2, ew, eh, ew / 2);
-      ctx.fill();
-      ctx.fillStyle = "rgba(255,255,255,0.85)";
-      ctx.beginPath();
-      ctx.arc(-h * 0.032, -h * 0.113, h * 0.042, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = "#1B1E22";
-    }
-    ctx.restore();
-  }
-
-  // Warm cheeks when it smiles
-  if (p.eye === "happy" || p.eye === "content") {
-    ctx.fillStyle = "rgba(255, 196, 168, 0.55)";
-    for (const sd of [-1, 1]) {
-      ctx.beginPath();
-      ctx.ellipse(sd * h * 0.56 + lx, ly + h * 0.3, h * 0.13, h * 0.08, 0, 0, Math.PI * 2);
-      ctx.fill();
-    }
-  }
-
-  ctx.restore();
-  ctx.restore();
 }
 
+/** Pal's vector parts that the engine moves. */
+export interface PalRig {
+  /** Wrapper of the PalMascot svg: MASCOT_PX square, positioned in the 440 × 104 stage. */
+  root: HTMLElement | SVGElement;
+  handL: SVGGElement;
+  handR: SVGGElement;
+  eyes: SVGGElement;
+  eyeL: SVGGElement;
+  eyeR: SVGGElement;
+}
+
+/** Size of the mascot element at full height: body half-size 31 of 100 maps to HB / 2. */
+export const MASCOT_PX = (100 * (HB / 2)) / 31;
+
+export function rigFrom(root: HTMLElement): PalRig | null {
+  const q = <T extends Element>(s: string) => root.querySelector(s) as T | null;
+  const eyes = root.querySelectorAll<SVGGElement>(".pm-eye");
+  const handL = q<SVGGElement>(".pm-hand-l");
+  const handR = q<SVGGElement>(".pm-hand-r");
+  const eyesG = q<SVGGElement>(".pm-eyes");
+  if (!handL || !handR || !eyesG || eyes.length < 2) return null;
+  return { root, handL, handR, eyes: eyesG, eyeL: eyes[0], eyeR: eyes[1] };
+}
+
+function applyPose(rig: PalRig, p: GreetingPose) {
+  const k = p.hb / HB;
+  const half = MASCOT_PX / 2;
+  const el = rig.root as HTMLElement;
+  el.style.opacity = k > 0.02 ? "1" : "0";
+  el.style.transform = `translate(${(p.x - half).toFixed(2)}px, ${(p.y - half).toFixed(2)}px) scale(${(p.sx * k).toFixed(4)}, ${(p.sy * k).toFixed(4)})`;
+
+  // Hands slide out from behind the body; the right one lifts and waves.
+  const kl = p.handL;
+  let ly = -(1 - kl) * 4;
+  if (p.wave >= 0) ly += Math.sin(p.wave * 2 * Math.PI * 2.5) * 1.6 * clamp(p.wave / 0.08, 0, 1);
+  rig.handL.style.transform = `translate(${((1 - kl) * 24).toFixed(2)}px, ${ly.toFixed(2)}px) scale(${Math.max(0.001, kl).toFixed(3)})`;
+
+  const kr = p.handR;
+  let lift = 0;
+  let rot = 0;
+  if (p.wave >= 0) {
+    lift = E.out(clamp(p.wave / 0.18, 0, 1)) * (1 - E.inOut(seg(p.wave, GT.tuck0 - GT.pop1, GT.tuck1 - GT.pop1)));
+    rot = lift * (12 + Math.sin(p.wave * 2 * Math.PI * 2.5) * 24);
+  }
+  rig.handR.style.transform = `translate(${(-(1 - kr) * 24 - 2 * lift).toFixed(2)}px, ${(-(1 - kr) * 4 - 24 * lift).toFixed(2)}px) rotate(${rot.toFixed(2)}deg) scale(${Math.max(0.001, kr).toFixed(3)})`;
+
+  rig.eyes.style.transform = `translate(${(p.lookX * 5).toFixed(2)}px, ${(p.lookY * 3.5).toFixed(2)}px)`;
+  const open = `scaleY(${Math.max(0.08, p.open).toFixed(3)})`;
+  rig.eyeL.style.transform = open;
+  rig.eyeR.style.transform = open;
+}
 function drawGreetingParticles(ctx: CanvasRenderingContext2D, t: number, p: GreetingPose) {
   if (t < 0.55) {
     const fadeOut = 1 - seg(t, 0.4, 0.55);
@@ -419,10 +331,16 @@ function drawGreetingParticles(ctx: CanvasRenderingContext2D, t: number, p: Gree
 }
 
 /**
- * Runs the greeting on a canvas. Calls onComplete once when it ends.
- * Returns a cleanup function that stops the animation.
+ * Runs the greeting: the canvas paints the scene, the rig moves Pal (vector).
+ * `stage` is the 440 × 104 box holding Pal; it is scaled to the canvas' on-screen width.
+ * Calls onComplete once when it ends. Returns a cleanup function that stops the animation.
  */
-export function runPalGreeting(canvas: HTMLCanvasElement, onComplete: () => void): () => void {
+export function runPalGreeting(
+  canvas: HTMLCanvasElement,
+  stage: HTMLElement,
+  rig: PalRig | null,
+  onComplete: () => void,
+): () => void {
   const ctx = canvas.getContext("2d");
   if (!ctx) {
     onComplete();
@@ -430,10 +348,7 @@ export function runPalGreeting(canvas: HTMLCanvasElement, onComplete: () => void
   }
 
   const dpr = window.devicePixelRatio || 1;
-  const width = GREETING_W;
-  const height = GREETING_H;
-  canvas.width = width * dpr;
-  canvas.height = height * dpr;
+  let bw = 0;
 
   let animId = 0;
   let done = false;
@@ -451,12 +366,21 @@ export function runPalGreeting(canvas: HTMLCanvasElement, onComplete: () => void
     }
 
     const p = getGreetingPose(t);
-    const clientWidth = canvas.parentElement?.clientWidth || width;
-    const scale = Math.min(1, clientWidth / width);
+    // The canvas has a fixed CSS size (it does not stretch with the notch), so the bitmap
+    // always matches screen pixels 1:1 and stays crisp.
+    const cssW = canvas.clientWidth || GREETING_W;
+    const scale = Math.min(1, cssW / GREETING_W);
+    const wantW = Math.round(cssW * dpr);
+    if (wantW !== bw) {
+      bw = wantW;
+      canvas.width = wantW;
+      canvas.height = Math.round(GREETING_H * dpr);
+    }
+    stage.style.transform = `scale(${scale})`;
 
     ctx.save();
-    ctx.setTransform(dpr * scale, 0, 0, dpr * scale, ((clientWidth - width * scale) / 2) * dpr, 0);
-    ctx.clearRect(0, 0, width, height);
+    ctx.setTransform(dpr * scale, 0, 0, dpr * scale, 0, 0);
+    ctx.clearRect(0, 0, GREETING_W, GREETING_H);
 
     if (p.card > 0) {
       ctx.save();
@@ -473,8 +397,10 @@ export function runPalGreeting(canvas: HTMLCanvasElement, onComplete: () => void
       ctx.restore();
     }
 
-    drawGreetingPal(ctx, p);
+    drawHalo(ctx, p);
     ctx.restore();
+
+    if (rig) applyPose(rig, p);
 
     animId = requestAnimationFrame(render);
   };

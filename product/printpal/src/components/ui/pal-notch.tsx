@@ -22,7 +22,7 @@ import {
   ModalButton,
 } from "./modal-system"
 import { PalMascot } from "./pal-mascot"
-import { GREETING_MS, runPalGreeting } from "./pal-greeting"
+import { GREETING_MS, MASCOT_PX, rigFrom, runPalGreeting } from "./pal-greeting"
 import "./pal-mascot.css"
 
 export type PalNotchVariant =
@@ -264,14 +264,18 @@ function VariantIcon({ variant }: { variant: PalNotchVariant }) {
 // ── Pal greeting: the canvas entrance (see pal-greeting.ts) ──
 function PalGreeting({ onComplete }: { onComplete: () => void }) {
   const canvasRef = React.useRef<HTMLCanvasElement | null>(null)
+  const stageRef = React.useRef<HTMLDivElement | null>(null)
+  const palRef = React.useRef<HTMLDivElement | null>(null)
   const doneRef = React.useRef(onComplete)
   doneRef.current = onComplete
 
   React.useEffect(() => {
     const canvas = canvasRef.current
-    if (!canvas) return
+    const stage = stageRef.current
+    const pal = palRef.current
+    if (!canvas || !stage || !pal) return
     const finish = () => doneRef.current()
-    const stop = runPalGreeting(canvas, finish)
+    const stop = runPalGreeting(canvas, stage, rigFrom(pal), finish)
     // Safety net: if animation frames pause (background tab), still close.
     const fallback = window.setTimeout(finish, GREETING_MS + 600)
     return () => {
@@ -283,6 +287,11 @@ function PalGreeting({ onComplete }: { onComplete: () => void }) {
   return (
     <div className="pal-greeting">
       <canvas ref={canvasRef} className="pal-greeting-canvas" aria-hidden="true" />
+      <div ref={stageRef} className="pal-stage" aria-hidden="true">
+        <div ref={palRef} className="pal-stage-pal">
+          <PalMascot size={MASCOT_PX} mode="rig" />
+        </div>
+      </div>
     </div>
   )
 }
@@ -924,26 +933,46 @@ export function PalNotch({ activeModuleLabel = "Ready" }: PalNotchProps) {
           .pal-island-surface.is-greeting {
             height: 104px !important;
             border-radius: 0 0 22px 22px !important;
-            background: radial-gradient(120% 90% at 50% 120%, rgba(215, 68, 14, 0.30), transparent 70%), #000000 !important;
+            background: radial-gradient(120% 90% at 50% 120%, rgba(215, 68, 14, 0.16), transparent 70%), #000000 !important;
             color: #F5F6F8 !important;
             box-shadow: 0 16px 40px -6px rgba(0, 0, 0, 0.65), 0 4px 16px rgba(0, 0, 0, 0.35), inset 0 -1px 0 rgba(255, 255, 255, 0.08) !important;
             cursor: pointer !important;
           }
 
-          /* Pal greeting canvas */
+          /* Pal greeting: canvas scene + vector Pal on top, both a fixed 440 x 104 box */
           .pal-greeting {
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            --pal-stage-w: min(440px, calc(100vw - 28px));
+            position: relative;
+            display: block;
             width: 100%;
             height: 104px;
             overflow: hidden;
           }
           .pal-greeting-canvas {
+            position: absolute;
+            top: 0;
+            left: 50%;
             display: block;
-            width: 100%;
-            max-width: 440px;
+            width: var(--pal-stage-w);
             height: 104px;
+            transform: translateX(-50%);
+          }
+          .pal-stage {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 440px;
+            height: 104px;
+            margin-left: calc(var(--pal-stage-w) / -2);
+            transform-origin: 0 0;
+            pointer-events: none;
+          }
+          .pal-stage-pal {
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform-origin: 50% 50%;
+            opacity: 0;
           }
           .pal-idle-mascot {
             display: block;
@@ -1122,7 +1151,7 @@ export function PalNotch({ activeModuleLabel = "Ready" }: PalNotchProps) {
               background: (isModalActive || isConfirmClosing)
                 ? "#000000"
                 : isGreetingActive
-                ? "radial-gradient(120% 90% at 50% 120%, rgba(215, 68, 14, 0.30), transparent 70%), #000000"
+                ? "radial-gradient(120% 90% at 50% 120%, rgba(215, 68, 14, 0.16), transparent 70%), #000000"
                 : "#000000",
             }}
           >
