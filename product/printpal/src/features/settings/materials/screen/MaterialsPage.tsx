@@ -1,6 +1,6 @@
 import type { MaterialRecord } from "../../shared/types"
 import type * as React from "react"
-import { Button } from "@/components/ui/button"
+import { Button } from "@printpal/ui"
 import { MaterialEmptyIllustration, MaterialRow } from "./MaterialList"
 
 export function renderMaterialsPage({ openMaterialPrompt, materials, handleEditMaterial, handleDeleteMaterial }: { openMaterialPrompt: (mat?: MaterialRecord | null, targetService?: { siteIdx: number; srvIdx: number}  | null) => void; materials: MaterialRecord[]; handleEditMaterial: (mat: MaterialRecord) => void; handleDeleteMaterial: (id: string, name: string) => void }): React.ReactNode {

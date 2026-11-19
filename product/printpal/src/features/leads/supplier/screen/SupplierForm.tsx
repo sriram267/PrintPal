@@ -1,9 +1,7 @@
 import type * as React from "react"
 import { AlertCircle, ChevronDown, Search, X, Plus } from "lucide-react"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
+import { Label, Input, Textarea } from "@printpal/ui"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Textarea } from "@/components/ui/textarea"
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
 

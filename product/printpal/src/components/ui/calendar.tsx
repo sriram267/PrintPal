@@ -1,8 +1,7 @@
 import * as React from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { cn } from "@/shared/utils"
-import { buttonVariants } from "@/components/ui/button"
-
+import { buttonVariants } from "@printpal/ui"
 export interface CalendarProps {
   mode?: "single"
   selected?: Date | string

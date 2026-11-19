@@ -1,6 +1,6 @@
 import type * as React from "react"
 import type { TaxRecord } from "./taxes"
-import { Button } from "@/components/ui/button"
+import { Button } from "@printpal/ui"
 import { Edit3, Trash2 } from "lucide-react"
 
 export function renderTaxPage({ applyTaxesToSaleableItems, handleOpenAddTaxModal, setApplyTaxesToSaleableItems, showToast, taxes, handleOpenEditTaxModal, handleDeleteTax }: { applyTaxesToSaleableItems: boolean; handleOpenAddTaxModal: () => void; setApplyTaxesToSaleableItems: React.Dispatch<React.SetStateAction<boolean>>; showToast: (message: string, type?: "success" | "error" | "info" | "warning") => void; taxes: TaxRecord[]; handleOpenEditTaxModal: (tax: TaxRecord) => void; handleDeleteTax: (tax: TaxRecord) => void }): React.ReactNode {

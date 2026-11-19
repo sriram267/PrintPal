@@ -1,9 +1,6 @@
 import type * as React from "react"
 import { AlertCircle } from "lucide-react"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-
+import { Label, Input, Textarea } from "@printpal/ui"
 export function renderMaterialForm({ materialErrors, materialForm, setMaterialForm, setMaterialErrors, isSupplierEnabled }: { materialErrors: Record<string, string>; materialForm: { name: string; category: string; thickness: string; standardSize: string; application: "Indoor" | "Outdoor" | "Coastal"; supplierName: string; notes: string} ; setMaterialForm: React.Dispatch<React.SetStateAction<{ name: string; category: string; thickness: string; standardSize: string; application: "Indoor" | "Outdoor" | "Coastal"; supplierName: string; notes: string} >>; setMaterialErrors: React.Dispatch<React.SetStateAction<Record<string, string>>>; isSupplierEnabled: boolean }): React.ReactNode {
   return <div className="printpal-new-cust-grid-wrapper">
     {Object.keys(materialErrors).length > 0 && (

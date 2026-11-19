@@ -1,6 +1,5 @@
 import { Edit3, Check } from "lucide-react";
-import { Button } from "@ui/button";
-
+import { Button } from "@printpal/ui"
 export interface TaxSettingsCardProps {
   onEditTax?: () => void;
   gstRate?: number;

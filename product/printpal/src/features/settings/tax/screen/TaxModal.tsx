@@ -2,9 +2,7 @@ import type * as React from "react"
 import type { TaxRecord } from "./taxes"
 import { Modal, ModalContent, ModalHeader, ModalIconBadge, ModalTitle, ModalDescription, ModalBody, ModalFooter, ModalButton } from "@ui/modal-system"
 import { Edit3, Plus, AlertCircle } from "lucide-react"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-
+import { Label, Input } from "@printpal/ui"
 export function renderTaxModal({ isTaxModalOpen, setEditingTax, setTaxForm, setTaxErrors, setIsTaxModalOpen, editingTax, taxErrors, taxForm, handleSaveTax }: { isTaxModalOpen: boolean; setEditingTax: React.Dispatch<React.SetStateAction<TaxRecord | null>>; setTaxForm: React.Dispatch<React.SetStateAction<{ name: string; percentage: string} >>; setTaxErrors: React.Dispatch<React.SetStateAction<{ name?: string; percentage?: string} >>; setIsTaxModalOpen: React.Dispatch<React.SetStateAction<boolean>>; editingTax: TaxRecord | null; taxErrors: { name?: string; percentage?: string} ; taxForm: { name: string; percentage: string} ; handleSaveTax: () => void }): React.ReactNode {
   return <Modal
     open={isTaxModalOpen}

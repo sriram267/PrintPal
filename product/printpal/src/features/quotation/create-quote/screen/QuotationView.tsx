@@ -14,10 +14,8 @@ import {
   X,
 } from 'lucide-react';
 import { QuotePDFPreview, type QuotePDFDocumentProps } from '../../pdf/screen/QuotePDFPreview';
-import { Button } from '@ui/button';
+import { Button, Input, Textarea } from "@printpal/ui"
 import { palNotch } from '@ui/pal-notch';
-import { Input } from '@ui/input';
-import { Textarea } from '@ui/textarea';
 import {
   Select,
   SelectContent,

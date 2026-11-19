@@ -1,7 +1,6 @@
 import type * as React from "react"
 import type { CustomerRecord, CustomerDrawerAnchor, SupplierRecord } from "./types"
-import { Button } from "@/components/ui/button"
-
+import { Button } from "@printpal/ui"
 export function renderLeadsHeader({ activeTab, closeNewCustomerModal, setActiveTab, isSupplierEnabled, openDrawer, openDrawerForSupplier }: { activeTab: string; closeNewCustomerModal: () => void; setActiveTab: React.Dispatch<React.SetStateAction<"customer" | "enquiry" | "supplier">>; isSupplierEnabled: boolean; openDrawer: (isEdit?: boolean, cust?: CustomerRecord, title?: string, anchor?: CustomerDrawerAnchor) => void; openDrawerForSupplier: (supplier?: SupplierRecord) => void }) {
   return <section className="printpal-leads-header">
     <div className="printpal-leads-title-block">

@@ -1,6 +1,6 @@
 import type { FinishRecord } from "../../shared/types"
 import type * as React from "react"
-import { Button } from "@/components/ui/button"
+import { Button } from "@printpal/ui"
 import { FinishEmptyIllustration, FinishRow } from "./FinishList"
 
 export function renderFinishesPage({ openFinishPrompt, finishes, handleEditFinish, handleDeleteFinish }: { openFinishPrompt: (fin?: FinishRecord | null, targetService?: { siteIdx: number; srvIdx: number}  | null) => void; finishes: FinishRecord[]; handleEditFinish: (fin: FinishRecord) => void; handleDeleteFinish: (id: string, name: string) => void }): React.ReactNode {

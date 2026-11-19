@@ -10,7 +10,7 @@ export const Label = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <LabelPrimitive.Root
     ref={ref}
-    className={cn("mb-1.5 block text-xs font-medium tracking-[-0.006em] text-muted", className)}
+    className={cn("text-[12px]/4 font-medium text-muted leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 select-none", className)}
     {...props}
   />
 ));
@@ -47,7 +47,7 @@ export function Field({ label, required, hint, error, id, className, children }:
   return (
     <div className={cn("min-w-0", className)}>
       {label && (
-        <Label htmlFor={fieldId}>
+        <Label htmlFor={fieldId} className="mb-1.5 block">
           {label}
           {required && <span className="ml-0.5 text-danger-text">*</span>}
         </Label>

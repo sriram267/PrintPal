@@ -1,9 +1,6 @@
 import type * as React from "react"
 import { AlertCircle } from "lucide-react"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-
+import { Label, Input, Textarea } from "@printpal/ui"
 export function renderFinishForm({ finishErrors, finishForm, setFinishForm, setFinishErrors }: { finishErrors: Record<string, string>; finishForm: { name: string; type: string; colorCode: string; application: "Indoor" | "Outdoor" | "Coastal"; notes: string} ; setFinishForm: React.Dispatch<React.SetStateAction<{ name: string; type: string; colorCode: string; application: "Indoor" | "Outdoor" | "Coastal"; notes: string} >>; setFinishErrors: React.Dispatch<React.SetStateAction<Record<string, string>>> }): React.ReactNode {
   return <div className="printpal-new-cust-grid-wrapper">
     {Object.keys(finishErrors).length > 0 && (
