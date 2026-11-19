@@ -1168,18 +1168,6 @@ export function PalNotch({ activeModuleLabel = "Ready" }: PalNotchProps) {
 
                 <span
                   style={{
-                    fontSize: 12,
-                    fontWeight: 700,
-                    letterSpacing: "0.06em",
-                    color: "#FFFFFF",
-                    flexShrink: 0,
-                  }}
-                >
-                  PAL
-                </span>
-
-                <span
-                  style={{
                     fontSize: 11.5,
                     fontWeight: 500,
                     color: "#94A3B8",
