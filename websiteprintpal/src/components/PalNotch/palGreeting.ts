@@ -250,7 +250,8 @@ function drawHalo(ctx: CanvasRenderingContext2D, p: GreetingPose) {
 /** Pal's vector parts that the engine moves. */
 export interface PalRig {
   /** Wrapper of the PalMascot svg: MASCOT_PX square, positioned in the 440 × 104 stage. */
-  root: HTMLElement | SVGElement;
+  root: HTMLElement;
+  all: SVGGElement;
   handL: SVGGElement;
   handR: SVGGElement;
   eyes: SVGGElement;
@@ -267,16 +268,21 @@ export function rigFrom(root: HTMLElement): PalRig | null {
   const handL = q<SVGGElement>(".pm-hand-l");
   const handR = q<SVGGElement>(".pm-hand-r");
   const eyesG = q<SVGGElement>(".pm-eyes");
-  if (!handL || !handR || !eyesG || eyes.length < 2) return null;
-  return { root, handL, handR, eyes: eyesG, eyeL: eyes[0], eyeR: eyes[1] };
+  const all = q<SVGGElement>(".pm-all");
+  if (!handL || !handR || !eyesG || !all || eyes.length < 2) return null;
+  return { root, all, handL, handR, eyes: eyesG, eyeL: eyes[0], eyeR: eyes[1] };
 }
 
 function applyPose(rig: PalRig, p: GreetingPose) {
   const k = p.hb / HB;
   const half = MASCOT_PX / 2;
-  const el = rig.root as HTMLElement;
+  // Position with left/top and scale INSIDE the svg (not a CSS transform on the wrapper): a CSS-scaled element is
+  // rasterised once by the compositor and then stretched, which blurs it. This way every frame is redrawn as vector.
+  const el = rig.root;
   el.style.opacity = k > 0.02 ? "1" : "0";
-  el.style.transform = `translate(${(p.x - half).toFixed(2)}px, ${(p.y - half).toFixed(2)}px) scale(${(p.sx * k).toFixed(4)}, ${(p.sy * k).toFixed(4)})`;
+  el.style.left = `${(p.x - half).toFixed(2)}px`;
+  el.style.top = `${(p.y - half).toFixed(2)}px`;
+  rig.all.style.transform = `scale(${(p.sx * k).toFixed(4)}, ${(p.sy * k).toFixed(4)})`;
 
   // Hands slide out from behind the body; the right one lifts and waves.
   const kl = p.handL;
@@ -376,7 +382,8 @@ export function runPalGreeting(
       canvas.width = wantW;
       canvas.height = Math.round(GREETING_H * dpr);
     }
-    stage.style.transform = `scale(${scale})`;
+    const st = scale < 1 ? `scale(${scale})` : "";
+    if (stage.style.transform !== st) stage.style.transform = st;
 
     ctx.save();
     ctx.setTransform(dpr * scale, 0, 0, dpr * scale, 0, 0);

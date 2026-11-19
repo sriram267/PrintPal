@@ -977,7 +977,7 @@ export function PalNotch({ activeModuleLabel = "Ready" }: PalNotchProps) {
           .pal-idle-mascot {
             display: block;
             flex-shrink: 0;
-            margin-left: -6px;
+            margin-left: -3px;
           }
 
           .pal-island-surface.is-toast,
@@ -1171,7 +1171,7 @@ export function PalNotch({ activeModuleLabel = "Ready" }: PalNotchProps) {
                   minWidth: 0,
                 }}
               >
-                <PalMascot size={28} className="pal-idle-mascot" />
+                <PalMascot size={22} hands={false} className="pal-idle-mascot" />
 
                 <span
                   style={{

@@ -7,6 +7,8 @@ interface PalMascotProps {
    * rig: no CSS motion; the greeting engine drives the parts frame by frame.
    */
   mode?: "idle" | "rig";
+  /** false: face only (no hands), cropped to the body. Used in the small notch pill. */
+  hands?: boolean;
   className?: string;
 }
 
@@ -17,13 +19,13 @@ const BODY = "M50 19 C70.8 19 81 29.2 81 50 C81 70.8 70.8 81 50 81 C29.2 81 19 7
  * Pal, the PrintPal mascot: a pearl-silver squircle lit from the top left, two slim ink capsule eyes,
  * and two floating hands (a soft ball and a rounded pill). Original artwork, pure vector.
  */
-export function PalMascot({ size, mode = "idle", className = "" }: PalMascotProps) {
+export function PalMascot({ size, mode = "idle", hands = true, className = "" }: PalMascotProps) {
   const uid = useId().replace(/:/g, "");
   const u = (n: string) => `url(#${uid}${n})`;
   return (
     <svg
       className={`pm pm-${mode} ${className}`}
-      viewBox="0 0 100 100"
+      viewBox={hands ? "0 0 100 100" : "17 17 66 66"}
       width={size}
       height={size}
       aria-hidden="true"
@@ -51,6 +53,8 @@ export function PalMascot({ size, mode = "idle", className = "" }: PalMascotProp
       </defs>
 
       <g className="pm-all">
+        {hands && (
+          <>
         {/* left hand: a soft ball */}
         <g className="pm-hand pm-hand-l">
           <circle cx="8.5" cy="55" r="6.6" fill={u("h")} />
@@ -59,6 +63,8 @@ export function PalMascot({ size, mode = "idle", className = "" }: PalMascotProp
         <g className="pm-hand pm-hand-r">
           <rect x="81.5" y="62.8" width="17" height="8.4" rx="4.2" transform="rotate(-38 90 67)" fill={u("h")} />
         </g>
+          </>
+        )}
 
         <g className="pm-body">
           <path d={BODY} fill={u("b")} />

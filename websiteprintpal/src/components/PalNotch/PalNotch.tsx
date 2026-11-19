@@ -101,7 +101,7 @@ export function PalNotch({ label = "Pilot open" }: PalNotchProps) {
           ) : (
             <>
               <span className="pal-idle-left">
-                <PalMascot size={28} className="pal-idle-mascot" />
+                <PalMascot size={22} hands={false} className="pal-idle-mascot" />
                 <span className="pal-name">PAL</span>
                 <span className="pal-label">{label}</span>
               </span>

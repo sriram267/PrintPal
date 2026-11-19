@@ -102,10 +102,10 @@
 }
 .pal-idle-mascot {
   display: block;
-  width: 28px;
-  height: 28px;
+  width: 22px;
+  height: 22px;
   flex-shrink: 0;
-  margin-left: -6px;
+  margin-left: -3px;
 }
 .pal-name {
   flex-shrink: 0;
