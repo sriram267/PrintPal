@@ -50,9 +50,9 @@ import {
   ModalIconBadge,
   ModalButton,
 } from "@ui/modal-system"
-import { QuotationView, type RenegotiatingQuoteData, type QuoteSite } from "./QuotationView"
-import { QuotationReportsView, type QuotationListItem } from "./QuotationReportsView"
-import { QuotePDFPreview, type QuotePDFDocumentProps } from "./QuotePDFPreview"
+import { QuotationView, type RenegotiatingQuoteData, type QuoteSite } from "../../features/quotation/create-quote/screen/QuotationView"
+import { QuotationReportsView, type QuotationListItem } from "../../features/quotation/reports/screen/QuotationReportsView"
+import { QuotePDFPreview, type QuotePDFDocumentProps } from "../../features/quotation/pdf/screen/QuotePDFPreview"
 import {
   BusinessDetailsView,
   type BusinessDetailsRecord,

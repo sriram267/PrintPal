@@ -4,9 +4,9 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 
-const qv = fs.readFileSync(path.resolve("src/modules/leads/QuotationView.tsx"), "utf-8");
+const qv = fs.readFileSync(path.resolve("src/features/quotation/create-quote/screen/QuotationView.tsx"), "utf-8");
 const app = fs.readFileSync(path.resolve("src/modules/leads/LeadsApp.tsx"), "utf-8");
-const rep = fs.readFileSync(path.resolve("src/modules/leads/QuotationReportsView.tsx"), "utf-8");
+const rep = fs.readFileSync(path.resolve("src/features/quotation/reports/screen/QuotationReportsView.tsx"), "utf-8");
 
 console.log("=== Quotation create → reports flow ===");
 

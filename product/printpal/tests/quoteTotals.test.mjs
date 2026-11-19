@@ -3,8 +3,8 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
-import { computeQuoteTotals as server, validateQuoteMoney } from "../src/features/quotation/shared/quoteTotals.mjs";
-import { computeQuoteTotals as client, formatQuoteDate } from "../src/modules/quotation/quoteTotals.ts";
+import { computeQuoteTotals as server, validateQuoteMoney } from "../src/features/quotation/shared/quoteTotals.server.mjs";
+import { computeQuoteTotals as client, formatQuoteDate } from "../src/features/quotation/shared/quoteTotals.ts";
 
 console.log("=== Quote totals, validation and PDF print rules ===");
 
@@ -66,17 +66,17 @@ console.log("  ✓ ISO timestamps become '16 Nov 2026'");
 const server_ = read("src/features/quotation/create-quote/api/quotations.create.routes.mjs");
 assert.ok(server_.includes("computeQuoteTotals(") && server_.includes("validateQuoteMoney("), "server uses the shared totals + validation");
 assert.ok(!/totalBase \+ totalBase \* \(Number\(gstRate\)/.test(server_), "old GST formula (that ignored the discount) is gone");
-const reports = read("src/modules/leads/QuotationReportsView.tsx");
+const reports = read("src/features/quotation/reports/screen/QuotationReportsView.tsx");
 assert.ok(reports.includes("computeQuoteTotals({"), "Reports rebuilds discount / taxable / GST from the saved figures");
 assert.ok(!/gstAmount: 0,/.test(reports), "Reports no longer hard-codes GST to 0");
 assert.ok(reports.includes("formatQuoteDate("), "Reports shows friendly dates");
-const view = read("src/modules/leads/QuotationView.tsx");
+const view = read("src/features/quotation/create-quote/screen/QuotationView.tsx");
 assert.ok(view.includes("computeQuoteTotals({"), "quote screen uses the shared totals");
 assert.ok(!view.includes("Math.round((taxableTotal * gstRate) / 100)"), "quote screen no longer rounds GST to whole rupees");
 console.log("  ✓ server, quote screen and Reports all use the shared calculation");
 
 // 6. PDF print sheet
-const pdf = read("src/modules/leads/QuotePDFPreview.tsx");
+const pdf = read("src/features/quotation/pdf/screen/QuotePDFPreview.tsx");
 assert.ok(/@page\s*\{[^}]*margin:\s*0;/.test(pdf), "zero page margin removes the browser's header and footer");
 assert.ok(/padding:\s*14mm 16mm/.test(pdf), "sheet supplies its own print margins");
 assert.ok(!/FAF8F4|F1EDE4/i.test(pdf), "no cream paper colour");

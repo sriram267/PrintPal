@@ -25,8 +25,8 @@ import {
 } from "@ui/select";
 import { Textarea } from "@ui/textarea";
 import { ImageUpload, type ImageUploadItem } from "@/components/ui/image-upload";
-import type { BusinessDetailsRecord } from "../db/businessDetails.schema";
-import { validateBusinessDetails } from "../backend/businessDetails.validation";
+import type { BusinessDetailsRecord } from "./businessDetails.types";
+import { validateBusinessDetails } from "./businessDetails.validation";
 
 export interface TaxOptionRecord {
   id: string;

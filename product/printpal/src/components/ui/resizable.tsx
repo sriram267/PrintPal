@@ -1,6 +1,6 @@
 import * as React from "react"
 import { GripVertical, GripHorizontal } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils"
 
 export interface ResizablePanelGroupProps extends React.HTMLAttributes<HTMLDivElement> {
   direction?: "horizontal" | "vertical"

@@ -4,12 +4,12 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 
-const view = fs.readFileSync(path.resolve("src/modules/leads/QuotationReportsView.tsx"), "utf-8");
+const view = fs.readFileSync(path.resolve("src/features/quotation/reports/screen/QuotationReportsView.tsx"), "utf-8");
 const server =
   fs.readFileSync(path.resolve("src/features/quotation/create-quote/api/quotations.create.routes.mjs"), "utf-8") +
   fs.readFileSync(path.resolve("src/features/quotation/reports/api/quotations.routes.mjs"), "utf-8");
 const repo = fs.readFileSync(path.resolve("src/features/quotation/create-quote/db/quotations.db.mjs"), "utf-8");
-const pdf = fs.readFileSync(path.resolve("src/modules/leads/QuotePDFPreview.tsx"), "utf-8");
+const pdf = fs.readFileSync(path.resolve("src/features/quotation/pdf/screen/QuotePDFPreview.tsx"), "utf-8");
 
 console.log("=== Quotation accordion / finalize tests ===");
 

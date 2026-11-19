@@ -10,7 +10,7 @@ import { PRODUCTS_TABLE } from "../../features/settings/products/db/products.sch
 import { METHODS_TABLE } from "../../features/quotation/create-quote/db/methods.schema.mjs";
 import { QUOTATIONS_TABLE, QUOTE_LINES_TABLE } from "../../features/quotation/create-quote/db/quotations.schema.mjs";
 import { BUSINESS_DETAILS_TABLE } from "../../features/settings/business-details/db/businessDetails.schema.mjs";
-import { SYSTEM_METHODS } from "../../features/quotation/shared/calcLine.mjs";
+import { SYSTEM_METHODS } from "../../features/quotation/shared/calcLine.server.mjs";
 import { seedDatabaseFromCatalogue } from "../../features/settings/starter-catalogue/db/seedDefaultCatalogue.mjs";
 
 /** Tables in the exact order the original single CREATE script used. */

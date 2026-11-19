@@ -9,10 +9,10 @@ import { Trash2, FileText, Pencil, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { palNotch } from '@ui/pal-notch';
-import { QuotePDFPreview } from './QuotePDFPreview';
-import { computeQuoteTotals, formatQuoteDate } from '../quotation/quoteTotals';
-import type { CustomerRecord } from './types';
-import type { BusinessDetailsRecord } from '../settings';
+import { QuotePDFPreview } from '../../pdf/screen/QuotePDFPreview';
+import { computeQuoteTotals, formatQuoteDate } from '../../shared/quoteTotals';
+import type { CustomerRecord } from '../../../../modules/leads/types';
+import type { BusinessDetailsRecord } from '../../../../modules/settings';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 

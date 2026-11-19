@@ -1,6 +1,6 @@
 import * as React from "react"
 import { ArrowUpRight, ArrowDownRight, Minus } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils"
 import { MetricSparkline } from "@/components/ui/metric-sparkline"
 
 export interface StatCardProps extends React.HTMLAttributes<HTMLDivElement> {

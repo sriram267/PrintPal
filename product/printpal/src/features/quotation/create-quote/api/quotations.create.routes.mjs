@@ -1,7 +1,7 @@
 /* Web addresses for creating quotations: the pricing methods list, and saving a quotation (draft or sent).
    Plugged in by server/server.mjs. Moved unchanged from server/server.mjs (A2). */
-import { calcLine, METHOD_MAP, roundHalfUp } from "../../shared/calcLine.mjs";
-import { computeQuoteTotals, validateQuoteMoney, MAX_MONEY } from "../../shared/quoteTotals.mjs";
+import { calcLine, METHOD_MAP, roundHalfUp } from "../../shared/calcLine.server.mjs";
+import { computeQuoteTotals, validateQuoteMoney, MAX_MONEY } from "../../shared/quoteTotals.server.mjs";
 
 /** @param {import("fastify").FastifyInstance} server */
 export function registerCreateQuoteRoutes(server, { repo }) {

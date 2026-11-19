@@ -57,9 +57,7 @@ async function runTests() {
 
   // 2. Verify removal of Draft/Sent status chip from QuotationReportsView / BillingReportsView
   console.log("Test 2: Verifying removal of Draft chip status in QuotationReportsView...");
-  const targetReportFile = fs.existsSync(path.resolve("src/modules/leads/QuotationReportsView.tsx"))
-    ? path.resolve("src/modules/leads/QuotationReportsView.tsx")
-    : path.resolve("src/modules/leads/BillingReportsView.tsx");
+  const targetReportFile = path.resolve("src/features/quotation/reports/screen/QuotationReportsView.tsx");
   const billingReportsSrc = fs.readFileSync(targetReportFile, "utf-8");
   assert.ok(
     !billingReportsSrc.includes("<StatusBadge"),
@@ -78,7 +76,7 @@ async function runTests() {
   // 3. Verify QuotationView supports renegotiatingQuote & Version 2 title
   console.log("Test 3: Verifying QuotationView Version 2 title and pre-population...");
   const quoteViewSrc = fs.readFileSync(
-    path.resolve("src/modules/leads/QuotationView.tsx"),
+    path.resolve("src/features/quotation/create-quote/screen/QuotationView.tsx"),
     "utf-8"
   );
   assert.ok(

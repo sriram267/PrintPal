@@ -1,6 +1,6 @@
 import * as React from "react"
 import { CheckCircle2, Clock, AlertTriangle, Circle } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils"
 
 export interface TimelineItem {
   id: string | number

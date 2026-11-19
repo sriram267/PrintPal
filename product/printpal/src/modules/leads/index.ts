@@ -6,8 +6,8 @@ export * from './types';
 export * from './leadsService';
 export * from './validation';
 export { LeadsApp } from './LeadsApp';
-export { QuotationView } from './QuotationView';
-export { QuotationReportsView, BillingReportsView } from './QuotationReportsView';
+export { QuotationView } from '../../features/quotation/create-quote/screen/QuotationView';
+export { QuotationReportsView, BillingReportsView } from '../../features/quotation/reports/screen/QuotationReportsView';
 
 // Sub-feature Schemas
 export * from './features/customer/db/customer.schema';

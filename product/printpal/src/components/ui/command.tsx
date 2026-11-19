@@ -1,6 +1,6 @@
 import * as React from "react"
 import { Search, X } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils"
 import { Kbd } from "@/components/ui/kbd"
 
 export interface CommandItemDef {

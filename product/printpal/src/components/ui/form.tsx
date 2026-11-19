@@ -1,5 +1,5 @@
 import * as React from "react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils"
 import { Label } from "@/components/ui/label"
 
 export interface FormItemProps extends React.HTMLAttributes<HTMLDivElement> {}

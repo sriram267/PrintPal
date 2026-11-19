@@ -5,4 +5,4 @@ Used by **Create quote**, **Quotation reports** and the **PDF**, and by the serv
 What goes here: line totals for every pricing method, discount and GST totals, and number / date formatting for quotes.
 The screen copy and the server copy must stay identical — a test checks this.
 
-The server copies are here: `calcLine.mjs`, `quoteTotals.mjs`. The screen copies still live in `src/modules/quotation/` (`calcLine.ts`, `quoteTotals.ts`, `quoteFormatters.ts`, `types.ts`) and move here in A3/A4.
+Both copies live here: the server's `calcLine.server.mjs` and `quoteTotals.server.mjs`, and the screen's `calcLine.ts`, `quoteTotals.ts`, plus `quoteFormatters.ts` and `types.ts`. (The server files are named `.server.mjs` so the screen never loads them by accident.)

@@ -9,7 +9,7 @@ const __dirname = path.dirname(__filename);
 const ROOT = path.resolve(__dirname, '..');
 
 test('Quotation Creation Resilience & Local-First Fallback', () => {
-  const quotationViewPath = path.join(ROOT, 'src', 'modules', 'leads', 'QuotationView.tsx');
+  const quotationViewPath = path.join(ROOT, 'src/features/quotation/create-quote/screen/QuotationView.tsx');
   const content = fs.readFileSync(quotationViewPath, 'utf8');
 
   // 1. Verify safeCustomerId fallback is present

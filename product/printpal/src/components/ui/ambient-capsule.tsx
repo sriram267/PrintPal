@@ -1,5 +1,5 @@
 import { Phone, PhoneOff, ShieldCheck, Flame, Cpu } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils"
 import { Button } from "@/components/ui/button"
 
 export type CapsuleState = "idle" | "live_job" | "inbound_call" | "thermal_derate" | "advance_gate"

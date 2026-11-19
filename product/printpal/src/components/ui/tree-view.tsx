@@ -1,6 +1,6 @@
 import * as React from "react"
 import { ChevronRight, ChevronDown, Folder, FolderOpen, File } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils"
 
 export interface TreeNode {
   id: string

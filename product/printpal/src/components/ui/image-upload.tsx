@@ -1,6 +1,6 @@
 import * as React from "react"
 import { Image as ImageIcon, Plus, Trash2, FileText } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils"
 
 export interface ImageUploadItem {
   id: string

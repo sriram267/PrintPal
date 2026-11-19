@@ -13,7 +13,7 @@ import {
   AlertCircle,
   X,
 } from 'lucide-react';
-import { QuotePDFPreview, type QuotePDFDocumentProps } from './QuotePDFPreview';
+import { QuotePDFPreview, type QuotePDFDocumentProps } from '../../pdf/screen/QuotePDFPreview';
 import { Button } from '@ui/button';
 import { palNotch } from '@ui/pal-notch';
 import { Input } from '@ui/input';
@@ -33,16 +33,16 @@ import type {
   FinishRecord,
   SiteRecord,
   CustomerDrawerAnchor,
-} from './types';
+} from '../../../../modules/leads/types';
 import {
   calcLine,
   METHOD_MAP,
   convertDimension,
   mapLegacyMethodCode,
-} from '../quotation/calcLine';
-import type { MethodCode } from '../quotation/calcLine';
-import { computeQuoteTotals } from '../quotation/quoteTotals';
-import type { BusinessDetailsRecord } from '../settings';
+} from '../../shared/calcLine';
+import type { MethodCode } from '../../shared/calcLine';
+import { computeQuoteTotals } from '../../shared/quoteTotals';
+import type { BusinessDetailsRecord } from '../../../../modules/settings';
 
 export interface RenegotiatingQuoteData {
   originalQuoteNumber: string;

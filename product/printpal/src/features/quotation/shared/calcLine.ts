@@ -1,7 +1,7 @@
 /**
  * PrintPal Pure Calculation Engine for Quotation Line Items
  * 
- * NOTE: Keep this identical to `src/features/quotation/shared/calcLine.mjs`.
+ * NOTE: Keep this identical to `calcLine.server.mjs` (same folder).
  * Any logic change here must be mirrored in the backend copy.
  */
 

@@ -1,7 +1,7 @@
 import * as React from "react"
 import { X, ChevronRight } from "lucide-react"
 import { cva, type VariantProps } from "class-variance-authority"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils"
 
 export const bannerVariants = cva(
   "relative flex w-full items-center justify-between gap-3 px-4 py-2.5 text-xs font-medium border-b",

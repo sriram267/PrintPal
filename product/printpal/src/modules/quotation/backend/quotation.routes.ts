@@ -1,6 +1,6 @@
-export * from "../calcLine";
-import { calcLine, METHOD_MAP, mapLegacyMethodCode } from "../calcLine";
-import type { MethodCode } from "../calcLine";
+export * from "../../../features/quotation/shared/calcLine";
+import { calcLine, METHOD_MAP, mapLegacyMethodCode } from "../../../features/quotation/shared/calcLine";
+import type { MethodCode } from "../../../features/quotation/shared/calcLine";
 
 export interface CalculateLineItemInput {
   method?: string;

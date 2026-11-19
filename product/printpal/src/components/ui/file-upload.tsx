@@ -1,6 +1,6 @@
 import * as React from "react"
 import { UploadCloud, File, X, CheckCircle2 } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils"
 
 export interface UploadedFile {
   name: string

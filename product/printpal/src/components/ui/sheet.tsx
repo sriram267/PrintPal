@@ -1,7 +1,7 @@
 import * as React from "react"
 import { X } from "lucide-react"
 import { cva, type VariantProps } from "class-variance-authority"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils"
 
 export const sheetVariants = cva(
   "fixed z-50 gap-4 bg-background p-6 shadow-xl transition ease-in-out duration-300 border-border",

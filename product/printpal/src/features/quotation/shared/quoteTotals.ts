@@ -1,6 +1,6 @@
 /**
  * How a quote's money is worked out on screen, in the PDF and in Quotation Reports.
- * Mirrors src/features/quotation/shared/quoteTotals.mjs exactly; tests/quoteTotals.test.mjs keeps the two identical.
+ * Mirrors quoteTotals.server.mjs (same folder) exactly; tests/quoteTotals.test.mjs keeps the two identical.
  *
  * Order: items + design + installation + transport -> discount % off that total -> GST on what is left.
  * Rounded half-up to paise, so a GST invoice never carries a hidden rupee of rounding.

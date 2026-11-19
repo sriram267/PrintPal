@@ -5,9 +5,9 @@ import {
   AuthenticateWithRedirectCallback,
   useAuth,
 } from "@clerk/react";
-import { LeadsApp } from "./modules/leads/LeadsApp";
-import { LoginPage } from "./modules/auth/LoginPage";
-import { installAuthFetchInterceptor, registerAuthTokenGetter } from "./core/apiClient";
+import { LeadsApp } from "../modules/leads/LeadsApp";
+import { LoginPage } from "./LoginPage";
+import { installAuthFetchInterceptor, registerAuthTokenGetter } from "../shared/apiClient";
 
 // Initialize the authenticated fetch interceptor immediately on client load
 installAuthFetchInterceptor();

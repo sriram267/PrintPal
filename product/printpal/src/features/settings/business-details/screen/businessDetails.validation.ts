@@ -3,7 +3,7 @@
  */
 
 import { z } from "zod";
-import type { BusinessDetailsRecord } from "../db/businessDetails.schema";
+import type { BusinessDetailsRecord } from "./businessDetails.types";
 
 // Indian 10-digit mobile / phone format (supports +91, 0, hyphens, spaces) or international E.164
 const indianPhoneRegex = /^(?:(?:\+|0{0,2})91(\s*[-]\s*)?|[0]?)?[6789]\d{9}$/;

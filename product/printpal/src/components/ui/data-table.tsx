@@ -1,6 +1,6 @@
 import * as React from "react"
 import { Search, ChevronDown, ChevronUp, ChevronsUpDown, X } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import {
