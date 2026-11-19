@@ -1,4 +1,4 @@
-import type { SiteRecord } from "../../../../modules/leads/types"
+import type { SiteRecord } from "../../shared/types"
 
 export function createDefaultSite(siteNumber: number): SiteRecord {
   return {

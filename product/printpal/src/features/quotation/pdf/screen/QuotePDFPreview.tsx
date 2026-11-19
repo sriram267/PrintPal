@@ -9,9 +9,9 @@
 import * as React from 'react';
 import { createPortal } from 'react-dom';
 import { palNotch, DOC_RIM, DOC_CLIP_Y } from '@ui/pal-notch';
-import type { CustomerRecord } from '../../../../modules/leads/types';
+import type { CustomerRecord } from '../../../leads/shared/types'
 import type { QuoteSite } from '../../create-quote/screen/QuotationView';
-import type { BusinessDetailsRecord } from '../../../../modules/settings';
+import type { BusinessDetailsRecord } from '../../../settings/business-details/screen/businessDetails.types';
 import { formatQuoteLineText } from '../../shared/quoteFormatters';
 import { formatQuoteDate } from '../../shared/quoteTotals';
 

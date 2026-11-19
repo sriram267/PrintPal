@@ -8,8 +8,10 @@ shared server pieces are in `src/shared/server/`. Old and new were booted side b
 schema, indexes, constraints, security policies, seed).
 **A3 done:** every screen's layout (lists, forms, pop-ups, page sections, top bar, settings menu) is in its feature's
 `screen/` folder; `src/app/LeadsApp.tsx` (6,797 → about 2,750 lines) keeps page switching, the data and the save / delete
-handlers. 24 screens were screenshotted before and after and match. Next: A4 (move the remaining shared types, form checks
-and server calls next to their features; delete dead files).
+handlers. 24 screens were screenshotted before and after and match. **A4 done:** the shared types, form checks, browser server calls and the screen's catalogue copy now sit next to their features
+(`leads/shared/{types,validation}.ts`, `settings/shared/types.ts`, `starter-catalogue/screen/seedCatalog.ts`, `src/shared/leadsService.ts`);
+`src/modules/`, the 62 unused `components/ui` / `src/db` files and the old barrels are deleted. `check:structure --strict` is clean. 24 screens identical.
+Still open (optional): `components/ui` (17 live files) waits for the UI library to be wired in; LeadsApp's state/handlers could become per-feature hooks.
 
 ## The goal in one paragraph
 
@@ -67,7 +69,7 @@ packages/ui/                  the PrintPal UI component library (Track B), with 
 | A1 ✅ | Create the folders, the plain READMEs, and a check that fails if a file is in the wrong place | You can find any feature by name |
 | A2 ✅ | Move the server code: `server.mjs` + `repository.mjs` split into each feature's `api/` and `db/`. Same web addresses | All tests pass, same answers from the server |
 | A3 ✅ | Split `LeadsApp.tsx` into each feature's `screen/`, one feature at a time | Each screen identical to before (screenshots compared) |
-| A4 | Move types, checks and formatters next to their feature; delete the dead files listed below | No loose files left |
+| A4 ✅ | Move types, checks and formatters next to their feature; delete the dead files listed below | No loose files left |
 
 **Track B — UI component library** (new code only; product and website are not changed)
 

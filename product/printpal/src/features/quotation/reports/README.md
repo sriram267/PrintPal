@@ -17,6 +17,6 @@ All quotations per customer, newest version on top: revise (renegotiate), delete
 
 **Here:** `screen/QuotationReportsView.tsx`, `screen/quoteVersion.ts`; `api/`.
 
-**Still elsewhere (tidied up in A4):** Types it shares with Leads are in `src/modules/leads/types.ts`.
+**Still elsewhere:** Record types it shares with Leads are in `leads/shared/types.ts`.
 
 See `docs/RESTRUCTURE_PLAN.md` for the plan.

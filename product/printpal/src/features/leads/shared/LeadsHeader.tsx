@@ -1,5 +1,5 @@
 import type * as React from "react"
-import type { CustomerRecord, CustomerDrawerAnchor, SupplierRecord } from "../../../modules/leads/types"
+import type { CustomerRecord, CustomerDrawerAnchor, SupplierRecord } from "./types"
 import { Button } from "@/components/ui/button"
 
 export function renderLeadsHeader({ activeTab, closeNewCustomerModal, setActiveTab, isSupplierEnabled, openDrawer, openDrawerForSupplier }: { activeTab: string; closeNewCustomerModal: () => void; setActiveTab: React.Dispatch<React.SetStateAction<"customer" | "enquiry" | "supplier">>; isSupplierEnabled: boolean; openDrawer: (isEdit?: boolean, cust?: CustomerRecord, title?: string, anchor?: CustomerDrawerAnchor) => void; openDrawerForSupplier: (supplier?: SupplierRecord) => void }) {

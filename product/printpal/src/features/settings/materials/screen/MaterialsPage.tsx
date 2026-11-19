@@ -1,4 +1,4 @@
-import type { MaterialRecord } from "../../../../modules/leads/types"
+import type { MaterialRecord } from "../../shared/types"
 import type * as React from "react"
 import { Button } from "@/components/ui/button"
 import { MaterialEmptyIllustration, MaterialRow } from "./MaterialList"

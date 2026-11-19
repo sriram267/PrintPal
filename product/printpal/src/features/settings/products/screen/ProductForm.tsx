@@ -1,5 +1,5 @@
 import type * as React from "react"
-import type { FinishRecord, MaterialRecord } from "../../../../modules/leads/types"
+import type { FinishRecord, MaterialRecord } from "../../shared/types"
 import { AlertCircle, Search, X } from "lucide-react"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"

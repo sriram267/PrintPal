@@ -17,6 +17,6 @@ The A4 quotation / invoice sheet: your logo, GSTIN and signature, the lines, tot
 
 **Here:** `screen/QuotePDFPreview.tsx` (no server part).
 
-**Still elsewhere (tidied up in A4):** Nothing.
+**Still elsewhere:** Nothing.
 
 See `docs/RESTRUCTURE_PLAN.md` for the plan.

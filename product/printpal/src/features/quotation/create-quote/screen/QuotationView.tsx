@@ -26,14 +26,8 @@ import {
   SelectValue,
 } from '@ui/select';
 import { BadgeGroup } from '@ui/badge-group';
-import type {
-  CustomerRecord,
-  ProductRecord,
-  MaterialRecord,
-  FinishRecord,
-  SiteRecord,
-  CustomerDrawerAnchor,
-} from '../../../../modules/leads/types';
+import type { CustomerRecord, SiteRecord, CustomerDrawerAnchor } from '../../../leads/shared/types'
+import type { ProductRecord, MaterialRecord, FinishRecord } from '../../../settings/shared/types'
 import {
   calcLine,
   METHOD_MAP,
@@ -42,7 +36,7 @@ import {
 } from '../../shared/calcLine';
 import type { MethodCode } from '../../shared/calcLine';
 import { computeQuoteTotals } from '../../shared/quoteTotals';
-import type { BusinessDetailsRecord } from '../../../../modules/settings';
+import type { BusinessDetailsRecord } from '../../../settings/business-details/screen/businessDetails.types';
 
 export interface RenegotiatingQuoteData {
   originalQuoteNumber: string;

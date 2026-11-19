@@ -11,8 +11,8 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { palNotch } from '@ui/pal-notch';
 import { QuotePDFPreview } from '../../pdf/screen/QuotePDFPreview';
 import { computeQuoteTotals, formatQuoteDate } from '../../shared/quoteTotals';
-import type { CustomerRecord } from '../../../../modules/leads/types';
-import type { BusinessDetailsRecord } from '../../../../modules/settings';
+import type { CustomerRecord } from '../../../leads/shared/types'
+import type { BusinessDetailsRecord } from '../../../settings/business-details/screen/businessDetails.types';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -55,7 +55,6 @@ export interface QuotationReportsViewProps {
 }
 
 // Backward-compatible alias
-export type BillingReportsViewProps = QuotationReportsViewProps;
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -646,4 +645,3 @@ export function QuotationReportsView({
 }
 
 // Backward-compatibility export alias
-export { QuotationReportsView as BillingReportsView };

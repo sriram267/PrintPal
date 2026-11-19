@@ -1,4 +1,4 @@
-import type { CustomerRecord, EnquiryRecord, SupplierRecord } from "../../../modules/leads/types"
+import type { CustomerRecord, EnquiryRecord, SupplierRecord } from "./types"
 import { renderCustomerRows } from "../customer/screen/CustomerList"
 import { renderEnquiryRows } from "../enquiry/screen/EnquiryList"
 import { renderSupplierRows } from "../supplier/screen/SupplierList"

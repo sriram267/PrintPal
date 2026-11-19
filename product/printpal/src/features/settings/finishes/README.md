@@ -17,6 +17,6 @@ Finishes like powder coating or lamination, with colour codes (RAL / Pantone) an
 
 **Here:** `screen/FinishesPage.tsx`, `screen/FinishList.tsx`, `screen/FinishForm.tsx`; `api/`, `db/`.
 
-**Still elsewhere (tidied up in A4):** The state it shows and the save / delete handlers are still shared in `src/app/LeadsApp.tsx`; types and server calls in `src/modules/leads/`.
+**Still elsewhere:** The state it shows and the save / delete handlers are still shared in `src/app/LeadsApp.tsx`, and the browser's calls to the server are in `src/shared/leadsService.ts`. Record types are in `settings/shared/types.ts`.
 
 See `docs/RESTRUCTURE_PLAN.md` for the plan.

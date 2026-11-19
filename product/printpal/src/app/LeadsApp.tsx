@@ -5,27 +5,18 @@ import { PalNotch, palNotch } from "@ui/pal-notch"
 import { QuotationView, type RenegotiatingQuoteData, type QuoteSite } from "../features/quotation/create-quote/screen/QuotationView"
 import { QuotationReportsView, type QuotationListItem } from "../features/quotation/reports/screen/QuotationReportsView"
 import { QuotePDFPreview, type QuotePDFDocumentProps } from "../features/quotation/pdf/screen/QuotePDFPreview"
+import { BusinessDetailsView } from "../features/settings/business-details/screen/BusinessDetailsView"
 import {
-  BusinessDetailsView,
   type BusinessDetailsRecord,
   loadBusinessDetailsFromStorage,
   saveBusinessDetailsToStorage,
-} from "../modules/settings"
-import type {
-  CustomerRecord,
-  EnquiryRecord,
-  SupplierRecord,
-  ProductRecord,
-  MaterialRecord,
-  FinishRecord,
-  ServiceItem,
-  SiteRecord,
-  CustomerDrawerAnchor,
-} from "../modules/leads/types"
-import { leadsService } from "../modules/leads/leadsService"
-import { validateCustomerForm, validateEnquiryForm } from "../modules/leads/validation"
+} from "../features/settings/business-details/screen/businessDetails.types"
+import type { CustomerRecord, EnquiryRecord, SupplierRecord, ServiceItem, SiteRecord, CustomerDrawerAnchor } from "../features/leads/shared/types"
+import type { ProductRecord, MaterialRecord, FinishRecord } from "../features/settings/shared/types"
+import { leadsService } from "../shared/leadsService"
+import { validateCustomerForm, validateEnquiryForm } from "../features/leads/shared/validation"
 import "./leads.css"
-import { DEFAULT_MATERIALS, DEFAULT_FINISHES, DEFAULT_PRODUCTS } from "../modules/leads/seedCatalog"
+import { DEFAULT_MATERIALS, DEFAULT_FINISHES, DEFAULT_PRODUCTS } from "../features/settings/starter-catalogue/screen/seedCatalog"
 import { type TaxRecord, DEFAULT_TAXES } from "../features/settings/tax/screen/taxes"
 import { getNextQuoteVersion } from "../features/quotation/reports/screen/quoteVersion"
 import { createDefaultSite } from "../features/leads/customer/screen/sites"

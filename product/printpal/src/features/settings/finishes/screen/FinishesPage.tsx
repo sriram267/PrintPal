@@ -1,4 +1,4 @@
-import type { FinishRecord } from "../../../../modules/leads/types"
+import type { FinishRecord } from "../../shared/types"
 import type * as React from "react"
 import { Button } from "@/components/ui/button"
 import { FinishEmptyIllustration, FinishRow } from "./FinishList"

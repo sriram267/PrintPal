@@ -1,4 +1,4 @@
-import type { FinishRecord } from "../../../../modules/leads/types"
+import type { FinishRecord } from "../../shared/types"
 import * as React from "react"
 import { Edit3, Trash2 } from "lucide-react"
 

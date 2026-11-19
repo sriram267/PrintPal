@@ -9,4 +9,4 @@
 | `TopNav.tsx` | The top bar: Leads, Quotation, Quotation Reports, Settings, and the user menu |
 | `style.css`, `leads.css` | Global styles |
 
-Next tidy-up (A4): the data and handlers each page uses move next to that page, so `LeadsApp.tsx` keeps only page switching.
+Possible later tidy-up: the data and handlers each page uses could move next to that page, so `LeadsApp.tsx` keeps only page switching.

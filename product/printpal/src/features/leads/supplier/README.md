@@ -17,6 +17,6 @@ Suppliers and vendors: the supplier list, the supplier drawer (details, address,
 
 **Here:** `screen/SupplierList.tsx`, `screen/SupplierForm.tsx`; `api/`, `db/`.
 
-**Still elsewhere (tidied up in A4):** The state it shows and the save / delete handlers are still shared in `src/app/LeadsApp.tsx`; types and server calls in `src/modules/leads/`.
+**Still elsewhere:** The state it shows and the save / delete handlers are still shared in `src/app/LeadsApp.tsx`, and the browser's calls to the server are in `src/shared/leadsService.ts`. Record types are in `leads/shared/types.ts`.
 
 See `docs/RESTRUCTURE_PLAN.md` for the plan.

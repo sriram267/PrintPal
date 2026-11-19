@@ -1,5 +1,5 @@
 import type * as React from "react"
-import type { MaterialRecord, FinishRecord } from "../../../../modules/leads/types"
+import type { MaterialRecord, FinishRecord } from "../../shared/types"
 import { Modal, ModalContent, ModalHeader, ModalIconBadge, ModalTitle, ModalDescription, ModalBody, ModalFooter, ModalButton } from "@ui/modal-system"
 import { Package, AlertCircle } from "lucide-react"
 import { Label } from "@/components/ui/label"

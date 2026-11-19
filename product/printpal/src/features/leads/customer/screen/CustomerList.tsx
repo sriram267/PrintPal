@@ -1,4 +1,4 @@
-import type { CustomerRecord } from "../../../../modules/leads/types"
+import type { CustomerRecord } from "../../shared/types"
 import * as React from "react"
 import { Edit3, Trash2 } from "lucide-react"
 

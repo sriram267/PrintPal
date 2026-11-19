@@ -17,6 +17,6 @@ The on / off switch that shows or hides the Supplier tab in Leads.
 
 **Here:** `screen/SupplierSwitchPage.tsx`, `screen/SupplierToggleCard.tsx`.
 
-**Still elsewhere (tidied up in A4):** The switch's on / off state is in `src/app/LeadsApp.tsx` (kept in the browser).
+**Still elsewhere:** The switch's on / off state is in `src/app/LeadsApp.tsx` (kept in the browser).
 
 See `docs/RESTRUCTURE_PLAN.md` for the plan.

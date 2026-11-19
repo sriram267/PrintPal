@@ -17,6 +17,6 @@ Everything about customers: the customer list, the New / Edit customer drawer (b
 
 **Here:** `screen/CustomerList.tsx` (rows, empty state, list body), `screen/CustomerForm.tsx` (the New / Edit customer drawer — it also has the enquiry mode), `screen/MultiSiteModal.tsx`, `screen/sites.ts`; `api/`, `db/`.
 
-**Still elsewhere (tidied up in A4):** The state it shows and the save / delete handlers are still shared in `src/app/LeadsApp.tsx`; types in `src/modules/leads/types.ts`, form checks in `src/modules/leads/validation.ts`, server calls in `src/modules/leads/leadsService.ts`.
+**Still elsewhere:** The state it shows and the save / delete handlers are still shared in `src/app/LeadsApp.tsx`, and the browser's calls to the server are in `src/shared/leadsService.ts`. Record types and form checks are in `leads/shared/types.ts` and `leads/shared/validation.ts`.
 
 See `docs/RESTRUCTURE_PLAN.md` for the plan.

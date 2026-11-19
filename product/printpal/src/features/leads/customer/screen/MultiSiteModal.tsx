@@ -1,5 +1,5 @@
 import type * as React from "react"
-import type { CustomerRecord } from "../../../../modules/leads/types"
+import type { CustomerRecord } from "../../shared/types"
 import { X } from "lucide-react"
 
 export function renderMultiSiteModal({ setSelectedCustomerForSites, selectedCustomerForSites }: { setSelectedCustomerForSites: React.Dispatch<React.SetStateAction<CustomerRecord | null>>; selectedCustomerForSites: CustomerRecord }): React.ReactNode {

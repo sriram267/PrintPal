@@ -1,4 +1,4 @@
-import type { EnquiryRecord } from "../../../../modules/leads/types"
+import type { EnquiryRecord } from "../../shared/types"
 import * as React from "react"
 import { Calendar, Edit3, Trash2 } from "lucide-react"
 

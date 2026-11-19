@@ -1,5 +1,6 @@
 import type * as React from "react"
-import type { SiteRecord, ProductRecord, MaterialRecord, FinishRecord } from "../../../../modules/leads/types"
+import type { SiteRecord } from "../../shared/types"
+import type { ProductRecord, MaterialRecord, FinishRecord } from "../../../settings/shared/types"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { AlertCircle, Trash2, ChevronDown, Search, X, MapPin, Loader2, Compass, Plus } from "lucide-react"

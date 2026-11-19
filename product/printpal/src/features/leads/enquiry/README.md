@@ -17,6 +17,6 @@ Quick enquiries before someone becomes a customer: the enquiry list, the enquiry
 
 **Here:** `screen/EnquiryList.tsx` (rows, empty state, list body); `api/`, `db/` — the enquiry form is the enquiry mode of `../customer/screen/CustomerForm.tsx`.
 
-**Still elsewhere (tidied up in A4):** The state it shows and the save / delete handlers are still shared in `src/app/LeadsApp.tsx`; types, form checks and server calls in `src/modules/leads/`.
+**Still elsewhere:** The state it shows and the save / delete handlers are still shared in `src/app/LeadsApp.tsx`, and the browser's calls to the server are in `src/shared/leadsService.ts`. Record types and form checks are in `leads/shared/types.ts` and `leads/shared/validation.ts`.
 
 See `docs/RESTRUCTURE_PLAN.md` for the plan.

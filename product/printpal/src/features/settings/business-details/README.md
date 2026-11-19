@@ -17,6 +17,6 @@ Your shop's details: logo, legal name, addresses, GSTIN / PAN, contact info and 
 
 **Here:** `screen/BusinessDetailsView.tsx`, `screen/businessDetails.types.ts`, `screen/businessDetails.validation.ts`; `api/`, `db/`.
 
-**Still elsewhere (tidied up in A4):** Nothing.
+**Still elsewhere:** Nothing.
 
 See `docs/RESTRUCTURE_PLAN.md` for the plan.

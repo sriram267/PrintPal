@@ -1,4 +1,4 @@
-import type { ProductRecord, MaterialRecord, FinishRecord } from "../../../../modules/leads/types"
+import type { ProductRecord, MaterialRecord, FinishRecord } from "../../shared/types"
 import type * as React from "react"
 import { Button } from "@/components/ui/button"
 import { ProductEmptyIllustration, ProductRow } from "./ProductList"
