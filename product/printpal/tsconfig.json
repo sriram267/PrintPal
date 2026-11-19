@@ -10,9 +10,6 @@
       "@printpal/ui/greeting-engine": ["../../packages/ui/src/pal/greetingEngine.ts"],
       "@printpal/ui/pal.css": ["../../packages/ui/src/pal/palMascot.css"],
       "@printpal/ui": ["../../packages/ui/src/index.ts"],
-      "@/components/*": ["src/components/*"],
-      "@ui/*": ["src/components/ui/*"],
-      "@ui-library/*": ["src/*"],
       "@/*": ["src/*"]
     },
     "strict": true,

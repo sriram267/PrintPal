@@ -1,7 +1,6 @@
 import * as React from "react"
 import { useUser, useClerk } from "@clerk/react"
-import { Button } from "@printpal/ui"
-import { PalNotch, palNotch } from "@ui/pal-notch"
+import { Button, PalNotch, palNotch } from "@printpal/ui"
 import { QuotationView, type RenegotiatingQuoteData, type QuoteSite } from "../features/quotation/create-quote/screen/QuotationView"
 import { QuotationReportsView, type QuotationListItem } from "../features/quotation/reports/screen/QuotationReportsView"
 import { QuotePDFPreview, type QuotePDFDocumentProps } from "../features/quotation/pdf/screen/QuotePDFPreview"

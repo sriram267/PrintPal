@@ -13,7 +13,7 @@ import { fileURLToPath } from 'node:url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const ROOT = path.resolve(__dirname, '..');
-const PAL_NOTCH_PATH = path.join(ROOT, 'src', 'components', 'ui', 'pal-notch.tsx');
+const PAL_NOTCH_PATH = path.join(ROOT, '..', '..', 'packages', 'ui', 'src', 'product', 'pal-notch.tsx');
 const BILLING_REPORTS_PATH = path.join(ROOT, 'src', 'features', 'quotation', 'reports', 'screen', 'QuotationReportsView.tsx');
 const QUOTATION_VIEW_PATH = path.join(ROOT, 'src', 'features', 'quotation', 'create-quote', 'screen', 'QuotationView.tsx');
 const LEADS_APP_PATH = path.join(ROOT, 'src', 'app', 'LeadsApp.tsx');

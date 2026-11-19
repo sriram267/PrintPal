@@ -6,8 +6,7 @@
 
 import React from 'react';
 import { Trash2, FileText, Pencil, ChevronRight } from 'lucide-react';
-import { Button, Checkbox } from "@printpal/ui"
-import { palNotch } from '@ui/pal-notch';
+import { Button, Checkbox, palNotch } from "@printpal/ui"
 import { QuotePDFPreview } from '../../pdf/screen/QuotePDFPreview';
 import { computeQuoteTotals, formatQuoteDate } from '../../shared/quoteTotals';
 import type { CustomerRecord } from '../../../leads/shared/types'

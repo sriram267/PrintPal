@@ -14,8 +14,7 @@ import {
   X,
 } from 'lucide-react';
 import { QuotePDFPreview, type QuotePDFDocumentProps } from '../../pdf/screen/QuotePDFPreview';
-import { Button, Input, Textarea, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, BadgeGroup } from "@printpal/ui"
-import { palNotch } from '@ui/pal-notch';
+import { Button, Input, Textarea, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, BadgeGroup, palNotch } from "@printpal/ui"
 import type { CustomerRecord, SiteRecord, CustomerDrawerAnchor } from '../../../leads/shared/types'
 import type { ProductRecord, MaterialRecord, FinishRecord } from '../../../settings/shared/types'
 import {

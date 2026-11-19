@@ -11,7 +11,7 @@ schema, indexes, constraints, security policies, seed).
 handlers. 24 screens were screenshotted before and after and match. **A4 done:** the shared types, form checks, browser server calls and the screen's catalogue copy now sit next to their features
 (`leads/shared/{types,validation}.ts`, `settings/shared/types.ts`, `starter-catalogue/screen/seedCatalog.ts`, `src/shared/leadsService.ts`);
 `src/modules/`, the 62 unused `components/ui` / `src/db` files and the old barrels are deleted. `check:structure --strict` is clean. 24 screens identical.
-Still open (optional): `components/ui` (17 live files) waits for the UI library to be wired in; LeadsApp's state/handlers could become per-feature hooks.
+**UI library Stage 1 (product) done:** the product has no UI parts of its own any more (`src/components` is gone). Every button, field, card, pop-up, select, date picker, upload area, the Pal mascot and the Pal notch come from `packages/ui` via `@printpal/ui`, and the library's parts were made to match the finished product exactly (24 screens identical). Still open (optional): the website is not on the library yet; LeadsApp's state/handlers could become per-feature hooks.
 
 ## The goal in one paragraph
 

@@ -1,7 +1,7 @@
 import type * as React from "react"
 import type { useUser, useClerk } from "@clerk/react"
 import { Users, FileText, Settings, HelpCircle, Bell, ChevronDown, LogOut } from "lucide-react"
-import { palNotch } from "@ui/pal-notch"
+import { palNotch } from "@printpal/ui"
 
 export function renderTopNav({ setIsModalOpen, activeModule, closeNewCustomerModal, setActiveModule, setIsUserMenuOpen, user, isUserMenuOpen, clerk }: { setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>; activeModule: string; closeNewCustomerModal: () => void; setActiveModule: React.Dispatch<React.SetStateAction<"leads" | "quotation" | "quotationReports" | "settings">>; setIsUserMenuOpen: React.Dispatch<React.SetStateAction<boolean>>; user: ReturnType<typeof useUser>["user"]; isUserMenuOpen: boolean; clerk: ReturnType<typeof useClerk> }) {
   return <header className="printpal-top-nav flex-shrink-0">

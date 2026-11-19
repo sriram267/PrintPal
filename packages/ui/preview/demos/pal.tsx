@@ -4,6 +4,7 @@ import { PalMascot, type PalTone } from "../../src/pal/PalMascot";
 import { PalGreeting } from "../../src/pal/PalGreeting";
 import { NotchShell } from "../../src/product/notch";
 import { Button } from "../../src/core/button";
+import { PalNotch, palNotch } from "../../src/product/pal-notch";
 import { Demo, Grid, type Entry } from "../kit";
 
 const TONES: [PalTone, string][] = [
@@ -73,5 +74,31 @@ export const pal: Entry[] = [
     description: "The notch entrance: streaks, a particle ring, Pal drops in, bounces, waves and settles. Plays once per page load.",
     Demo: Greeting,
     code: `<PalGreeting onDone={() => setState("idle")} />`,
+  },
+{
+    id: "pal-notch",
+    name: "Pal notch (live)",
+    group: "Pal",
+    usedIn: ["App"],
+    description: "The app's real notification centre: toasts, confirm and prompt pop-ups, the quotation document bar and the entrance. It sits at the top of the screen, so click a button here and look up.",
+    Demo: () => (
+      <Demo>
+        <PalNotch activeModuleLabel="Leads" />
+        <Button variant="outline" onClick={() => palNotch.success("Ravi Kumar added to customers")}>
+          Success toast
+        </Button>
+        <Button variant="outline" onClick={() => palNotch.error("Could not save", "Check your connection and try again")}>
+          Error toast
+        </Button>
+        <Button variant="outline" onClick={() => palNotch.info("Quote Q-001 started from Q-001-V1", "Prices and sites are copied over.")}>
+          Info toast
+        </Button>
+        <Button variant="outline" onClick={() => palNotch.greet()}>
+          Play the entrance
+        </Button>
+      </Demo>
+    ),
+    code: `<PalNotch activeModuleLabel="Leads" />   // once, near the root of the app
+palNotch.success("Ravi Kumar added to customers");`,
   },
 ];

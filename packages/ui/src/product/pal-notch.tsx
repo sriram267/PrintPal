@@ -1,3 +1,4 @@
+/** The Pal notch: the app's toasts, confirm and prompt pop-ups, document bar and entrance. Copied exactly from the finished product. */
 import * as React from "react"
 import { createPortal } from "react-dom"
 import {
@@ -10,9 +11,10 @@ import {
   Plus,
   Edit3,
 } from "lucide-react"
-import { PalMascot, type PalTone, ModalIconBadge, ModalTitle, ModalDescription, ModalButton } from "@printpal/ui"
-import { GREETING_MS, MASCOT_PX, rigFrom, runPalGreeting } from "@printpal/ui/greeting-engine"
-import "@printpal/ui/pal.css"
+import { PalMascot, type PalTone } from "../pal/PalMascot"
+import { ModalIconBadge, ModalTitle, ModalDescription, ModalButton } from "../core/modal-system"
+import { GREETING_MS, MASCOT_PX, rigFrom, runPalGreeting } from "../pal/greetingEngine"
+import "../pal/palMascot.css"
 
 export type PalNotchVariant =
   | "success"

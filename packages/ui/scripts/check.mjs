@@ -24,7 +24,7 @@ for (const m of index.matchAll(/export\s*\{([^}]+)\}\s*from\s*"([^"]+)"/g)) {
   for (const raw of m[1].split(",")) {
     const name = raw.trim().replace(/^type\s+/, "");
     if (!name || raw.trim().startsWith("type ") || /[a-z]Variants$|^cn$|^fieldBase$/.test(name)) continue;
-    if (/^[A-Z]/.test(name)) exported.add(name);
+    if (/^[A-Z][a-z]/.test(name)) exported.add(name);
   }
 }
 const preview = walk("preview").filter((f) => f.endsWith(".tsx")).map(read).join("\n");

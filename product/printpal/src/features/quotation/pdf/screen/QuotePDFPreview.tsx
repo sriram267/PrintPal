@@ -8,7 +8,7 @@
 
 import * as React from 'react';
 import { createPortal } from 'react-dom';
-import { palNotch, DOC_RIM, DOC_CLIP_Y } from '@ui/pal-notch';
+import { palNotch, DOC_RIM, DOC_CLIP_Y } from "@printpal/ui"
 import type { CustomerRecord } from '../../../leads/shared/types'
 import type { QuoteSite } from '../../create-quote/screen/QuotationView';
 import type { BusinessDetailsRecord } from '../../../settings/business-details/screen/businessDetails.types';

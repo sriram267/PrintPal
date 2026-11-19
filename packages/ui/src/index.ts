@@ -37,6 +37,27 @@ export { PalGreeting } from "./pal/PalGreeting";
 /* Product */
 export { NotchShell, NotchPill, NotchToast, NotchDocumentBar, type NotchToastVariant } from "./product/notch";
 export { PageHeader, TopBar, UserPill, SettingsNav, EmptyState, SectionCard, type NavItem, type SettingsNavGroup } from "./product/layout";
+export {
+  PalNotch,
+  palNotch,
+  DOC_RIM,
+  DOC_TOP,
+  DOC_PAD,
+  DOC_BAR_H,
+  DOC_GAP,
+  DOC_SLOT_H,
+  DOC_LIP,
+  DOC_CLIP_Y,
+  type PalNotchVariant,
+  type PalNotchAction,
+  type PalNotchCustomerCard,
+  type PalNotchOptions,
+  type PalNotchNotification,
+  type PalNotchConfirmOptions,
+  type PalNotchPromptOptions,
+  type PalNotchDocumentOptions,
+  type PalNotchProps,
+} from "./product/pal-notch";
 export { MonthCalendar, DateField } from "./product/date-picker";
 export { Calendar } from "./product/calendar-grid";
 export { DatePicker } from "./product/date-input";
