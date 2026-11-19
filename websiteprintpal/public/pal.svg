@@ -1,22 +1,22 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="400" height="400" shape-rendering="geometricPrecision">
   <defs>
     <linearGradient id="b" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#F7844A"/>
-      <stop offset="0.3" stop-color="#E65A1D"/>
-      <stop offset="0.75" stop-color="#D2480F"/>
-      <stop offset="1" stop-color="#A9360A"/>
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="0.3" stop-color="#F7F8FA"/>
+      <stop offset="0.6" stop-color="#E3E7EC"/>
+      <stop offset="1" stop-color="#B4BDC9"/>
     </linearGradient>
     <linearGradient id="gl" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.38"/>
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.9"/>
       <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
     </linearGradient>
     <linearGradient id="rim" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0.66" stop-color="#7A2504" stop-opacity="0"/>
-      <stop offset="1" stop-color="#7A2504" stop-opacity="0.45"/>
+      <stop offset="0.66" stop-color="#4F5967" stop-opacity="0"/>
+      <stop offset="1" stop-color="#4F5967" stop-opacity="0.22"/>
     </linearGradient>
     <linearGradient id="h" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#F57A3E"/>
-      <stop offset="1" stop-color="#C9420E"/>
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#B4BDC9"/>
     </linearGradient>
     <path id="body" d="M17 50 C17 33 32 26 50 26 C68 26 83 33 83 50 C83 69 71 76 50 76 C29 76 17 69 17 50 Z"/>
     <path id="hand" d="M-4.6 7.2 C-8 4.6 -7.6 -2.6 -3.8 -7.4 C-2.4 -9.1 0.2 -8.6 0.4 -6.2 C0.6 -4.2 -0.4 -2.6 0.8 -1.4 C2.2 -2.6 4.6 -2.6 5.6 -0.4 C6.8 3 4.4 7.6 0.4 8.4 C-1.6 8.8 -3.4 8.2 -4.6 7.2 Z"/>
@@ -26,7 +26,7 @@
   <use href="#body" fill="url(#b)"/>
   <use href="#body" fill="url(#rim)"/>
   <path d="M23 44 C24.5 34 35.5 29.5 50 29.5 C64.5 29.5 75.5 34 77 44 C69 39 60 37.5 50 37.5 C40 37.5 31 39 23 44 Z" fill="url(#gl)"/>
-  <path d="M20 58 C26 65 37 68.5 50 68.5 C63 68.5 74 65 80 58 C79 67 68 73.5 50 73.5 C32 73.5 21 67 20 58 Z" fill="#FF8A52" opacity="0.18"/>
+  <path d="M20 58 C26 65 37 68.5 50 68.5 C63 68.5 74 65 80 58 C79 67 68 73.5 50 73.5 C32 73.5 21 67 20 58 Z" fill="#FFFFFF" opacity="0.22"/>
   <rect x="37.4" y="45.5" width="6" height="14.5" rx="3" fill="#23262B"/>
   <rect x="56.6" y="45.5" width="6" height="14.5" rx="3" fill="#23262B"/>
 </svg>

@@ -12,9 +12,8 @@ interface PalMascotProps {
   /** false: face only (no hands), cropped to the body. Used in the small notch pill. */
   hands?: boolean;
   /**
-   * brand: the glossy orange Pal.
-   * The others are a white, pearl Pal with a subtle wash of the state's colour rising from its base
-   * (used in toasts instead of an icon).
+   * Pal is always a white, pearl body. brand: cool silver towards its base.
+   * The others add a subtle wash of a state's colour rising from the base (toasts, the printer screen).
    */
   tone?: PalTone;
   className?: string;
@@ -22,8 +21,9 @@ interface PalMascotProps {
 
 export type PalTone = "brand" | "info" | "success" | "warning" | "error" | "neutral" | "warm";
 
-/** The base wash for each state. Kept light so Pal still reads as white. */
-const TONE_TINT: Record<Exclude<PalTone, "brand">, [light: string, base: string]> = {
+/** The base wash for each tone, [light, base]. Kept light so Pal always reads as white. */
+const TONE_TINT: Record<PalTone, [light: string, base: string]> = {
+  brand: ["#E3E7EC", "#B4BDC9"],
   info: ["#D3E5F9", "#94BDEE"],
   success: ["#D2EEDD", "#93D4AC"],
   warning: ["#F8E9CB", "#EFCB84"],
@@ -39,18 +39,18 @@ const HAND =
   "M-4.6 7.2 C-8 4.6 -7.6 -2.6 -3.8 -7.4 C-2.4 -9.1 0.2 -8.6 0.4 -6.2 C0.6 -4.2 -0.4 -2.6 0.8 -1.4 C2.2 -2.6 4.6 -2.6 5.6 -0.4 C6.8 3 4.4 7.6 0.4 8.4 C-1.6 8.8 -3.4 8.2 -4.6 7.2 Z";
 
 /**
- * Pal, the PrintPal mascot: a glossy orange pillow-dome, two ink capsule eyes,
+ * Pal, the PrintPal mascot: a glossy white-and-silver pillow-dome, two ink capsule eyes,
  * two small floating mitten hands. Original artwork, pure vector.
  */
 export function PalMascot({ size, mode = "idle", hands = true, tone = "brand", className = "" }: PalMascotProps) {
   const uid = useId().replace(/:/g, "");
   const u = (n: string) => `url(#${uid}${n})`;
-  const tint = tone === "brand" ? null : TONE_TINT[tone];
-  const body = tint ? ["#FFFFFF", "#F7F8FA", tint[0], tint[1]] : ["#F7844A", "#E65A1D", "#D2480F", "#A9360A"];
-  const hand = tint ? ["#FFFFFF", tint[1]] : ["#F57A3E", "#C9420E"];
-  const rim = tint ? "#5B6573" : "#7A2504";
-  const rimAlpha = tint ? 0.16 : 0.45;
-  const bounce = tint ? "#FFFFFF" : "#FF8A52";
+  const tint = TONE_TINT[tone];
+  const body = ["#FFFFFF", "#F7F8FA", tint[0], tint[1]];
+  const hand = ["#FFFFFF", tint[1]];
+  const rim = "#4F5967";
+  const rimAlpha = tone === "brand" ? 0.22 : 0.16;
+  const bounce = "#FFFFFF";
   return (
     <svg
       className={`pm pm-${mode} ${className}`}
@@ -63,7 +63,7 @@ export function PalMascot({ size, mode = "idle", hands = true, tone = "brand", c
     >
       <defs>
         <linearGradient id={`${uid}b`} x1="0" y1="0" x2="0" y2="1">
-          {(tint ? [0, 0.3, 0.6, 1] : [0, 0.3, 0.75, 1]).map((o, i) => (
+          {[0, 0.3, 0.6, 1].map((o, i) => (
             <stop key={o} offset={o} stopColor={body[i]} />
           ))}
         </linearGradient>
@@ -72,7 +72,7 @@ export function PalMascot({ size, mode = "idle", hands = true, tone = "brand", c
           <stop offset="1" stopColor={rim} stopOpacity={rimAlpha} />
         </linearGradient>
         <linearGradient id={`${uid}g`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#FFFFFF" stopOpacity={tint ? 0.9 : 0.38} />
+          <stop offset="0" stopColor="#FFFFFF" stopOpacity={0.9} />
           <stop offset="1" stopColor="#FFFFFF" stopOpacity="0" />
         </linearGradient>
         <linearGradient id={`${uid}h`} x1="0" y1="0" x2="0" y2="1">
@@ -105,7 +105,7 @@ export function PalMascot({ size, mode = "idle", hands = true, tone = "brand", c
           <path
             d="M20 58 C26 65 37 68.5 50 68.5 C63 68.5 74 65 80 58 C79 67 68 73.5 50 73.5 C32 73.5 21 67 20 58 Z"
             fill={bounce}
-            opacity={tint ? 0.22 : 0.18}
+            opacity={0.22}
           />
           <g className="pm-eyes">
             <g className="pm-eye">
