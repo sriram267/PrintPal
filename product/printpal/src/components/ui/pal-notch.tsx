@@ -1,12 +1,8 @@
 import * as React from "react"
 import { createPortal } from "react-dom"
 import {
-  Check,
   Download,
   FileText,
-  AlertCircle,
-  AlertTriangle,
-  Info,
   Loader2,
   Trash2,
   X,
@@ -21,7 +17,7 @@ import {
   ModalDescription,
   ModalButton,
 } from "./modal-system"
-import { PalMascot } from "./pal-mascot"
+import { PalMascot, type PalTone } from "./pal-mascot"
 import { GREETING_MS, MASCOT_PX, rigFrom, runPalGreeting } from "./pal-greeting"
 import "./pal-mascot.css"
 
@@ -240,25 +236,15 @@ export const palNotch = {
   },
 }
 
-/* Calm, muted tones: the toast is a quiet black pill, the colour lives only in the small icon disc. */
-const VARIANT_META: Record<PalNotchVariant, { color: string; disc: string }> = {
-  success: { color: "#6FD39A", disc: "rgba(111, 211, 154, 0.14)" },
-  error: { color: "#F08A80", disc: "rgba(240, 138, 128, 0.14)" },
-  warning: { color: "#EDBA6B", disc: "rgba(237, 186, 107, 0.14)" },
-  info: { color: "#8DB4F0", disc: "rgba(141, 180, 240, 0.14)" },
-  workshop: { color: "#EE7A4A", disc: "rgba(238, 122, 74, 0.14)" },
-  loading: { color: "#C4CAD3", disc: "rgba(196, 202, 211, 0.12)" },
-}
-
-function VariantIcon({ variant }: { variant: PalNotchVariant }) {
-  const size = 15
-  const color = VARIANT_META[variant].color
-  const stroke = 2.4
-  if (variant === "success" || variant === "workshop") return <Check size={size} color={color} strokeWidth={stroke} />
-  if (variant === "error") return <AlertCircle size={size} color={color} strokeWidth={stroke} />
-  if (variant === "warning") return <AlertTriangle size={size} color={color} strokeWidth={stroke} />
-  if (variant === "loading") return <Loader2 size={size} color={color} strokeWidth={stroke} className="animate-spin" />
-  return <Info size={size} color={color} strokeWidth={stroke} />
+/* The toast is a calm black pill. Instead of an icon it shows Pal's face: a white Pal whose base carries
+   a subtle wash of the state's colour (blue info, green success, amber warning, red error, grey loading). */
+const VARIANT_TONE: Record<PalNotchVariant, PalTone> = {
+  success: "success",
+  error: "error",
+  warning: "warning",
+  info: "info",
+  workshop: "warm",
+  loading: "neutral",
 }
 
 // ── Pal greeting: the canvas entrance (see pal-greeting.ts) ──
@@ -697,7 +683,7 @@ export function PalNotch({ activeModuleLabel = "Ready" }: PalNotchProps) {
   const isToast = Boolean(activeToast) && !isModalActive && !isDoc
   const isGreetingActive = isGreeting && !isModalActive && !isToast && !isDoc
   const isExpanded = isModalActive || isToast || isDoc || isGreetingActive || isConfirmClosing
-  const meta = activeToast ? VARIANT_META[activeToast.variant] : null
+  const toastTone = activeToast ? VARIANT_TONE[activeToast.variant] : null
 
   const islandClass = isConfirmWidening
     ? "pal-confirm-widening"
@@ -973,6 +959,10 @@ export function PalNotch({ activeModuleLabel = "Ready" }: PalNotchProps) {
             left: 0;
             transform-origin: 50% 50%;
             opacity: 0;
+          }
+          .pal-toast-mascot {
+            flex-shrink: 0;
+            margin: -2px 0 -2px -2px;
           }
           .pal-idle-mascot {
             display: block;
@@ -1705,8 +1695,8 @@ export function PalNotch({ activeModuleLabel = "Ready" }: PalNotchProps) {
             </div>
           )}
 
-          {/* ── ACTIVE TOAST: a calm black pill. Colour lives only in the small icon disc. ── */}
-          {isToast && activeToast && meta && (
+          {/* ── ACTIVE TOAST: a calm black pill. Colour lives only in Pal's subtle tint. ── */}
+          {isToast && activeToast && toastTone && (
             <div
               key={toastRevision}
               className="pal-content-spring-in"
@@ -1728,20 +1718,7 @@ export function PalNotch({ activeModuleLabel = "Ready" }: PalNotchProps) {
                   boxSizing: "border-box",
                 }}
               >
-                <div
-                  style={{
-                    width: 28,
-                    height: 28,
-                    borderRadius: "50%",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    flexShrink: 0,
-                    backgroundColor: meta.disc,
-                  }}
-                >
-                  <VariantIcon variant={activeToast.variant} />
-                </div>
+                <PalMascot size={32} hands={false} tone={toastTone} className="pal-toast-mascot" />
 
                 <div style={{ flex: 1, minWidth: 0, paddingTop: 1 }}>
                   {activeToast.badge && (
