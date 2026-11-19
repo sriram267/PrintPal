@@ -5,8 +5,10 @@ interface PalMascotProps {
   /**
    * idle: lives on its own (breathes, floats its hands, blinks, glances). CSS only.
    * rig: no CSS motion; the greeting engine drives the parts frame by frame.
+   * work: Pal opens its mouth (a slot under the eyes) and prints: a sheet slides out twice while it looks
+   *       down and pushes, then the mouth closes and it settles into idle. Used while a PDF comes out.
    */
-  mode?: "idle" | "rig";
+  mode?: "idle" | "rig" | "work";
   /** false: face only (no hands), cropped to the body. Used in the small notch pill. */
   hands?: boolean;
   /**
@@ -113,6 +115,24 @@ export function PalMascot({ size, mode = "idle", hands = true, tone = "brand", c
               <rect x="56.6" y="45.5" width="6" height="14.5" rx="3" fill="#23262B" />
             </g>
           </g>
+          {mode === "work" && (
+            <>
+              {/* the mouth: a printer slot that opens under the eyes */}
+              <rect className="pm-mouth" x="37.5" y="63.2" width="25" height="6.6" rx="3.3" fill="#23262B" />
+              {/* the sheet coming out of it, clipped so it only shows from the slot down */}
+              <clipPath id={`${uid}m`}>
+                <rect x="0" y="65.6" width="100" height="40" />
+              </clipPath>
+              <g clipPath={u("m")}>
+                <g className="pm-paper">
+                  <rect x="41.5" y="52" width="17" height="13" rx="1" fill="#FFFFFF" stroke="#8F98A4" strokeWidth="0.5" />
+                  <rect x="44" y="55.2" width="9" height="1.3" rx="0.65" fill="#D7440E" />
+                  <rect x="44" y="58.4" width="12" height="1.1" rx="0.55" fill="#B7BEC8" />
+                  <rect x="44" y="61" width="8.5" height="1.1" rx="0.55" fill="#B7BEC8" />
+                </g>
+              </g>
+            </>
+          )}
         </g>
       </g>
     </svg>

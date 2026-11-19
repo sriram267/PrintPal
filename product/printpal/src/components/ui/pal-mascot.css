@@ -67,6 +67,54 @@
   92%                { transform: scaleY(0.08); }
 }
 
+/* ── work: open the mouth, print two sheets, close, then idle ─────────────── */
+.pm-mouth,
+.pm-paper {
+  transform-box: fill-box;
+}
+.pm-work .pm-mouth {
+  transform-origin: 50% 50%;
+  animation: pmMouth 2.8s cubic-bezier(0.3, 0, 0.3, 1) both;
+}
+@keyframes pmMouth {
+  0%        { transform: scale(0.4, 0); }
+  9%        { transform: scale(1.06, 1.15); }
+  14%, 84%  { transform: scale(1, 1); }
+  100%      { transform: scale(0.4, 0); }
+}
+.pm-work .pm-paper {
+  opacity: 0;
+  animation: pmPaper 1s ease-in-out 0.35s 2;
+}
+@keyframes pmPaper {
+  0%   { opacity: 1; transform: translateY(0); }
+  72%  { opacity: 1; transform: translateY(17px); }
+  100% { opacity: 0; transform: translateY(21px); }
+}
+.pm-work .pm-eyes {
+  animation: pmWorkEyes 2.8s ease-in-out both, pmLook 9s ease-in-out 3.2s infinite;
+}
+@keyframes pmWorkEyes {
+  0%        { transform: translate(0, 0); }
+  12%, 82%  { transform: translate(0, 1.4px); }
+  100%      { transform: translate(0, 0); }
+}
+.pm-work .pm-eye {
+  animation: pmWorkSquint 1s ease-in-out 0.35s 2, pmBlink 5.3s ease-in-out 3s infinite;
+}
+@keyframes pmWorkSquint {
+  0%, 100% { transform: scaleY(1); }
+  45%      { transform: scaleY(0.72); }
+}
+.pm-work .pm-body {
+  animation: pmPress 1s ease-in-out 0.35s 2, pmBreathe 3.4s ease-in-out 2.8s infinite;
+}
+@keyframes pmPress {
+  0%, 100% { transform: scale(1, 1); }
+  40%      { transform: scale(1.035, 0.95); }
+  65%      { transform: scale(0.99, 1.02); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .pm * {
     animation: none !important;

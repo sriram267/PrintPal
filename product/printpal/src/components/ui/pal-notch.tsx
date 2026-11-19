@@ -2,7 +2,6 @@ import * as React from "react"
 import { createPortal } from "react-dom"
 import {
   Download,
-  FileText,
   Loader2,
   Trash2,
   X,
@@ -960,6 +959,10 @@ export function PalNotch({ activeModuleLabel = "Ready" }: PalNotchProps) {
             transform-origin: 50% 50%;
             opacity: 0;
           }
+          .pal-doc-mascot {
+            flex-shrink: 0;
+            margin: 0 -2px 0 -6px;
+          }
           .pal-toast-mascot {
             flex-shrink: 0;
             margin: -2px 0 -2px -2px;
@@ -1562,20 +1565,8 @@ export function PalNotch({ activeModuleLabel = "Ready" }: PalNotchProps) {
                 boxShadow: "inset 0 2px 8px rgba(0,0,0,0.65), inset 0 0 0 1px rgba(255,255,255,0.05)",
               }}
             >
-              <div
-                style={{
-                  width: 32,
-                  height: 32,
-                  borderRadius: "50%",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0,
-                  backgroundColor: "rgba(255, 255, 255, 0.08)",
-                }}
-              >
-                <FileText size={16} color="#E6E9EE" strokeWidth={2.2} />
-              </div>
+              {/* Pal at work: its mouth opens like a printer slot and a sheet comes out while the PDF slides down */}
+              <PalMascot size={42} hands={false} tone="info" mode="work" className="pal-doc-mascot" />
 
               <div style={{ flex: 1, minWidth: 0 }}>
                 <p
