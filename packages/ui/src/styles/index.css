@@ -1,0 +1,28 @@
+/* The one stylesheet an app imports: tokens + Tailwind + a few base rules. */
+@import "../tokens/tokens.css";
+@import "../pal/palMascot.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: var(--pp-font);
+    color: rgb(var(--pp-ink));
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  ::selection {
+    background: rgb(var(--pp-accent) / 0.18);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}

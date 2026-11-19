@@ -1,0 +1,54 @@
+{
+  "src/core/badge.tsx": [
+    "#1D4ED8"
+  ],
+  "src/core/dialog.tsx": [
+    "#0F172A",
+    "#64748B"
+  ],
+  "src/core/icon-button.tsx": [
+    "#F9FAFB"
+  ],
+  "src/core/misc.tsx": [
+    "#EEF0F2"
+  ],
+  "src/core/segmented-control.tsx": [
+    "#EEF0F2"
+  ],
+  "src/product/layout.tsx": [
+    "#1E2227",
+    "#64748B",
+    "#CBD5E1",
+    "#EDF0F3"
+  ],
+  "src/product/notch.tsx": [
+    "#000",
+    "#08080A",
+    "#0D0E10",
+    "#111418",
+    "#8A93A0",
+    "#94A3B8"
+  ],
+  "src/website/blocks.tsx": [
+    "#0B0C0E",
+    "#141518",
+    "#1C1D1F",
+    "#2B2F36",
+    "#6C737B",
+    "#7B8189",
+    "#8B929A",
+    "#9AA0A8",
+    "#B4BAC1",
+    "#E4E6E9",
+    "#E6E8EB",
+    "#E6E9EC",
+    "#E8EAED",
+    "#EAF3FC",
+    "#EBEDF0",
+    "#F4F5F6",
+    "#F7F8F9",
+    "#FAFAFA",
+    "#FAFAFB",
+    "#FFF"
+  ]
+}

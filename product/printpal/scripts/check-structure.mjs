@@ -111,6 +111,9 @@ for (const file of walk(FEATURES)) {
     if ((part === "api" || part === "db") && targetPart === "screen") {
       problems.push(`${rel(file)} imports screen code (${spec}). The server cannot run screen files.`);
     }
+    if (part === "screen" && target.includes("src/components/ui/")) {
+      problems.push(`${rel(file)} imports the old component copies (${spec}). New screens use the PrintPal UI library (packages/ui).`);
+    }
   }
 }
 

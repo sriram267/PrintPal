@@ -29,3 +29,5 @@ Not a feature? Look in `src/app/` (the frame around everything: sign-in, top bar
 3. `screen/` must never import from `api/` or `db/` — that would ship server code to the browser.
 4. Something used by two or more features goes to `src/shared/` (or `quotation/shared/` for quote maths), not copied.
 5. A new feature = a new folder with a `README.md` that says, in plain words, what it is and where it is in the app.
+6. Screens are built from the PrintPal UI library (`packages/ui`, preview with `npm run dev` there) — never from the
+   old copies in `src/components/ui/`.

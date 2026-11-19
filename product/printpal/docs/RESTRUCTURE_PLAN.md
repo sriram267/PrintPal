@@ -1,7 +1,8 @@
 # PrintPal code structure + UI library — plan and file map
 
-Status: **A0 + A1 done (2026-11-19).** Folders and READMEs exist in `src/features/`, `src/app/`, `src/shared/`;
-`npm run check:structure` checks the rules and runs before every build. Next: Track B (B0–B4), then A2.
+Status: **A0, A1 and Track B (B0–B5) done (2026-11-19).** Folders and READMEs exist in `src/features/`, `src/app/`,
+`src/shared/`; `npm run check:structure` runs before every build. The UI library lives in `packages/ui`
+(`npm run dev` there opens the preview page; see `packages/ui/README.md`). Next: A2 (server split).
 
 ## The goal in one paragraph
 
@@ -65,12 +66,12 @@ packages/ui/                  the PrintPal UI component library (Track B), with 
 
 | Phase | What | Done when |
 |---|---|---|
-| B0 | Foundations: colours, type, spacing, corners, shadows, motion — written once, taken from today's product and website | One source for every value |
-| B1 | Core components (~25): button, input, select, checkbox, switch, badge, card, tabs, tooltip, dialog, dropdown, table… | Each shown with all its states |
-| B2 | Product components (~15): Pal, notch, toasts, modals, date picker, image upload, stepper, empty state… | Look identical to the live app |
-| B3 | Website blocks (~10): nav, footer, section, FAQ, tab rail, quote window, CTA band | Look identical to the live site |
-| B4 | Preview page: `npm run dev` inside `packages/ui` opens one scrolling page, left panel of names, click to jump | Everything reviewable in one place |
-| B5 | Rules: "how to add a component", and a check that new code uses the library | Written and enforced |
+| B0 ✅ | Foundations: colours, type, spacing, corners, shadows, motion — written once, taken from today's product and website | One source for every value |
+| B1 ✅ | Core components (~25): button, input, select, checkbox, switch, badge, card, tabs, tooltip, dialog, dropdown, table… | Each shown with all its states |
+| B2 ✅ | Product components (~15): Pal, notch, toasts, modals, date picker, image upload, stepper, empty state… | Look identical to the live app |
+| B3 ✅ | Website blocks (~10): nav, footer, section, FAQ, tab rail, quote window, CTA band | Look identical to the live site |
+| B4 ✅ | Preview page: `npm run dev` inside `packages/ui` opens one scrolling page, left panel of names, click to jump | Everything reviewable in one place |
+| B5 ✅ | Rules: "how to add a component", and a check that new code uses the library | Written and enforced |
 
 Order: A1 → B0–B4 → A2–A4.
 

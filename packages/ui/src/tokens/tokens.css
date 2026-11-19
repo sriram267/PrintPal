@@ -1,0 +1,113 @@
+/*
+ * PrintPal design tokens — the ONE place every colour, size, corner, shadow and motion value lives.
+ * Values are taken from the finished product (product/printpal) and website (websiteprintpal).
+ *
+ * Colours are stored as "R G B" channels so Tailwind can add opacity: bg-brand/10.
+ * Use them through the Tailwind preset (bg-brand, text-ink, border-line …) or as rgb(var(--pp-brand)).
+ */
+
+:root {
+  /* ── Text ─────────────────────────────────────────── */
+  --pp-ink: 32 36 40;            /* #202428  main text, headings */
+  --pp-ink-2: 60 65 72;          /* #3C4148  strong secondary text */
+  --pp-ink-3: 91 97 104;         /* #5B6168  secondary text */
+  --pp-muted: 115 123 132;       /* #737B84  labels, hints, captions */
+  --pp-faint: 152 160 168;       /* #98A0A8  placeholders, disabled text */
+
+  /* ── Surfaces ─────────────────────────────────────── */
+  --pp-white: 255 255 255;       /* cards, inputs, popovers */
+  --pp-surface: 243 245 247;     /* #F3F5F7  app background, table headers */
+  --pp-surface-2: 248 250 252;   /* #F8FAFC  hover on white, subtle fills */
+  --pp-hover: 251 252 253;       /* #FBFCFD  table row hover */
+
+  /* ── Lines ────────────────────────────────────────── */
+  --pp-border: 220 225 229;      /* #DCE1E5  inputs, cards, dividers */
+  --pp-border-strong: 181 191 199; /* #B5BFC7  hovered input border */
+  --pp-line: 236 238 241;        /* #ECEEF1  website hairlines */
+
+  /* ── Brand: orange = fabrication & main actions ───── */
+  --pp-brand: 215 68 14;         /* #D7440E */
+  --pp-brand-hover: 191 59 11;   /* #BF3B0B */
+  --pp-brand-tint: 255 247 237;  /* #FFF7ED */
+  --pp-brand-line: 254 215 170;  /* #FED7AA */
+
+  /* ── Accent: blue = print, focus, selection ───────── */
+  --pp-accent: 40 120 208;       /* #2878D0 */
+  --pp-accent-hover: 30 102 180; /* #1E66B4 */
+  --pp-accent-tint: 239 246 255; /* #EFF6FF */
+  --pp-accent-line: 191 219 254; /* #BFDBFE */
+
+  /* ── Status ───────────────────────────────────────── */
+  --pp-success: 4 120 87;        /* #047857 */
+  --pp-success-tint: 220 249 238;/* #DCF9EE */
+  --pp-warning: 161 92 7;        /* #A15C07 */
+  --pp-warning-tint: 255 241 214;/* #FFF1D6 */
+  --pp-danger: 220 38 38;        /* #DC2626 */
+  --pp-danger-hover: 185 28 28;  /* #B91C1C */
+  --pp-danger-text: 239 68 68;   /* #EF4444  field errors */
+  --pp-danger-tint: 255 245 245; /* #FFF5F5 */
+  --pp-danger-line: 255 168 168; /* #FFA8A8 */
+  --pp-neutral-tint: 241 245 249;/* #F1F5F9 */
+  --pp-neutral-line: 226 232 240;/* #E2E8F0 */
+  --pp-neutral-text: 71 85 105;  /* #475569 */
+
+  /* ── Dark (Pal notch, website dark block, dark buttons) ── */
+  --pp-black: 0 0 0;
+  --pp-night: 29 31 34;          /* #1D1F22  dark button */
+  --pp-night-hover: 51 54 59;    /* #33363B */
+  --pp-night-card: 20 21 24;     /* #141518  dark card */
+  --pp-night-text: 245 246 248;  /* #F5F6F8 */
+  --pp-night-muted: 154 163 175; /* #9AA3AF */
+
+  /* ── Type ─────────────────────────────────────────── */
+  --pp-font: "Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --pp-font-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+
+  /* ── Corners ──────────────────────────────────────── */
+  --pp-radius-xs: 4px;   /* tags, checkboxes */
+  --pp-radius-sm: 6px;   /* inputs, product buttons, chips */
+  --pp-radius-md: 8px;   /* table header, dropzone */
+  --pp-radius-lg: 10px;  /* website buttons */
+  --pp-radius-xl: 12px;  /* cards */
+  --pp-radius-2xl: 14px; /* dialogs, empty states, sheets */
+
+  /* ── Control heights ──────────────────────────────── */
+  --pp-h-xs: 30px;
+  --pp-h-sm: 32px;
+  --pp-h-md: 36px;  /* the standard: inputs, buttons */
+  --pp-h-lg: 42px;
+
+  /* ── Shadows ──────────────────────────────────────── */
+  --pp-shadow-xs: 0 1px 2px rgba(16, 18, 20, 0.05);
+  --pp-shadow-btn: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 1px 2px rgba(16, 18, 20, 0.18), 0 0 0 1px rgba(16, 18, 20, 0.06);
+  --pp-shadow-brand: 0 2px 6px rgba(215, 68, 14, 0.3);
+  --pp-shadow-card: 0 4px 20px -2px rgba(32, 36, 40, 0.04), 0 1px 3px rgba(32, 36, 40, 0.03);
+  --pp-shadow-pop: 0 0 0 1px rgba(16, 18, 20, 0.07), 0 1px 2px rgba(16, 18, 20, 0.04), 0 10px 24px -12px rgba(16, 18, 20, 0.14);
+  --pp-shadow-dialog: 0 20px 40px -8px rgba(15, 23, 42, 0.18), 0 0 0 1px rgba(0, 0, 0, 0.04);
+  --pp-shadow-window: 0 0 0 1px rgba(16, 18, 20, 0.06), 0 2px 4px rgba(16, 18, 20, 0.04), 0 12px 32px -8px rgba(16, 18, 20, 0.1), 0 40px 80px -24px rgba(16, 18, 20, 0.14);
+  --pp-shadow-notch: 0 16px 40px -6px rgba(0, 0, 0, 0.65), 0 4px 16px rgba(0, 0, 0, 0.35);
+
+  /* ── Motion ───────────────────────────────────────── */
+  --pp-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --pp-spring: cubic-bezier(0.32, 1.22, 0.42, 1);
+  --pp-fast: 100ms;
+  --pp-base: 150ms;
+  --pp-slow: 380ms;
+
+  /* ── shadcn-compatible names (so shadcn-style code keeps working) ── */
+  --background: var(--pp-surface);
+  --foreground: var(--pp-ink);
+  --primary: var(--pp-brand);
+  --primary-foreground: var(--pp-white);
+  --secondary: var(--pp-accent);
+  --secondary-foreground: var(--pp-white);
+  --destructive: var(--pp-danger);
+  --destructive-foreground: var(--pp-white);
+  --muted: var(--pp-surface);
+  --muted-foreground: var(--pp-muted);
+  --border: var(--pp-border);
+  --input: var(--pp-border);
+  --ring: var(--pp-accent);
+  --card: var(--pp-white);
+  --popover: var(--pp-white);
+}
