@@ -25,5 +25,6 @@
     "types": ["vite/client"]
   },
   "include": ["src"],
-  "exclude": ["src/island/features", "src/window", "src/core/chat-tools.ts", "src/core/registry.ts"]
+  "exclude": []
 }
+
