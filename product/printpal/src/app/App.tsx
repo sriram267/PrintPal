@@ -27,7 +27,7 @@ function AuthTokenBridge({ children }: { children: React.ReactNode }) {
 }
 
 export function App() {
-  // An invitation link (from approving someone on the Clerk waitlist) carries __clerk_ticket and also
+  // A Clerk invitation link carries __clerk_ticket and also
   // __clerk_status=sign_up. That is NOT an SSO callback: it must show the sign-up screen, which completes the invitation.
   const hasInvitation = typeof window !== "undefined" && window.location.search.includes("__clerk_ticket");
   const isSSOCallback =

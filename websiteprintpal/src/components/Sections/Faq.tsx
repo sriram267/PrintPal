@@ -11,7 +11,7 @@ const FAQS = [
   },
   {
     q: "How do I get access?",
-    a: "Join the waitlist with your email. We invite shops in small batches, send your invite by email, and you create your account from it.",
+    a: "Click Continue with Google and pick your Google account. That creates your PrintPal account and signs you in. There's no form to fill in and no password to remember.",
   },
   {
     q: "Does it handle GST?",

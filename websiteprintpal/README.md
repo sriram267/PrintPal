@@ -15,21 +15,18 @@ npm run dev            # http://localhost:5180
 
 | Variable | What it is |
 |---|---|
-| `VITE_CLERK_PUBLISHABLE_KEY` | Clerk **publishable** key (`pk_...`). Public by design. Never put the secret key (`sk_...`) in this project. |
-| `VITE_APP_URL` | The PrintPal app. "Sign in" and Clerk's "Already have access? Sign in" go here. |
+| `VITE_APP_URL` | The PrintPal app. Every sign-up / sign-in button goes here. |
 
-## One system for people: Clerk
+## Signing up: Google only
 
-Clerk is the only place people are stored: waitlist entries, invitations, accounts, sessions. Neon holds only each
-shop's business data, keyed by Clerk user id (created on first login by the app's `/api/auth/sync-user`).
-There is no waitlist table or waitlist API on the PrintPal backend. Both the website and the app's login page use Clerk's own components.
+There is no waitlist. The website doesn't load Clerk at all: every "Get started" / "Continue with Google" button is a
+link to `<app>/?auth=google` (`src/lib/links.ts`, `src/components/GoogleButton.tsx`). The app's login page sees
+`?auth=google` and goes straight to Google. The same button signs new people up and existing people in, and the session is
+created on the app's own domain, so people land inside PrintPal signed in. "Sign in" links to the app's login page,
+which is a single "Continue with Google" button.
 
-The site and the app share one Clerk instance.
-
-- **Join the waitlist** uses Clerk's `<Waitlist />` component (in the dialog and the final section). Entries appear in the
-  Clerk dashboard under **Waitlist**, where you invite people.
-- **Sign in / Sign up** go to the app, whose Clerk screens create the session on the app's own domain, so people land
-  inside PrintPal signed in.
+Clerk (sign-up mode **Open**, Google as the only way in) is the only place people are stored. Neon holds only each shop's
+business data, keyed by Clerk user id (created on first login by the app's `/api/auth/sync-user`).
 
 ## Deploy (Cloudflare Pages, project `printpal-web`)
 

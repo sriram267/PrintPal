@@ -6,7 +6,7 @@ import { resolveTenantId } from "./tenantContext.mjs";
 /** @param {import("fastify").FastifyInstance} server */
 export function registerAuth(server) {
   // 3c. Public Routes Allowlist
-  // (No waitlist route: the waitlist lives ONLY in Clerk. The website and the login page use Clerk's <Waitlist />.)
+  // (No waitlist: anyone signs up with Google through Clerk; Clerk is the only place people are stored.)
   const PUBLIC_ROUTES = new Set([
     "GET:/api/health",
   ]);

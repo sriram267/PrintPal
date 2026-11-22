@@ -1,6 +1,5 @@
 import { Logo } from "../Logo";
-import { APP_URL } from "../../lib/links";
-import { openWaitlist } from "../WaitlistDialog";
+import { APP_URL, GOOGLE_START_URL } from "../../lib/links";
 import "./footer.css";
 
 const PRODUCT_LINKS = [
@@ -33,9 +32,7 @@ export function Footer() {
             </div>
             <div>
               <h4>Get started</h4>
-              <button type="button" onClick={openWaitlist}>
-                Join the waitlist
-              </button>
+              <a href={GOOGLE_START_URL}>Continue with Google</a>
               <a href={APP_URL}>Sign in</a>
             </div>
           </nav>

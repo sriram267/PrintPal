@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Logo } from "../Logo";
 import { APP_URL } from "../../lib/links";
-import { openWaitlist } from "../WaitlistDialog";
+import { GoogleButton } from "../GoogleButton";
 import "./nav.css";
 
 const LINKS = [
@@ -27,11 +27,6 @@ export function Nav() {
       mq.removeEventListener("change", onMq);
     };
   }, [open]);
-
-  const join = () => {
-    setOpen(false);
-    openWaitlist();
-  };
 
   return (
     <header className={`nav ${open ? "is-open" : ""}`}>
@@ -59,9 +54,7 @@ export function Nav() {
           <a href={APP_URL} className="btn-attio btn-attio-outline nav-signin">
             Sign in
           </a>
-          <button type="button" className="btn-attio btn-attio-dark nav-cta" onClick={join}>
-            Join the waitlist
-          </button>
+          <GoogleButton className="btn-attio btn-attio-dark nav-cta" label="Get started" />
           <button
             type="button"
             className="nav-burger"
@@ -86,9 +79,7 @@ export function Nav() {
           <a href={APP_URL} className="btn-attio btn-attio-outline">
             Sign in
           </a>
-          <button type="button" className="btn-attio btn-attio-dark" onClick={join}>
-            Join the waitlist
-          </button>
+          <GoogleButton onClick={() => setOpen(false)} />
         </div>
       </div>
     </header>

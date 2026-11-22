@@ -9,7 +9,6 @@ import { Different } from "./components/Sections/Different";
 import { Faq } from "./components/Sections/Faq";
 import { FinalCta } from "./components/Sections/FinalCta";
 import { Footer } from "./components/Footer/Footer";
-import { WaitlistDialog } from "./components/WaitlistDialog";
 import "./components/Sections/darkBlock.css";
 
 /* Rhythm, the way Attio does it (see its page): a long LIGHT stretch whose variety comes from layout and
@@ -37,7 +36,6 @@ export function App() {
         <FinalCta />
       </main>
       <Footer />
-      <WaitlistDialog />
     </>
   );
 }

@@ -2,7 +2,8 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react
 import { QuoteScreen } from "./QuoteScreen";
 import { PhoneQuote } from "./PhoneQuote";
 import { CncRouter, FIGURE_SIZE, PORTS, WideFormatPrinter } from "./Machines";
-import { openWaitlist } from "../WaitlistDialog";
+import { GoogleButton } from "../GoogleButton";
+import { GOOGLE_START_URL } from "../../lib/links";
 import { IconChevronRight } from "../Hero/icons";
 import "./heroScene.css";
 
@@ -290,7 +291,7 @@ export function HeroScene() {
 
   const copy = (
     <div className="hs-copy" ref={copyRef}>
-      <a className="hs-pill" href="#waitlist" onClick={(e) => { e.preventDefault(); openWaitlist(); }}>
+      <a className="hs-pill" href={GOOGLE_START_URL}>
         <span>
           Free during the pilot<span className="hs-pill-more"> · Now inviting sign shops</span>
         </span>
@@ -309,9 +310,7 @@ export function HeroScene() {
         <button type="button" className="btn-attio btn-attio-outline" onClick={seeHow}>
           See how it works
         </button>
-        <button type="button" className="btn-attio btn-attio-dark" onClick={openWaitlist}>
-          Join the waitlist
-        </button>
+        <GoogleButton />
       </div>
     </div>
   );

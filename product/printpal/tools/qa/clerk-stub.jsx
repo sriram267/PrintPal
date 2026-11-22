@@ -14,7 +14,6 @@ export const Show = ({ when, children }) => (when === "signed-in" ? children : n
 export const AuthenticateWithRedirectCallback = () => null;
 export const SignIn = () => null;
 export const SignUp = () => null;
-export const Waitlist = () => null;
 export const useAuth = () => ({ getToken: async () => "qa-token", isSignedIn: true, isLoaded: true, userId: user.id });
 export const useUser = () => ({ user, isLoaded: true, isSignedIn: true });
 export const useClerk = () => ({ signOut: async () => {}, user });
