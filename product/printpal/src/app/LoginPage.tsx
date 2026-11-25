@@ -48,22 +48,30 @@ function GoogleMark() {
 function GoogleDoor() {
   const clerk = useClerk();
   const [busy, setBusy] = useState(false);
-  const [failed, setFailed] = useState(false);
+  // null = no problem; "" = failed with no reason given; otherwise Clerk's own reason
+  const [failure, setFailure] = useState<string | null>(null);
   const autoStarted = useRef(false);
 
   const start = async () => {
     if (!clerk.loaded || !clerk.client) return;
     setBusy(true);
-    setFailed(false);
+    setFailure(null);
     try {
       await clerk.client.signIn.authenticateWithRedirect({
         strategy: "oauth_google",
         redirectUrl: "/sso-callback",
         redirectUrlComplete: "/",
       });
-    } catch {
+    } catch (err) {
+      console.error("[PrintPal] Google sign-in did not start", err);
+      const first = (err as { errors?: { code?: string; longMessage?: string; message?: string }[] })?.errors?.[0];
+      // Already signed in (e.g. in another tab): nothing to fix, just open the app
+      if (first?.code === "session_exists") {
+        window.location.assign("/");
+        return;
+      }
       setBusy(false);
-      setFailed(true);
+      setFailure(first?.longMessage || first?.message || (err instanceof Error ? err.message : ""));
     }
   };
 
@@ -94,10 +102,11 @@ function GoogleDoor() {
         {busy ? "Opening Google…" : "Continue with Google"}
       </Button>
 
-      {failed && (
-        <p role="alert" className="mt-3 text-[13px]/5 text-[#B42318]">
-          Couldn't open Google sign-in. Please try again.
-        </p>
+      {failure !== null && (
+        <div role="alert" className="mt-3 text-[13px]/5 text-[#B42318]">
+          <p>Couldn't open Google sign-in. Please try again.</p>
+          {failure && <p className="mt-1 text-[12px]/4 text-[#737B84]">Reason: {failure}</p>}
+        </div>
       )}
     </div>
   );
